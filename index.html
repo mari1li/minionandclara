@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minion & Clara 💌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fff5f7; --card:#ffffff; --pink:#ff8fab; --pink-d:#f06b8e; --rose:#ffc2d1;
+    --text:#5a3d4a; --muted:#9b7f8b; --env:#ffd6e0; --env-d:#ffb3c6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Quicksand',sans-serif; color:var(--text); min-height:100vh;
+    background:radial-gradient(circle at 20% 10%,#ffe3ea 0,transparent 40%),
+               radial-gradient(circle at 85% 80%,#ffe9f0 0,transparent 45%),var(--bg);
+    padding:20px 16px 100px; overflow-x:hidden;
+  }
+  .wrap{max-width:560px;margin:0 auto}
+  .lang{display:flex;justify-content:flex-end;gap:6px;margin-bottom:10px}
+  .lang button{
+    font:600 13px 'Quicksand';border:2px solid var(--rose);background:#fff;color:var(--muted);
+    padding:6px 12px;border-radius:999px;cursor:pointer;transition:.2s
+  }
+  .lang button.on{background:var(--pink);border-color:var(--pink);color:#fff}
+  h1{font-family:'Dancing Script',cursive;font-size:44px;text-align:center;color:var(--pink-d);line-height:1.1}
+  .sub{text-align:center;color:var(--muted);margin:6px 0 20px;font-weight:500}
+  .card{background:var(--card);border-radius:22px;padding:20px;box-shadow:0 6px 24px rgba(240,107,142,.12);margin-bottom:18px}
+  .card h2{font-size:16px;font-weight:700;text-align:center;margin-bottom:12px;color:var(--pink-d)}
+  .hint{text-align:center;color:var(--muted);font-size:13px;margin-top:10px}
+  .page{display:none;animation:fade .3s ease}
+  .page.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  nav{
+    position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:5;
+    background:#fff;border-radius:999px;box-shadow:0 6px 24px rgba(240,107,142,.22);
+    display:flex;gap:2px;padding:6px;max-width:calc(100% - 20px)
+  }
+  nav a{
+    text-decoration:none;color:var(--muted);font-size:11.5px;font-weight:700;font-style:normal;
+    display:flex;flex-direction:column;align-items:center;padding:6px 10px;border-radius:999px;min-width:56px
+  }
+  nav a em{font-style:normal}
+  nav a span{font-size:20px;line-height:1.1}
+  nav a.on{background:var(--bg);color:var(--pink-d)}
+
+  .count{display:flex;justify-content:center;gap:10px}
+  .unit{background:var(--bg);border-radius:14px;padding:10px 0;width:74px;text-align:center}
+  .unit b{display:block;font-size:26px;color:var(--pink-d)}
+  .unit span{font-size:12px;color:var(--muted)}
+  .countdone{text-align:center;font-size:18px;font-weight:700;color:var(--pink-d)}
+  .miss{text-align:center}
+  .btn{
+    font:700 18px 'Quicksand';color:#fff;background:linear-gradient(135deg,var(--pink),var(--pink-d));
+    border:none;border-radius:999px;padding:16px 30px;cursor:pointer;
+    box-shadow:0 6px 16px rgba(240,107,142,.35);transition:transform .15s
+  }
+  .btn:active{transform:scale(.94)}
+  .btn.sm{font-size:15px;padding:11px 22px}
+  #missMsg{min-height:48px;margin-top:14px;font-weight:600}
+  #missCount{font-size:15px;color:var(--pink-d);font-weight:700;margin-top:4px}
+  #missCount b{font-size:22px}
+
+  .envs{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .env{
+    position:relative;background:var(--env);border-radius:10px;aspect-ratio:1.45;cursor:pointer;
+    overflow:hidden;transition:transform .2s;border:none;font-family:inherit;color:var(--text)
+  }
+  .env:hover{transform:translateY(-3px) rotate(-1deg)}
+  .env::before{
+    content:"";position:absolute;inset:0 0 auto 0;height:58%;background:var(--env-d);
+    clip-path:polygon(0 0,100% 0,50% 100%);transition:.3s
+  }
+  .env.opened::before{opacity:.35}
+  .env .seal{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);font-size:22px;z-index:1}
+  .env .lbl{position:absolute;bottom:8px;left:6px;right:6px;font-size:12.5px;font-weight:700;text-align:center;line-height:1.25}
+
+  .reason{
+    min-height:170px;display:flex;align-items:center;justify-content:center;text-align:center;
+    background:linear-gradient(135deg,#fff0f4,#ffe3ea);border-radius:18px;padding:24px;
+    font-size:19px;font-weight:600;line-height:1.5;cursor:pointer;user-select:none
+  }
+  .reason.flip{animation:flip .45s ease}
+  @keyframes flip{0%{transform:rotateY(0)}50%{transform:rotateY(90deg)}100%{transform:rotateY(0)}}
+  .reason small{display:block;font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:700}
+
+  .coupons{display:flex;flex-direction:column;gap:12px}
+  .coupon{display:flex;align-items:center;gap:12px;background:#fff7e8;border:2px dashed #f7c58f;border-radius:14px;padding:12px 14px}
+  .coupon .ico{font-size:28px}
+  .coupon .txt{flex:1;font-weight:600;font-size:14.5px;line-height:1.35}
+  .coupon button{font:700 13px 'Quicksand';border:none;border-radius:999px;padding:8px 12px;cursor:pointer;background:var(--pink);color:#fff;white-space:nowrap}
+  .coupon button.sure{background:#f7a24b}
+  .coupon.used{opacity:.55;background:#f5f0f2;border-color:#ddd}
+  .coupon.used button{background:#bbb;cursor:default}
+
+  #game{width:100%;height:380px;display:block;border-radius:16px;background:linear-gradient(#fff0f4,#ffe3ea);touch-action:none}
+  .gamebar{display:flex;justify-content:space-between;font-weight:700;margin-bottom:10px;color:var(--pink-d)}
+  .gameover{text-align:center;margin-top:12px;font-weight:600;min-height:24px}
+
+  .modal{position:fixed;inset:0;background:rgba(90,61,74,.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
+  .modal.show{display:flex}
+  .letter{
+    background:#fffdf8;border-radius:18px;max-width:420px;width:100%;padding:28px 24px 22px;position:relative;
+    box-shadow:0 12px 40px rgba(0,0,0,.18);animation:pop .35s ease;
+    background-image:repeating-linear-gradient(#fffdf8 0 31px,#ffe3ea 31px 32px)
+  }
+  @keyframes pop{from{transform:scale(.7) translateY(30px);opacity:0}to{transform:none;opacity:1}}
+  .letter h3{font-family:'Dancing Script',cursive;font-size:30px;color:var(--pink-d);margin-bottom:10px}
+  .letter p{font-size:16.5px;line-height:32px;white-space:pre-line}
+  .letter .sign{font-family:'Dancing Script',cursive;font-size:24px;text-align:right;margin-top:8px;color:var(--pink-d)}
+  .close{position:absolute;top:10px;right:14px;background:none;border:none;font-size:24px;color:var(--muted);cursor:pointer}
+  .heart{position:fixed;pointer-events:none;font-size:22px;animation:float 1.6s ease-out forwards;z-index:20}
+  @keyframes float{to{transform:translate(var(--dx),-180px) scale(1.4);opacity:0}}
+  footer{text-align:center;color:var(--muted);font-size:13px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="lang">
+    <button data-l="vi">Tiếng Việt</button>
+    <button data-l="en">English</button>
+  </div>
+
+  <h1 id="title"></h1>
+  <p class="sub" id="sub"></p>
+
+  <section class="page" id="p-home">
+    <div class="card">
+      <h2 data-t="cdTitle"></h2>
+      <div id="countdown"></div>
+    </div>
+    <div class="card miss">
+      <button class="btn" id="missBtn"></button>
+      <div id="missMsg"></div>
+      <div id="missCount"></div>
+    </div>
+  </section>
+
+  <section class="page" id="p-thu">
+    <div class="card">
+      <h2 data-t="envTitle"></h2>
+      <div class="envs" id="envs"></div>
+    </div>
+  </section>
+
+  <section class="page" id="p-lydo">
+    <div class="card">
+      <h2 data-t="rTitle"></h2>
+      <div class="reason" id="reason"></div>
+      <p class="hint" data-t="rHint"></p>
+    </div>
+  </section>
+
+  <section class="page" id="p-phieu">
+    <div class="card">
+      <h2 data-t="cTitle"></h2>
+      <div class="coupons" id="coupons"></div>
+      <p class="hint" data-t="cHint"></p>
+    </div>
+  </section>
+
+  <section class="page" id="p-game">
+    <div class="card">
+      <h2 data-t="gTitle"></h2>
+      <div class="gamebar"><span id="gScore"></span><span id="gTime"></span></div>
+      <canvas id="game"></canvas>
+      <div class="gameover" id="gOver"></div>
+      <div style="text-align:center;margin-top:10px"><button class="btn sm" id="gStart"></button></div>
+      <p class="hint" data-t="gHint"></p>
+    </div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<nav>
+  <a href="#home"><span>🏠</span><em data-t="nHome"></em></a>
+  <a href="#thu"><span>💌</span><em data-t="nThu"></em></a>
+  <a href="#lydo"><span>💭</span><em data-t="nLydo"></em></a>
+  <a href="#phieu"><span>🎟️</span><em data-t="nPhieu"></em></a>
+  <a href="#game"><span>🎮</span><em data-t="nGame"></em></a>
+</nav>
+
+<div class="modal" id="modal">
+  <div class="letter">
+    <button class="close" id="close" aria-label="close">×</button>
+    <h3 id="lTitle"></h3>
+    <p id="lBody"></p>
+    <div class="sign" id="lSign"></div>
+  </div>
+</div>
+
+<script>
+/* ============ EDIT THESE ============ */
+const HER_NAME   = "Clara";                 // her name / nickname
+const MY_NAME    = "Na Minion";             // your name
+const NEXT_VISIT = "2026-11-14T08:00:00";   // next time you see each other
+// Shared online counter (abacus.jasoncameron.dev): same number on every phone
+const COUNTER_NS  = "minionandclara";
+const COUNTER_KEY = "em-nho-chi";
+/* ==================================== */
+
+const T = {
+  vi:{
+    title:`Gửi ${HER_NAME} 💌`,
+    sub:"Một góc nhỏ để em ghé vào mỗi khi nhớ chị",
+    nHome:"Nhà", nThu:"Thư", nLydo:"Lý do", nPhieu:"Phiếu", nGame:"Chơi",
+    cdTitle:"Còn bao lâu nữa là gặp nhau?",
+    units:["ngày","giờ","phút","giây"],
+    cdDone:"Hôm nay mình gặp nhau rồi! 💕",
+    missBtn:"Em nhớ chị 🥺",
+    missCount:n=>`Em đã nhớ chị <b>${n}</b> lần rồi đó`,
+    envTitle:"Mở khi…",
+    sign:`Thương em, ${MY_NAME}`,
+    foot:`Làm bằng cả trái tim, từ ${MY_NAME} 💗`,
+    miss:[
+      "Chị cũng nhớ em nhiều lắm!",
+      "Chị nhớ em còn hơn nhớ trà sữa 🧋",
+      "Ngày nào không có em cũng dài lê thê.",
+      "Em là thông báo chị mong nhất mỗi ngày 📱",
+      "Chị gửi em một cái ôm thật chặt 🤗",
+      "Chị đang đếm từng giờ để gặp em đó.",
+      "Có em là ngày của chị đẹp hơn hẳn ☀️",
+      "Bấm nữa đi, chị thích lắm 😚"
+    ],
+    envs:[
+      {l:"em nhớ chị", s:"💗", t:"Khi em nhớ chị",
+       b:"Chị cũng đang nhớ em đó.\nNhắm mắt lại, tưởng tượng chị đang ngồi ngay cạnh em nhé.\nSắp gặp lại rồi, cố lên!"},
+      {l:"em không ngủ được", s:"🌙", t:"Khi em không ngủ được",
+       b:"Đặt điện thoại xuống, hít thở thật sâu nào.\nHôm nay em đã làm rất tốt rồi.\nChúc em ngủ ngon và mơ thấy chị nha."},
+      {l:"em buồn", s:"🌷", t:"Khi em buồn",
+       b:"Buồn cũng không sao đâu.\nEm không phải gồng lên một mình.\nNhắn chị bất cứ lúc nào, chị luôn ở đây với em."},
+      {l:"em cần cười", s:"😂", t:"Khi em cần cười",
+       b:"Nhớ mặt minion của chị hăm,\nlúc giả bộ khóc á.\nRồi cười cho chị xem nào,\niu iu cười xinh lắm 😆"},
+      {l:"em thấy chán", s:"📸", t:"Khi em thấy chán",
+       b:"Thử thách cho em:\nchụp một tấm selfie mặt hề nhất có thể\nvà gửi chị ngay bây giờ! Không được trốn đâu."},
+      {l:"em cần một cái ôm", s:"🤗", t:"Khi em cần một cái ôm",
+       b:"Đây là cái ôm từ xa của chị:\n(っ˘ω˘ς )\nLần gặp tới chị ôm bù thật lâu luôn."}
+    ],
+    rTitle:"Lý do chị thương em",
+    rHint:"Chạm vào thẻ để xem lý do tiếp theo",
+    rLabel:(i,n)=>`Lý do số ${i}/${n}`,
+    rStart:"Chạm vào đây nè 💭",
+    reasons:[
+      "Vì nụ cười của em làm chị quên hết mệt mỏi.",
+      "Vì em luôn nghe chị kể chuyện, kể cả chuyện nhảm nhất.",
+      "Vì em làm chị muốn trở thành phiên bản tốt hơn của mình.",
+      "Vì em dễ thương nhất lúc mới ngủ dậy.",
+      "Vì ở cạnh em, chị thấy như đang ở nhà.",
+      "Vì em chịu được cái mặt minion của chị.",
+      "Vì em là người đầu tiên chị muốn kể mọi chuyện.",
+      "Vì em là em, vậy thôi 💗"
+    ],
+    cTitle:"Phiếu yêu thương",
+    cHint:"Dùng phiếu xong thì chụp màn hình gửi chị để đổi nha!",
+    cUse:"Dùng", cSure:"Chắc chưa?", cUsed:"Đã dùng ✓",
+    coupons:[
+      ["🤗","Phiếu ôm 10 phút không buông"],
+      ["🍜","Phiếu chị bao em ăn món em thích"],
+      ["🎬","Phiếu em chọn phim, chị không được cãi"],
+      ["😜","Phiếu chị làm mặt minion theo yêu cầu"],
+      ["🏆","Phiếu thắng một cuộc cãi nhau bất kỳ"],
+      ["🚗","Phiếu chị chở em đi chơi cả ngày"]
+    ],
+    gTitle:"Hứng tim cho chị",
+    gHint:"Kéo giỏ qua lại để hứng tim 💗 (⭐ = 3 điểm)",
+    gStart:"Bắt đầu", gAgain:"Chơi lại",
+    gScore:n=>`Điểm: ${n}`, gTime:n=>`⏱ ${n}s`,
+    gOver:(n,b)=>`Em hứng được ${n} trái tim! Chị tặng em gấp đôi luôn 💕 (Kỷ lục: ${b})`
+  },
+  en:{
+    title:`For ${HER_NAME} 💌`,
+    sub:"A little corner to visit whenever you miss me",
+    nHome:"Home", nThu:"Letters", nLydo:"Reasons", nPhieu:"Coupons", nGame:"Play",
+    cdTitle:"Until we see each other again",
+    units:["days","hours","mins","secs"],
+    cdDone:"We get to see each other today! 💕",
+    missBtn:"I miss you 🥺",
+    missCount:n=>`You've missed me <b>${n}</b> times`,
+    envTitle:"Open when…",
+    sign:`Love, ${MY_NAME}`,
+    foot:`Made with all my heart by ${MY_NAME} 💗`,
+    miss:[
+      "I miss you so much too!",
+      "I miss you more than bubble tea 🧋",
+      "Every day without you feels way too long.",
+      "You're my favorite notification 📱",
+      "Sending you the tightest hug 🤗",
+      "I'm counting the hours until I see you.",
+      "My days are so much better with you in them ☀️",
+      "Keep pressing, I like it 😚"
+    ],
+    envs:[
+      {l:"you miss me", s:"💗", t:"When you miss me",
+       b:"I'm missing you too, right now.\nClose your eyes and imagine I'm sitting right next to you.\nWe'll see each other soon, hang in there!"},
+      {l:"you can't sleep", s:"🌙", t:"When you can't sleep",
+       b:"Put the phone down and take a deep breath.\nYou did so well today.\nSweet dreams, and dream of me okay?"},
+      {l:"you're sad", s:"🌷", t:"When you're sad",
+       b:"It's okay to be sad.\nYou don't have to hold it all by yourself.\nText me anytime, I'm always here for you."},
+      {l:"you need a laugh", s:"😂", t:"When you need a laugh",
+       b:"Remember my minion face,\nwhen I pretended to cry?\nNow smile for me,\nyour smile is so pretty, love 😆"},
+      {l:"you're bored", s:"📸", t:"When you're bored",
+       b:"Here's a challenge:\ntake the silliest selfie you can\nand send it to me right now! No escaping."},
+      {l:"you need a hug", s:"🤗", t:"When you need a hug",
+       b:"Here's a long-distance hug:\n(っ˘ω˘ς )\nNext time I see you, I'm making up for all of them."}
+    ],
+    rTitle:"Reasons I love you",
+    rHint:"Tap the card for the next reason",
+    rLabel:(i,n)=>`Reason ${i}/${n}`,
+    rStart:"Tap here 💭",
+    reasons:[
+      "Because your smile makes me forget how tired I am.",
+      "Because you always listen to me, even my silliest stories.",
+      "Because you make me want to be a better version of myself.",
+      "Because you're cutest right after you wake up.",
+      "Because being with you feels like home.",
+      "Because you put up with my minion face.",
+      "Because you're the first person I want to tell everything.",
+      "Because you're you. That's it 💗"
+    ],
+    cTitle:"Love coupons",
+    cHint:"After you use one, screenshot it and send it to me to redeem!",
+    cUse:"Use", cSure:"Sure?", cUsed:"Used ✓",
+    coupons:[
+      ["🤗","One 10-minute hug, no letting go"],
+      ["🍜","One meal of your choice, my treat"],
+      ["🎬","You pick the movie, no complaints from me"],
+      ["😜","One minion face on demand"],
+      ["🏆","Win any one argument, automatically"],
+      ["🚗","A whole day out, I'm driving"]
+    ],
+    gTitle:"Catch hearts for me",
+    gHint:"Drag the basket to catch hearts 💗 (⭐ = 3 points)",
+    gStart:"Start", gAgain:"Play again",
+    gScore:n=>`Score: ${n}`, gTime:n=>`⏱ ${n}s`,
+    gOver:(n,b)=>`You caught ${n} hearts! I'm giving you double back 💕 (Best: ${b})`
+  }
+};
+
+const store = {
+  get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+const $ = id => document.getElementById(id);
+
+let lang = store.get("lang","vi");
+let localCount = store.get("missCount",0);
+let total = null;   // shared online total; null until loaded
+let opened = store.get("opened",[]);
+let used = store.get("usedCoupons",[]);
+
+/* ---------- shared counter ---------- */
+const API = "https://abacus.jasoncameron.dev";
+const shownCount = () => total ?? localCount;
+async function loadTotal(){
+  try{
+    const r = await fetch(`${API}/get/${COUNTER_NS}/${COUNTER_KEY}`);
+    if (r.status === 404) total = 0;
+    else if (r.ok) total = (await r.json()).value;
+  }catch(e){}
+  renderCount();
+}
+// send taps one at a time so fast tapping stays under the API's rate limit
+let pending = 0, sending = false;
+async function flush(){
+  if (sending) return; sending = true;
+  while (pending > 0){
+    try{
+      const r = await fetch(`${API}/hit/${COUNTER_NS}/${COUNTER_KEY}`);
+      if (!r.ok) throw 0;
+      const v = (await r.json()).value;
+      pending--;
+      total = Math.max(total ?? 0, v + pending);
+      renderCount();
+    }catch(e){
+      if (total === null) { pending = 0; break; }   // offline / blocked: keep local count only
+      await new Promise(s=>setTimeout(s,3000));
+    }
+    await new Promise(s=>setTimeout(s,400));
+  }
+  sending = false;
+}
+function renderCount(){
+  const n = shownCount();
+  $("missCount").innerHTML = n ? T[lang].missCount(n) : "";
+}
+
+/* ---------- routing ---------- */
+const PAGES = ["home","thu","lydo","phieu","game"];
+function route(){
+  let p = location.hash.slice(1);
+  if (!PAGES.includes(p)) p = "home";
+  PAGES.forEach(x=>$("p-"+x).classList.toggle("on",x===p));
+  document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+p));
+  if (p==="game") requestAnimationFrame(sizeCanvas);
+}
+window.addEventListener("hashchange",route);
+
+/* ---------- render ---------- */
+function render(){
+  const t = T[lang];
+  document.documentElement.lang = lang;
+  document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on",b.dataset.l===lang));
+  document.querySelectorAll("[data-t]").forEach(el=>el.textContent = t[el.dataset.t]);
+  $("title").textContent = t.title;
+  $("sub").textContent = t.sub;
+  $("missBtn").textContent = t.missBtn;
+  $("missMsg").textContent = "";
+  $("foot").textContent = t.foot;
+  renderCount();
+  renderEnvs();
+  reasonIdx = -1;
+  $("reason").textContent = t.rStart;
+  renderCoupons();
+  $("gStart").textContent = gameScore ? t.gAgain : t.gStart;
+  $("gScore").textContent = t.gScore(gameScore);
+  $("gTime").textContent = t.gTime(gameTime);
+  $("gOver").textContent = "";
+  tick();
+}
+
+/* ---------- countdown ---------- */
+function tick(){
+  const t = T[lang];
+  const diff = new Date(NEXT_VISIT) - new Date();
+  if (diff <= 0){ $("countdown").innerHTML = `<div class="countdone">${t.cdDone}</div>`; return; }
+  const v = [Math.floor(diff/864e5), Math.floor(diff/36e5)%24, Math.floor(diff/6e4)%60, Math.floor(diff/1e3)%60];
+  $("countdown").innerHTML = `<div class="count">${v.map((n,i)=>`<div class="unit"><b>${n}</b><span>${t.units[i]}</span></div>`).join("")}</div>`;
+}
+setInterval(tick,1000);
+
+/* ---------- miss button ---------- */
+function burst(x,y,emojis){
+  for (let k=0;k<10;k++){
+    const h = document.createElement("span");
+    h.className = "heart";
+    h.textContent = emojis[k%emojis.length];
+    h.style.left = (x - 10 + (Math.random()*60-30)) + "px";
+    h.style.top = y + "px";
+    h.style.setProperty("--dx", (Math.random()*160-80)+"px");
+    h.style.animationDelay = (Math.random()*0.25)+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),2000);
+  }
+}
+let lastMsg = -1;
+$("missBtn").onclick = e=>{
+  const t = T[lang];
+  localCount++; store.set("missCount",localCount);
+  if (total !== null) total++;
+  pending++; flush();
+  let i; do { i = Math.floor(Math.random()*t.miss.length); } while (i===lastMsg && t.miss.length>1);
+  lastMsg = i;
+  $("missMsg").textContent = t.miss[i];
+  renderCount();
+  const r = e.currentTarget.getBoundingClientRect();
+  burst(r.left + r.width/2, r.top, ["💗","💕","💖","🩷","✨"]);
+};
+
+/* ---------- letters ---------- */
+function renderEnvs(){
+  const t = T[lang];
+  $("envs").innerHTML = "";
+  t.envs.forEach((e,i)=>{
+    const b = document.createElement("button");
+    b.className = "env" + (opened.includes(i) ? " opened" : "");
+    b.innerHTML = `<span class="seal">${e.s}</span><span class="lbl"></span>`;
+    b.querySelector(".lbl").textContent = e.l;
+    b.onclick = ()=>openLetter(i);
+    $("envs").appendChild(b);
+  });
+}
+function openLetter(i){
+  const t = T[lang], e = t.envs[i];
+  $("lTitle").textContent = e.t;
+  $("lBody").textContent = e.b;
+  $("lSign").textContent = t.sign;
+  $("modal").classList.add("show");
+  if (!opened.includes(i)){ opened.push(i); store.set("opened",opened); renderEnvs(); }
+}
+$("close").onclick = ()=>$("modal").classList.remove("show");
+$("modal").onclick = e=>{ if (e.target.id==="modal") $("modal").classList.remove("show"); };
+
+/* ---------- reasons ---------- */
+let reasonIdx = -1;
+$("reason").onclick = ()=>{
+  const t = T[lang], el = $("reason");
+  reasonIdx = (reasonIdx + 1) % t.reasons.length;
+  el.classList.remove("flip"); void el.offsetWidth; el.classList.add("flip");
+  setTimeout(()=>{
+    el.innerHTML = `<div><small></small><span></span></div>`;
+    el.querySelector("small").textContent = t.rLabel(reasonIdx+1, t.reasons.length);
+    el.querySelector("span").textContent = t.reasons[reasonIdx];
+  },220);
+};
+
+/* ---------- coupons ---------- */
+function renderCoupons(){
+  const t = T[lang];
+  $("coupons").innerHTML = "";
+  t.coupons.forEach(([ico,txt],i)=>{
+    const d = document.createElement("div");
+    const isUsed = used.includes(i);
+    d.className = "coupon" + (isUsed ? " used" : "");
+    d.innerHTML = `<span class="ico">${ico}</span><span class="txt"></span><button></button>`;
+    d.querySelector(".txt").textContent = txt;
+    const b = d.querySelector("button");
+    b.textContent = isUsed ? t.cUsed : t.cUse;
+    if (!isUsed) b.onclick = ()=>{
+      if (!b.classList.contains("sure")){ b.classList.add("sure"); b.textContent = t.cSure; return; }
+      used.push(i); store.set("usedCoupons",used);
+      const r = b.getBoundingClientRect();
+      burst(r.left + r.width/2, r.top, ["🎉","💗","✨"]);
+      renderCoupons();
+    };
+    $("coupons").appendChild(d);
+  });
+}
+
+/* ---------- game ---------- */
+const cv = $("game"), ctx = cv.getContext("2d");
+let W=0,H=0, basketX=0, items=[], gameScore=0, gameTime=30, gameRunning=false, lastT=0, spawnAcc=0, timerAcc=0;
+function sizeCanvas(){
+  W = cv.clientWidth; H = cv.clientHeight;
+  if (!W) return;
+  const dpr = window.devicePixelRatio || 1;
+  cv.width = W*dpr; cv.height = H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  if (!basketX || basketX > W) basketX = W/2;
+  draw();
+}
+window.addEventListener("resize",sizeCanvas);
+function setX(clientX){
+  const r = cv.getBoundingClientRect();
+  basketX = Math.max(24, Math.min(W-24, clientX - r.left));
+  if (!gameRunning) draw();
+}
+cv.addEventListener("pointermove",e=>setX(e.clientX));
+cv.addEventListener("pointerdown",e=>setX(e.clientX));
+cv.addEventListener("touchmove",e=>{ setX(e.touches[0].clientX); e.preventDefault(); },{passive:false});
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.textAlign="center"; ctx.textBaseline="middle";
+  ctx.font = "28px serif";
+  items.forEach(it=>ctx.fillText(it.e, it.x, it.y));
+  ctx.font = "40px serif";
+  ctx.fillText("🧺", basketX, H-30);
+}
+function loop(ts){
+  if (!gameRunning) return;
+  const dt = Math.min(0.05,(ts-lastT)/1000); lastT = ts;
+  spawnAcc += dt; timerAcc += dt;
+  const rate = 0.55 - (30-gameTime)*0.008;
+  if (spawnAcc > rate){
+    spawnAcc = 0;
+    const star = Math.random() < 0.1;
+    items.push({x: 20 + Math.random()*(W-40), y:-20, v: 120 + Math.random()*90 + (30-gameTime)*4,
+                e: star ? "⭐" : ["💗","💖","💕"][Math.floor(Math.random()*3)], p: star?3:1});
+  }
+  if (timerAcc >= 1){ timerAcc -= 1; gameTime--; $("gTime").textContent = T[lang].gTime(gameTime); }
+  items.forEach(it=>it.y += it.v*dt);
+  items = items.filter(it=>{
+    if (it.y > H-50 && it.y < H-10 && Math.abs(it.x-basketX) < 32){
+      gameScore += it.p; $("gScore").textContent = T[lang].gScore(gameScore); return false;
+    }
+    return it.y < H+30;
+  });
+  draw();
+  if (gameTime <= 0) return endGame();
+  requestAnimationFrame(loop);
+}
+function endGame(){
+  gameRunning = false; items = []; draw();
+  const best = Math.max(store.get("best",0), gameScore); store.set("best",best);
+  $("gOver").textContent = T[lang].gOver(gameScore, best);
+  $("gStart").textContent = T[lang].gAgain;
+  const r = cv.getBoundingClientRect();
+  burst(r.left + r.width/2, r.top + r.height/2, ["💗","💕","✨"]);
+}
+$("gStart").onclick = ()=>{
+  if (gameRunning) return;
+  sizeCanvas();
+  gameScore = 0; gameTime = 30; items = []; spawnAcc = 0; timerAcc = 0;
+  $("gScore").textContent = T[lang].gScore(0);
+  $("gTime").textContent = T[lang].gTime(30);
+  $("gOver").textContent = "";
+  gameRunning = true; lastT = performance.now(); requestAnimationFrame(loop);
+};
+
+/* ---------- init ---------- */
+document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{ lang=b.dataset.l; store.set("lang",lang); render(); });
+render();
+route();
+loadTotal();
+</script>
+</body>
+</html>
