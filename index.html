@@ -635,7 +635,8 @@ function renderCoupons(){
 // File name becomes the caption: "2026-10-01_di-bien.jpg" -> date "2026-10-01", caption "di bien"
 let photos = null, albumState = "idle", lbIdx = 0;
 function parsePhoto(f){
-  let base = f.name.replace(/\.[^.]+$/,"");
+  // Mac file names store accents as separate marks (NFD); join them so Vietnamese renders cleanly
+  let base = f.name.normalize("NFC").replace(/\.[^.]+$/,"");
   let date = "";
   const m = base.match(/^(\d{4}-\d{2}-\d{2})[_ -]*(.*)$/);
   if (m){ date = m[1]; base = m[2]; }
