@@ -99,13 +99,18 @@
   .gtabs{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
   .gtabs button{font:700 14px 'Nunito';border:2px solid var(--rose);background:#fff;color:var(--muted);padding:8px 14px;border-radius:999px;cursor:pointer}
   .gtabs button.on{background:var(--pink);border-color:var(--pink);color:#fff}
-  .field{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;background:linear-gradient(#e8f7d4,#cfeeb0);border-radius:18px;padding:16px 12px;user-select:none;-webkit-user-select:none}
-  .hole{position:relative;aspect-ratio:1;overflow:hidden;border-radius:0 0 50% 50%/0 0 30% 30%}
+  .field{position:relative;max-width:380px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;background:linear-gradient(#e8f7d4,#cfeeb0);border-radius:18px;padding:16px 12px;user-select:none;-webkit-user-select:none}
+  .hole{position:relative;aspect-ratio:1;overflow:hidden;container-type:inline-size;border-radius:0 0 50% 50%/0 0 30% 30%}
   .hole::after{content:"";position:absolute;left:6%;right:6%;bottom:0;height:34%;background:#8d6448;border-radius:50%;box-shadow:inset 0 6px 0 #6b4a34;z-index:2}
-  .critter{position:absolute;left:0;right:0;bottom:12%;font-size:46px;text-align:center;transform:translateY(170%);transition:transform .16s ease-out;z-index:1;cursor:pointer;line-height:1}
+  .critter{position:absolute;left:0;right:0;bottom:20%;font-size:52cqw;text-align:center;transform:translateY(170%);transition:transform .16s ease-out;z-index:1;cursor:pointer;line-height:1}
   .critter.up{transform:translateY(0)}
   .critter.fed{animation:wiggle .35s ease}
   @keyframes wiggle{0%,100%{rotate:0deg}25%{rotate:-12deg}75%{rotate:12deg}}
+  .pig{position:relative;display:inline-block}
+  .pig .bow{position:absolute;top:-14%;left:52%;font-size:.48em;rotate:18deg}
+  .flyb{position:absolute;left:50%;bottom:0;font-size:30cqw;z-index:4;pointer-events:none;animation:flyb .35s ease-out forwards}
+  @keyframes flyb{from{transform:translate(-50%,40%) rotate(-40deg);opacity:1}to{transform:translate(-50%,-150%) rotate(25deg);opacity:0}}
+  .decor{position:absolute;font-size:18px;opacity:.55;pointer-events:none;z-index:0}
   .hole .bubble{position:absolute;top:2px;left:0;right:0;text-align:center;font-weight:800;font-size:13px;color:var(--pink-d);z-index:3;pointer-events:none;animation:rise .8s ease-out forwards}
   @keyframes rise{from{opacity:1;transform:translateY(10px)}to{opacity:0;transform:translateY(-14px)}}
   #game{width:100%;height:380px;display:block;border-radius:16px;background:linear-gradient(#fff0f4,#ffe3ea);touch-action:none}
@@ -330,12 +335,12 @@ const T = {
       ["🚗","Phiếu chị chở em đi chơi cả ngày"]
     ],
     gTab1:"💗 Hứng tim", gTab2:"🍌 Đút chuối",
-    g2Title:"Đút chuối cho bé hợi đáng iu 🐷",
-    g2Hint:"Bé hợi đáng iu ló đầu lên thì chạm liền để đút chuối 🍌. Bé hợi đội vương miện 👑 được 3 điểm. Né con ong 🐝 ra nha!",
-    g2Score:n=>`🍌 Bé hợi ăn: ${n}`,
+    g2Title:"Đút chuối cho bé iu 🐷🎀",
+    g2Hint:"Bé iu ló đầu lên thì chạm liền để đút chuối 🍌. Gặp chùm chuối thì chạm được 3 điểm. Né con ong 🐝 ra nha!",
+    g2Score:n=>`🍌 Bé iu ăn: ${n}`,
     g2Yum:["Măm!","Ngon!","😋","+1 💗","Chuối Na!"],
-    g2King:"+3 👑", g2Bee:"Úi! -2",
-    g2Over:(n,b)=>`Na đút cho bé hợi đáng iu được ${n} trái chuối, no căng bụng rồi 🐷💗 (Kỷ lục: ${b})`,
+    g2Bunch:"Chùm chuối! +3", g2Bee:"Úi! -2",
+    g2Over:(n,b)=>`Na đút cho bé iu được ${n} trái chuối, no căng bụng rồi 🐷🎀💗 (Kỷ lục: ${b})`,
     gTitle:"Hứng tim cho chị",
     gHint:"Kéo giỏ qua lại để hứng tim 💗 (⭐ = 3 điểm)",
     gStart:"Bắt đầu", gAgain:"Chơi lại",
@@ -408,12 +413,12 @@ const T = {
       ["🚗","A whole day out, I'm driving"]
     ],
     gTab1:"💗 Catch hearts", gTab2:"🍌 Feed piggy",
-    g2Title:"Bananas for the cutest piggy 🐷",
-    g2Hint:"When the piggy pops up, tap fast to feed her a banana 🍌. King piggy 👑 is worth 3. Stay away from the bee 🐝!",
+    g2Title:"Bananas for my cutie 🐷🎀",
+    g2Hint:"When my cutie pops up, tap fast to feed her a banana 🍌. Tap a banana bunch for 3 points. Stay away from the bee 🐝!",
     g2Score:n=>`🍌 Eaten: ${n}`,
     g2Yum:["Nom!","Yum!","😋","+1 💗","From Na!"],
-    g2King:"+3 👑", g2Bee:"Ouch! -2",
-    g2Over:(n,b)=>`Na fed the cutest piggy ${n} bananas, she's so full 🐷💗 (Best: ${b})`,
+    g2Bunch:"Bunch! +3", g2Bee:"Ouch! -2",
+    g2Over:(n,b)=>`Na fed her cutie ${n} bananas, she's so full 🐷🎀💗 (Best: ${b})`,
     gTitle:"Catch hearts for me",
     gHint:"Drag the basket to catch hearts 💗 (⭐ = 3 points)",
     gStart:"Start", gAgain:"Play again",
@@ -767,6 +772,11 @@ document.querySelectorAll(".gtabs button").forEach(b=>b.onclick=()=>showGame(b.d
 const G2_TIME = 30;
 const g2 = { score:0, time:G2_TIME, running:false, played:false, timers:[] };
 const holes = [];
+const PIG = '<span class="pig">🐷<span class="bow">🎀</span></span>';
+[["8%","3%"],["86%","2%"],["47%","33%"],["4%","64%"],["90%","66%"],["50%","95%"]].forEach(([l,t],i)=>{
+  const d = document.createElement("span"); d.className = "decor"; d.textContent = "🍌";
+  d.style.left = l; d.style.top = t; d.style.rotate = (i*55)+"deg"; $("field").appendChild(d);
+});
 for (let i=0;i<9;i++){
   const h = document.createElement("div"); h.className = "hole";
   const c = document.createElement("span"); c.className = "critter";
@@ -788,10 +798,13 @@ function tapHole(hole){
   const t = T[lang], kind = hole.kind;
   hole.kind = null;
   if (kind === "bee"){ g2.score = Math.max(0, g2.score-2); bubble(hole, t.g2Bee); hole.c.textContent = "😵"; }
+  else if (kind === "bunch"){ g2.score += 3; bubble(hole, t.g2Bunch); hole.c.classList.add("fed"); }
   else {
-    g2.score += kind === "king" ? 3 : 1;
-    bubble(hole, kind === "king" ? t.g2King : t.g2Yum[Math.floor(Math.random()*t.g2Yum.length)]);
-    hole.c.textContent = "😋"; hole.c.classList.add("fed");
+    g2.score += 1;
+    bubble(hole, t.g2Yum[Math.floor(Math.random()*t.g2Yum.length)]);
+    const f = document.createElement("span"); f.className = "flyb"; f.textContent = "🍌";
+    hole.el.appendChild(f); setTimeout(()=>f.remove(), 400);
+    hole.c.classList.add("fed");
   }
   $("g2Score").textContent = t.g2Score(g2.score);
   clearTimeout(hole.hideAt);
@@ -803,12 +816,11 @@ function spawn(){
   if (free.length){
     const hole = free[Math.floor(Math.random()*free.length)];
     const r = Math.random();
-    hole.kind = r < 0.15 ? "bee" : r < 0.25 ? "king" : "pig";
-    hole.c.innerHTML = hole.kind === "bee" ? "🐝"
-      : hole.kind === "king" ? '🐷<div style="font-size:18px;margin-top:-58px;position:relative">👑</div>' : "🐷";
+    hole.kind = r < 0.15 ? "bee" : r < 0.27 ? "bunch" : "pig";
+    hole.c.innerHTML = hole.kind === "bee" ? "🐝" : hole.kind === "bunch" ? "🍌" : PIG;
     hole.c.classList.add("up");
     const elapsed = G2_TIME - g2.time;
-    const stay = Math.max(550, 1100 - elapsed*18) * (hole.kind === "king" ? 0.75 : 1);
+    const stay = Math.max(550, 1100 - elapsed*18) * (hole.kind === "bunch" ? 0.75 : 1);
     hole.hideAt = setTimeout(()=>hide(hole), stay);
   }
   const elapsed = G2_TIME - g2.time;
