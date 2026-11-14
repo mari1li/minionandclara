@@ -343,10 +343,10 @@ const T = {
     ],
     gTab1:"💗 Hứng tim", gTab2:"🎁 Hộp quà",
     g2Title:"Hộp quà cho bé iu 🎁🐷",
-    g2Hint:"Hộp quà mở ra có bé iu 🐷🎀 thì chạm liền để đút chuối 🍌. Chùm chuối được 3 điểm. Né con ong 🐝 nha! Đủ chuối là qua màn.",
+    g2Hint:"Hộp quà mở ra có bé iu 🐷🎀 thì chạm liền để đút chuối 🍌. Chùm chuối được 3 điểm. Né con rắn 🐍 (-2) với cục phân có nơ 💩🎀 bản limited (-3) nha! Đủ chuối là qua màn.",
     g2Bar:(lv,s,g)=>`Màn ${lv}/5 · 🍌 ${s}/${g}`,
     g2Yum:["Măm!","Ngon!","😋","+1 💗","Chuối Na!"],
-    g2Bunch:"Chùm chuối! +3", g2Bee:"Úi! -2",
+    g2Bunch:"Chùm chuối! +3", g2Snake:"Úi rắn! -2", g2Poop:"Phân limited! -3",
     g2Ready:lv=>`Màn ${lv}: chuẩn bị nha bé iu!`,
     g2Pass:lv=>`Qua màn ${lv} rồi! Giỏi quá bé iu 🎉`,
     g2Fail:(s,g)=>`Mới được ${s}/${g} trái thôi, thử lại nha 💪`,
@@ -425,10 +425,10 @@ const T = {
     ],
     gTab1:"💗 Catch hearts", gTab2:"🎁 Gift boxes",
     g2Title:"Gift boxes for my cutie 🎁🐷",
-    g2Hint:"When a box opens with my cutie 🐷🎀 inside, tap fast to feed her a banana 🍌. Banana bunches are worth 3. Stay away from the bee 🐝! Get enough bananas to pass the level.",
+    g2Hint:"When a box opens with my cutie 🐷🎀 inside, tap fast to feed her a banana 🍌. Banana bunches are worth 3. Avoid the snake 🐍 (-2) and the limited-edition poop with a bow 💩🎀 (-3)! Get enough bananas to pass the level.",
     g2Bar:(lv,s,g)=>`Level ${lv}/5 · 🍌 ${s}/${g}`,
     g2Yum:["Nom!","Yum!","😋","+1 💗","From Na!"],
-    g2Bunch:"Bunch! +3", g2Bee:"Ouch! -2",
+    g2Bunch:"Bunch! +3", g2Snake:"Snake! -2", g2Poop:"Limited poop! -3",
     g2Ready:lv=>`Level ${lv}: get ready, cutie!`,
     g2Pass:lv=>`Level ${lv} cleared! Great job, cutie 🎉`,
     g2Fail:(s,g)=>`Only ${s}/${g} so far, try again 💪`,
@@ -783,15 +783,16 @@ document.querySelectorAll(".gtabs button").forEach(b=>b.onclick=()=>showGame(b.d
 
 /* ---------- game 2: gift boxes, 5 levels ---------- */
 const LEVELS = [
-  // seconds, bananas needed, ms between boxes, ms a box stays open, bee chance
-  {time:20, goal:6,  gap:820, stay:1350, bee:0.08},
-  {time:20, goal:10, gap:700, stay:1150, bee:0.13},
-  {time:20, goal:14, gap:600, stay:980,  bee:0.18},
-  {time:20, goal:18, gap:520, stay:840,  bee:0.22},
-  {time:20, goal:22, gap:450, stay:720,  bee:0.26}
+  // seconds, bananas needed, ms between boxes, ms a box stays open, bad box chance
+  {time:20, goal:6,  gap:820, stay:1350, bad:0.08},
+  {time:20, goal:10, gap:700, stay:1150, bad:0.13},
+  {time:20, goal:14, gap:600, stay:980,  bad:0.18},
+  {time:20, goal:18, gap:520, stay:840,  bad:0.22},
+  {time:20, goal:22, gap:450, stay:720,  bad:0.26}
 ];
 const BOX_COLORS = [["#ffb3c6","#fff"],["#cdb4ff","#ffe066"],["#a8e6cf","#ff8fab"],["#ffd6a5","#ff8fab"],["#bde0fe","#fff"],["#ffc8dd","#cdb4ff"]];
 const PIG = '<span class="pig">🐷<span class="bow">🎀</span></span>';
+const POOP = '<span class="pig">💩<span class="bow">🎀</span></span>';
 const g2 = { level:1, score:0, time:LEVELS[0].time, running:false, btn:"start", timers:[], tick:null };
 const cells = [];
 [["6%","2%"],["88%","1%"],["47%","33%"],["3%","64%"],["91%","66%"],["50%","96%"]].forEach(([l,t],i)=>{
@@ -827,7 +828,8 @@ function tapCell(cell){
   if (!g2.running || !cell.kind) return;
   const t = T[lang], kind = cell.kind;
   cell.kind = null;
-  if (kind === "bee"){ g2.score = Math.max(0, g2.score-2); bubble(cell, t.g2Bee); cell.c.textContent = "😵"; }
+  if (kind === "snake"){ g2.score = Math.max(0, g2.score-2); bubble(cell, t.g2Snake); cell.c.textContent = "😵"; }
+  else if (kind === "poop"){ g2.score = Math.max(0, g2.score-3); bubble(cell, t.g2Poop); cell.c.classList.add("fed"); }
   else if (kind === "bunch"){ g2.score += 3; bubble(cell, t.g2Bunch); cell.c.classList.add("fed"); }
   else {
     g2.score += 1;
@@ -847,8 +849,9 @@ function openRandom(){
   if (free.length){
     const cell = free[Math.floor(Math.random()*free.length)];
     const r = Math.random();
-    cell.kind = r < L.bee ? "bee" : r < L.bee + 0.12 ? "bunch" : "pig";
-    cell.c.innerHTML = cell.kind === "bee" ? "🐝" : cell.kind === "bunch" ? "🍌" : PIG;
+    // bad boxes: mostly a snake, rarely the limited-edition poop with a bow
+    cell.kind = r < L.bad ? (Math.random() < 0.15 ? "poop" : "snake") : r < L.bad + 0.12 ? "bunch" : "pig";
+    cell.c.innerHTML = cell.kind === "snake" ? "🐍" : cell.kind === "poop" ? POOP : cell.kind === "bunch" ? "🍌" : PIG;
     cell.el.classList.add("open"); cell.c.classList.add("up");
     cell.hideAt = setTimeout(()=>closeCell(cell), L.stay * (cell.kind === "bunch" ? 0.75 : 1));
   }
