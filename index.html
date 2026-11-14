@@ -99,10 +99,17 @@
   .gtabs{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
   .gtabs button{font:700 14px 'Nunito';border:2px solid var(--rose);background:#fff;color:var(--muted);padding:8px 14px;border-radius:999px;cursor:pointer}
   .gtabs button.on{background:var(--pink);border-color:var(--pink);color:#fff}
-  .field{position:relative;max-width:380px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;background:linear-gradient(#e8f7d4,#cfeeb0);border-radius:18px;padding:16px 12px;user-select:none;-webkit-user-select:none}
-  .hole{position:relative;aspect-ratio:1;overflow:hidden;container-type:inline-size;border-radius:0 0 50% 50%/0 0 30% 30%}
-  .hole::after{content:"";position:absolute;left:6%;right:6%;bottom:0;height:34%;background:#8d6448;border-radius:50%;box-shadow:inset 0 6px 0 #6b4a34;z-index:2}
-  .critter{position:absolute;left:0;right:0;bottom:20%;font-size:52cqw;text-align:center;transform:translateY(170%);transition:transform .16s ease-out;z-index:1;cursor:pointer;line-height:1}
+  .field{position:relative;max-width:380px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:linear-gradient(#fff4f8,#ffe4ee);border-radius:18px;padding:14px 10px;user-select:none;-webkit-user-select:none}
+  .cell{position:relative;aspect-ratio:1;overflow:hidden;container-type:inline-size;z-index:1}
+  .cell .front{position:absolute;left:12%;right:12%;bottom:4%;height:40%;background:var(--bc);border-radius:6px;z-index:2;box-shadow:inset 0 -5px 0 rgba(0,0,0,.07)}
+  .cell .front::after,.cell .lid::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:15%;transform:translateX(-50%);background:var(--rb)}
+  .cell .lid{position:absolute;left:7%;right:7%;bottom:42%;height:13%;background:var(--bc);filter:brightness(1.06);border-radius:5px;z-index:3;transition:transform .22s ease;transform-origin:10% 100%;box-shadow:0 2px 0 rgba(0,0,0,.06)}
+  .cell .knot{position:absolute;left:50%;top:0;width:0;height:0}
+  .cell .knot::before,.cell .knot::after{content:"";position:absolute;bottom:-1cqw;width:15cqw;height:10cqw;border:2.4cqw solid var(--rb);border-radius:50%;box-sizing:border-box}
+  .cell .knot::before{right:-1cqw;transform:rotate(25deg)}
+  .cell .knot::after{left:-1cqw;transform:rotate(-25deg)}
+  .cell.open .lid{transform:translate(-14%,-95%) rotate(-28deg)}
+  .critter{position:absolute;left:0;right:0;bottom:28%;font-size:46cqw;text-align:center;line-height:1;transform:translateY(80%);transition:transform .18s ease-out;z-index:1;cursor:pointer}
   .critter.up{transform:translateY(0)}
   .critter.fed{animation:wiggle .35s ease}
   @keyframes wiggle{0%,100%{rotate:0deg}25%{rotate:-12deg}75%{rotate:12deg}}
@@ -110,8 +117,8 @@
   .pig .bow{position:absolute;top:-14%;left:52%;font-size:.48em;rotate:18deg}
   .flyb{position:absolute;left:50%;bottom:0;font-size:30cqw;z-index:4;pointer-events:none;animation:flyb .35s ease-out forwards}
   @keyframes flyb{from{transform:translate(-50%,40%) rotate(-40deg);opacity:1}to{transform:translate(-50%,-150%) rotate(25deg);opacity:0}}
-  .decor{position:absolute;font-size:18px;opacity:.55;pointer-events:none;z-index:0}
-  .hole .bubble{position:absolute;top:2px;left:0;right:0;text-align:center;font-weight:800;font-size:13px;color:var(--pink-d);z-index:3;pointer-events:none;animation:rise .8s ease-out forwards}
+  .decor{position:absolute;font-size:16px;opacity:.5;pointer-events:none;z-index:0}
+  .cell .bubble{position:absolute;top:2px;left:0;right:0;text-align:center;font-weight:800;font-size:13px;color:var(--pink-d);z-index:3;pointer-events:none;animation:rise .8s ease-out forwards}
   @keyframes rise{from{opacity:1;transform:translateY(10px)}to{opacity:0;transform:translateY(-14px)}}
   #game{width:100%;height:380px;display:block;border-radius:16px;background:linear-gradient(#fff0f4,#ffe3ea);touch-action:none}
   .gamebar{display:flex;justify-content:space-between;font-weight:700;margin-bottom:10px;color:var(--pink-d)}
@@ -334,13 +341,17 @@ const T = {
       ["🏆","Phiếu hôn 100 cái"],
       ["🚗","Phiếu chị chở em đi chơi cả ngày"]
     ],
-    gTab1:"💗 Hứng tim", gTab2:"🍌 Đút chuối",
-    g2Title:"Đút chuối cho bé iu 🐷🎀",
-    g2Hint:"Bé iu ló đầu lên thì chạm liền để đút chuối 🍌. Gặp chùm chuối thì chạm được 3 điểm. Né con ong 🐝 ra nha!",
-    g2Score:n=>`🍌 Bé iu ăn: ${n}`,
+    gTab1:"💗 Hứng tim", gTab2:"🎁 Hộp quà",
+    g2Title:"Hộp quà cho bé iu 🎁🐷",
+    g2Hint:"Hộp quà mở ra có bé iu 🐷🎀 thì chạm liền để đút chuối 🍌. Chùm chuối được 3 điểm. Né con ong 🐝 nha! Đủ chuối là qua màn.",
+    g2Bar:(lv,s,g)=>`Màn ${lv}/5 · 🍌 ${s}/${g}`,
     g2Yum:["Măm!","Ngon!","😋","+1 💗","Chuối Na!"],
     g2Bunch:"Chùm chuối! +3", g2Bee:"Úi! -2",
-    g2Over:(n,b)=>`Na đút cho bé iu được ${n} trái chuối, no căng bụng rồi 🐷🎀💗 (Kỷ lục: ${b})`,
+    g2Ready:lv=>`Màn ${lv}: chuẩn bị nha bé iu!`,
+    g2Pass:lv=>`Qua màn ${lv} rồi! Giỏi quá bé iu 🎉`,
+    g2Fail:(s,g)=>`Mới được ${s}/${g} trái thôi, thử lại nha 💪`,
+    g2Win:"Bé iu qua hết 5 màn rồi! Na thương bé iu nhất trên đời 🐷🎀💗",
+    g2Next:"Màn tiếp theo", g2Retry:"Chơi lại màn này", g2Restart:"Chơi lại từ đầu",
     gTitle:"Hứng tim cho chị",
     gHint:"Kéo giỏ qua lại để hứng tim 💗 (⭐ = 3 điểm)",
     gStart:"Bắt đầu", gAgain:"Chơi lại",
@@ -412,13 +423,17 @@ const T = {
       ["🏆","100 kisses"],
       ["🚗","A whole day out, I'm driving"]
     ],
-    gTab1:"💗 Catch hearts", gTab2:"🍌 Feed piggy",
-    g2Title:"Bananas for my cutie 🐷🎀",
-    g2Hint:"When my cutie pops up, tap fast to feed her a banana 🍌. Tap a banana bunch for 3 points. Stay away from the bee 🐝!",
-    g2Score:n=>`🍌 Eaten: ${n}`,
+    gTab1:"💗 Catch hearts", gTab2:"🎁 Gift boxes",
+    g2Title:"Gift boxes for my cutie 🎁🐷",
+    g2Hint:"When a box opens with my cutie 🐷🎀 inside, tap fast to feed her a banana 🍌. Banana bunches are worth 3. Stay away from the bee 🐝! Get enough bananas to pass the level.",
+    g2Bar:(lv,s,g)=>`Level ${lv}/5 · 🍌 ${s}/${g}`,
     g2Yum:["Nom!","Yum!","😋","+1 💗","From Na!"],
     g2Bunch:"Bunch! +3", g2Bee:"Ouch! -2",
-    g2Over:(n,b)=>`Na fed her cutie ${n} bananas, she's so full 🐷🎀💗 (Best: ${b})`,
+    g2Ready:lv=>`Level ${lv}: get ready, cutie!`,
+    g2Pass:lv=>`Level ${lv} cleared! Great job, cutie 🎉`,
+    g2Fail:(s,g)=>`Only ${s}/${g} so far, try again 💪`,
+    g2Win:"You beat all 5 levels! Na loves you most in the whole world 🐷🎀💗",
+    g2Next:"Next level", g2Retry:"Retry level", g2Restart:"Play from the start",
     gTitle:"Catch hearts for me",
     gHint:"Drag the basket to catch hearts 💗 (⭐ = 3 points)",
     gStart:"Start", gAgain:"Play again",
@@ -505,9 +520,7 @@ function render(){
   renderCoupons();
   renderAlbum();
   $("gStart").textContent = gameScore ? t.gAgain : t.gStart;
-  $("g2Start").textContent = g2.played ? t.gAgain : t.gStart;
-  $("g2Score").textContent = t.g2Score(g2.score);
-  $("g2Time").textContent = t.gTime(g2.time);
+  bar2();
   $("g2Over").textContent = "";
   showGame(curGame);
   $("gScore").textContent = t.gScore(gameScore);
@@ -768,87 +781,110 @@ function showGame(g){
 }
 document.querySelectorAll(".gtabs button").forEach(b=>b.onclick=()=>showGame(b.dataset.g));
 
-/* ---------- game 2: feed the piggy (whack-a-mole style) ---------- */
-const G2_TIME = 30;
-const g2 = { score:0, time:G2_TIME, running:false, played:false, timers:[] };
-const holes = [];
+/* ---------- game 2: gift boxes, 5 levels ---------- */
+const LEVELS = [
+  // seconds, bananas needed, ms between boxes, ms a box stays open, bee chance
+  {time:20, goal:6,  gap:820, stay:1350, bee:0.08},
+  {time:20, goal:10, gap:700, stay:1150, bee:0.13},
+  {time:20, goal:14, gap:600, stay:980,  bee:0.18},
+  {time:20, goal:18, gap:520, stay:840,  bee:0.22},
+  {time:20, goal:22, gap:450, stay:720,  bee:0.26}
+];
+const BOX_COLORS = [["#ffb3c6","#fff"],["#cdb4ff","#ffe066"],["#a8e6cf","#ff8fab"],["#ffd6a5","#ff8fab"],["#bde0fe","#fff"],["#ffc8dd","#cdb4ff"]];
 const PIG = '<span class="pig">🐷<span class="bow">🎀</span></span>';
-[["8%","3%"],["86%","2%"],["47%","33%"],["4%","64%"],["90%","66%"],["50%","95%"]].forEach(([l,t],i)=>{
-  const d = document.createElement("span"); d.className = "decor"; d.textContent = "🍌";
+const g2 = { level:1, score:0, time:LEVELS[0].time, running:false, btn:"start", timers:[], tick:null };
+const cells = [];
+[["6%","2%"],["88%","1%"],["47%","33%"],["3%","64%"],["91%","66%"],["50%","96%"]].forEach(([l,t],i)=>{
+  const d = document.createElement("span"); d.className = "decor"; d.textContent = i%2 ? "✨" : "🍌";
   d.style.left = l; d.style.top = t; d.style.rotate = (i*55)+"deg"; $("field").appendChild(d);
 });
 for (let i=0;i<9;i++){
-  const h = document.createElement("div"); h.className = "hole";
-  const c = document.createElement("span"); c.className = "critter";
-  h.appendChild(c); $("field").appendChild(h);
-  const hole = {el:h, c, kind:null, hideAt:null};
-  c.addEventListener("pointerdown", e=>{ e.preventDefault(); tapHole(hole); });
-  holes.push(hole);
+  const el = document.createElement("div"); el.className = "cell";
+  const [bc,rb] = BOX_COLORS[i % BOX_COLORS.length];
+  el.style.setProperty("--bc",bc); el.style.setProperty("--rb",rb);
+  el.innerHTML = `<span class="critter"></span><div class="front"></div><div class="lid"><span class="knot"></span></div>`;
+  $("field").appendChild(el);
+  const cell = {el, c:el.querySelector(".critter"), kind:null, hideAt:null};
+  cell.c.addEventListener("pointerdown", e=>{ e.preventDefault(); tapCell(cell); });
+  cells.push(cell);
 }
-function bubble(hole, txt){
+function bar2(){
+  const t = T[lang], L = LEVELS[g2.level-1];
+  $("g2Score").textContent = t.g2Bar(g2.level, g2.score, L.goal);
+  $("g2Time").textContent = t.gTime(g2.time);
+  $("g2Start").textContent = {start:t.gStart, next:t.g2Next, retry:t.g2Retry, restart:t.g2Restart}[g2.btn];
+  $("g2Start").style.visibility = g2.running ? "hidden" : "visible";
+}
+function bubble(cell, txt){
   const b = document.createElement("span"); b.className = "bubble"; b.textContent = txt;
-  hole.el.appendChild(b); setTimeout(()=>b.remove(), 800);
+  cell.el.appendChild(b); setTimeout(()=>b.remove(), 800);
 }
-function hide(hole){
-  hole.c.classList.remove("up","fed");
-  hole.kind = null; clearTimeout(hole.hideAt);
+function closeCell(cell){
+  cell.c.classList.remove("up","fed"); cell.el.classList.remove("open");
+  cell.kind = null; clearTimeout(cell.hideAt);
 }
-function tapHole(hole){
-  if (!g2.running || !hole.kind) return;
-  const t = T[lang], kind = hole.kind;
-  hole.kind = null;
-  if (kind === "bee"){ g2.score = Math.max(0, g2.score-2); bubble(hole, t.g2Bee); hole.c.textContent = "😵"; }
-  else if (kind === "bunch"){ g2.score += 3; bubble(hole, t.g2Bunch); hole.c.classList.add("fed"); }
+function tapCell(cell){
+  if (!g2.running || !cell.kind) return;
+  const t = T[lang], kind = cell.kind;
+  cell.kind = null;
+  if (kind === "bee"){ g2.score = Math.max(0, g2.score-2); bubble(cell, t.g2Bee); cell.c.textContent = "😵"; }
+  else if (kind === "bunch"){ g2.score += 3; bubble(cell, t.g2Bunch); cell.c.classList.add("fed"); }
   else {
     g2.score += 1;
-    bubble(hole, t.g2Yum[Math.floor(Math.random()*t.g2Yum.length)]);
+    bubble(cell, t.g2Yum[Math.floor(Math.random()*t.g2Yum.length)]);
     const f = document.createElement("span"); f.className = "flyb"; f.textContent = "🍌";
-    hole.el.appendChild(f); setTimeout(()=>f.remove(), 400);
-    hole.c.classList.add("fed");
+    cell.el.appendChild(f); setTimeout(()=>f.remove(), 400);
+    cell.c.classList.add("fed");
   }
-  $("g2Score").textContent = t.g2Score(g2.score);
-  clearTimeout(hole.hideAt);
-  hole.hideAt = setTimeout(()=>hide(hole), 320);
+  bar2();
+  clearTimeout(cell.hideAt);
+  cell.hideAt = setTimeout(()=>closeCell(cell), 340);
 }
-function spawn(){
+function openRandom(){
   if (!g2.running) return;
-  const free = holes.filter(h=>!h.c.classList.contains("up"));
+  const L = LEVELS[g2.level-1];
+  const free = cells.filter(c=>!c.el.classList.contains("open"));
   if (free.length){
-    const hole = free[Math.floor(Math.random()*free.length)];
+    const cell = free[Math.floor(Math.random()*free.length)];
     const r = Math.random();
-    hole.kind = r < 0.15 ? "bee" : r < 0.27 ? "bunch" : "pig";
-    hole.c.innerHTML = hole.kind === "bee" ? "🐝" : hole.kind === "bunch" ? "🍌" : PIG;
-    hole.c.classList.add("up");
-    const elapsed = G2_TIME - g2.time;
-    const stay = Math.max(550, 1100 - elapsed*18) * (hole.kind === "bunch" ? 0.75 : 1);
-    hole.hideAt = setTimeout(()=>hide(hole), stay);
+    cell.kind = r < L.bee ? "bee" : r < L.bee + 0.12 ? "bunch" : "pig";
+    cell.c.innerHTML = cell.kind === "bee" ? "🐝" : cell.kind === "bunch" ? "🍌" : PIG;
+    cell.el.classList.add("open"); cell.c.classList.add("up");
+    cell.hideAt = setTimeout(()=>closeCell(cell), L.stay * (cell.kind === "bunch" ? 0.75 : 1));
   }
-  const elapsed = G2_TIME - g2.time;
-  g2.timers.push(setTimeout(spawn, Math.max(330, 700 - elapsed*12) * (0.7 + Math.random()*0.6)));
+  g2.timers.push(setTimeout(openRandom, L.gap * (0.7 + Math.random()*0.6)));
 }
-function end2(){
+function endLevel(){
   g2.running = false;
-  g2.timers.forEach(clearTimeout); g2.timers = [];
-  holes.forEach(hide);
-  const best = Math.max(store.get("best2",0), g2.score); store.set("best2",best);
-  $("g2Over").textContent = T[lang].g2Over(g2.score, best);
-  $("g2Start").textContent = T[lang].gAgain;
+  clearInterval(g2.tick); g2.timers.forEach(clearTimeout); g2.timers = [];
+  cells.forEach(closeCell);
+  const t = T[lang], L = LEVELS[g2.level-1];
   const r = $("field").getBoundingClientRect();
-  burst(r.left + r.width/2, r.top + r.height/2, ["🍌","🐷","💗"]);
+  if (g2.score >= L.goal){
+    store.set("best2", Math.max(store.get("best2",0), g2.level));
+    if (g2.level === LEVELS.length){ $("g2Over").textContent = t.g2Win; g2.btn = "restart"; burst(r.left+r.width/2, r.top+r.height/2, ["🐷","🎀","💗","🍌","🎉"]); }
+    else { $("g2Over").textContent = t.g2Pass(g2.level); g2.btn = "next"; burst(r.left+r.width/2, r.top+r.height/2, ["🎉","🍌","💗"]); }
+  } else {
+    $("g2Over").textContent = t.g2Fail(g2.score, L.goal); g2.btn = "retry";
+  }
+  bar2();
+}
+function startLevel(){
+  const L = LEVELS[g2.level-1];
+  Object.assign(g2, {score:0, time:L.time, running:true});
+  $("g2Over").textContent = T[lang].g2Ready(g2.level);
+  bar2();
+  g2.timers.push(setTimeout(openRandom, 600));
+  g2.tick = setInterval(()=>{
+    g2.time--; bar2();
+    if (g2.time <= 0) endLevel();
+  },1000);
 }
 $("g2Start").onclick = ()=>{
   if (g2.running) return;
-  Object.assign(g2, {score:0, time:G2_TIME, running:true, played:true});
-  const t = T[lang];
-  $("g2Score").textContent = t.g2Score(0);
-  $("g2Time").textContent = t.gTime(G2_TIME);
-  $("g2Over").textContent = "";
-  spawn();
-  const tickId = setInterval(()=>{
-    if (!g2.running) return clearInterval(tickId);
-    g2.time--; $("g2Time").textContent = T[lang].gTime(g2.time);
-    if (g2.time <= 0){ clearInterval(tickId); end2(); }
-  },1000);
+  if (g2.btn === "next") g2.level++;
+  else if (g2.btn === "restart" || g2.btn === "start") g2.level = 1;
+  startLevel();
 };
 
 /* ---------- init ---------- */
