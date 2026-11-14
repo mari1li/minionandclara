@@ -99,7 +99,8 @@
   .gtabs{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
   .gtabs button{font:700 14px 'Nunito';border:2px solid var(--rose);background:#fff;color:var(--muted);padding:8px 14px;border-radius:999px;cursor:pointer}
   .gtabs button.on{background:var(--pink);border-color:var(--pink);color:#fff}
-  .field{position:relative;max-width:380px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:linear-gradient(#fff4f8,#ffe4ee);border-radius:18px;padding:14px 10px;user-select:none;-webkit-user-select:none}
+  button,a,.env,.reason{touch-action:manipulation}
+  .field{touch-action:none;position:relative;max-width:380px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:linear-gradient(#fff4f8,#ffe4ee);border-radius:18px;padding:14px 10px;user-select:none;-webkit-user-select:none}
   .cell{position:relative;aspect-ratio:1;overflow:hidden;container-type:inline-size;z-index:1}
   .cell .front{position:absolute;left:12%;right:12%;bottom:0;height:44%;background:var(--bc);border-radius:6px;z-index:2;box-shadow:inset 0 -5px 0 rgba(0,0,0,.07)}
   .cell .front::after,.cell .lid::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:15%;transform:translateX(-50%);background:var(--rb)}
@@ -343,7 +344,7 @@ const T = {
     ],
     gTab1:"💗 Hứng tim", gTab2:"🎁 Hộp quà",
     g2Title:"Hộp quà cho bé iu 🎁🐷",
-    g2Hint:"Hộp quà mở ra có bé iu 🐷🎀 thì chạm liền để đút chuối 🍌. Chùm chuối được 3 điểm. Né con rắn 🐍 (-2) với cục phân có nơ 💩🎀 bản limited (-3) nha! Đủ chuối là qua màn.",
+    g2Hint:"Hộp quà mở ra có bé iu 🐷🎀 thì quẹt ngón tay qua để đút chuối 🍌 (không cần bấm). Chùm chuối được 3 điểm. Né con rắn 🐍 (-2) với cục phân có nơ 💩🎀 bản limited (-3) nha! Đủ chuối là qua màn.",
     g2Bar:(lv,s,g)=>`Màn ${lv}/5 · 🍌 ${s}/${g}`,
     g2Yum:["Măm!","Ngon!","😋","+1 💗","Chuối Na!"],
     g2Bunch:"Chùm chuối! +3", g2Snake:"Úi rắn! -2", g2Poop:"Phân limited! -3",
@@ -425,7 +426,7 @@ const T = {
     ],
     gTab1:"💗 Catch hearts", gTab2:"🎁 Gift boxes",
     g2Title:"Gift boxes for my cutie 🎁🐷",
-    g2Hint:"When a box opens with my cutie 🐷🎀 inside, tap fast to feed her a banana 🍌. Banana bunches are worth 3. Avoid the snake 🐍 (-2) and the limited-edition poop with a bow 💩🎀 (-3)! Get enough bananas to pass the level.",
+    g2Hint:"When a box opens with my cutie 🐷🎀 inside, swipe your finger over it to feed her a banana 🍌 (no tapping needed). Banana bunches are worth 3. Avoid the snake 🐍 (-2) and the limited-edition poop with a bow 💩🎀 (-3)! Get enough bananas to pass the level.",
     g2Bar:(lv,s,g)=>`Level ${lv}/5 · 🍌 ${s}/${g}`,
     g2Yum:["Nom!","Yum!","😋","+1 💗","From Na!"],
     g2Bunch:"Bunch! +3", g2Snake:"Snake! -2", g2Poop:"Limited poop! -3",
@@ -806,9 +807,20 @@ for (let i=0;i<9;i++){
   el.innerHTML = `<span class="critter"></span><div class="front"></div><div class="lid"><span class="knot"></span></div>`;
   $("field").appendChild(el);
   const cell = {el, c:el.querySelector(".critter"), kind:null, hideAt:null};
-  cell.c.addEventListener("pointerdown", e=>{ e.preventDefault(); tapCell(cell); });
   cells.push(cell);
 }
+// swipe (or move the mouse) over an open box to feed: no tapping, so phones don't zoom
+function swipeAt(x,y){
+  const hit = document.elementFromPoint(x,y);
+  const el = hit && hit.closest(".cell");
+  if (!el || !el.classList.contains("open")) return;
+  const cell = cells.find(c=>c.el===el);
+  if (cell) tapCell(cell);
+}
+$("field").addEventListener("pointerdown", e=>{ e.preventDefault(); swipeAt(e.clientX,e.clientY); });
+$("field").addEventListener("pointermove", e=>swipeAt(e.clientX,e.clientY));
+$("field").addEventListener("touchmove", e=>{ e.preventDefault(); const t=e.touches[0]; swipeAt(t.clientX,t.clientY); },{passive:false});
+$("field").addEventListener("touchstart", e=>e.preventDefault(),{passive:false});
 function bar2(){
   const t = T[lang], L = LEVELS[g2.level-1];
   $("g2Score").textContent = t.g2Bar(g2.level, g2.score, L.goal);
