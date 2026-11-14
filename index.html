@@ -99,7 +99,15 @@
   .gtabs{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
   .gtabs button{font:700 14px 'Nunito';border:2px solid var(--rose);background:#fff;color:var(--muted);padding:8px 14px;border-radius:999px;cursor:pointer}
   .gtabs button.on{background:var(--pink);border-color:var(--pink);color:#fff}
-  #game2{width:100%;height:420px;display:block;border-radius:16px;background:linear-gradient(#fff8e1,#ffe9b8);touch-action:none}
+  .field{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;background:linear-gradient(#e8f7d4,#cfeeb0);border-radius:18px;padding:16px 12px;user-select:none;-webkit-user-select:none}
+  .hole{position:relative;aspect-ratio:1;overflow:hidden;border-radius:0 0 50% 50%/0 0 30% 30%}
+  .hole::after{content:"";position:absolute;left:6%;right:6%;bottom:0;height:34%;background:#8d6448;border-radius:50%;box-shadow:inset 0 6px 0 #6b4a34;z-index:2}
+  .critter{position:absolute;left:0;right:0;bottom:12%;font-size:46px;text-align:center;transform:translateY(170%);transition:transform .16s ease-out;z-index:1;cursor:pointer;line-height:1}
+  .critter.up{transform:translateY(0)}
+  .critter.fed{animation:wiggle .35s ease}
+  @keyframes wiggle{0%,100%{rotate:0deg}25%{rotate:-12deg}75%{rotate:12deg}}
+  .hole .bubble{position:absolute;top:2px;left:0;right:0;text-align:center;font-weight:800;font-size:13px;color:var(--pink-d);z-index:3;pointer-events:none;animation:rise .8s ease-out forwards}
+  @keyframes rise{from{opacity:1;transform:translateY(10px)}to{opacity:0;transform:translateY(-14px)}}
   #game{width:100%;height:380px;display:block;border-radius:16px;background:linear-gradient(#fff0f4,#ffe3ea);touch-action:none}
   .gamebar{display:flex;justify-content:space-between;font-weight:700;margin-bottom:10px;color:var(--pink-d)}
   .gameover{text-align:center;margin-top:12px;font-weight:600;min-height:24px}
@@ -190,8 +198,8 @@
     </div>
     <div class="card" id="g2card">
       <h2 data-t="g2Title"></h2>
-      <div class="gamebar"><span id="g2Score"></span><span id="g2Left"></span></div>
-      <canvas id="game2"></canvas>
+      <div class="gamebar"><span id="g2Score"></span><span id="g2Time"></span></div>
+      <div class="field" id="field"></div>
       <div class="gameover" id="g2Over"></div>
       <div style="text-align:center;margin-top:10px"><button class="btn sm" id="g2Start"></button></div>
       <p class="hint" data-t="g2Hint"></p>
@@ -321,13 +329,13 @@ const T = {
       ["🏆","Phiếu hôn 100 cái"],
       ["🚗","Phiếu chị chở em đi chơi cả ngày"]
     ],
-    gTab1:"💗 Hứng tim", gTab2:"🍌 Chuối cho heo",
-    g2Title:"Chuối cho bé heo Clara 🐷",
-    g2Hint:"Kéo để ngắm, thả tay để ném chuối 🍌 cho bé heo",
-    g2Score:n=>`Heo ăn: ${n}`, g2Left:n=>`🍌 còn ${n}`,
-    g2Yum:["Ngon quá!","Măm măm 😋","Thêm nữa đi!","Heo iu 🥰","Chuối của Na nè!"],
-    g2Miss:"Hụt rồi 😝", g2Combo:n=>`Combo x${n}! 🔥`,
-    g2Over:(n,tot,b)=>`Bé heo Clara ăn được ${n}/${tot} trái chuối, no căng bụng rồi 🐷💗 (Kỷ lục: ${b})`,
+    gTab1:"💗 Hứng tim", gTab2:"🍌 Đút chuối",
+    g2Title:"Đút chuối cho bé hợi đáng iu 🐷",
+    g2Hint:"Bé hợi đáng iu ló đầu lên thì chạm liền để đút chuối 🍌. Bé hợi đội vương miện 👑 được 3 điểm. Né con ong 🐝 ra nha!",
+    g2Score:n=>`🍌 Bé hợi ăn: ${n}`,
+    g2Yum:["Măm!","Ngon!","😋","+1 💗","Chuối Na!"],
+    g2King:"+3 👑", g2Bee:"Úi! -2",
+    g2Over:(n,b)=>`Na đút cho bé hợi đáng iu được ${n} trái chuối, no căng bụng rồi 🐷💗 (Kỷ lục: ${b})`,
     gTitle:"Hứng tim cho chị",
     gHint:"Kéo giỏ qua lại để hứng tim 💗 (⭐ = 3 điểm)",
     gStart:"Bắt đầu", gAgain:"Chơi lại",
@@ -399,13 +407,13 @@ const T = {
       ["🏆","100 kisses"],
       ["🚗","A whole day out, I'm driving"]
     ],
-    gTab1:"💗 Catch hearts", gTab2:"🍌 Feed the piggy",
-    g2Title:"Bananas for piggy Clara 🐷",
-    g2Hint:"Drag to aim, let go to throw a banana 🍌 to the piggy",
-    g2Score:n=>`Eaten: ${n}`, g2Left:n=>`🍌 left ${n}`,
-    g2Yum:["Yummy!","Nom nom 😋","More please!","Cutie piggy 🥰","A banana from Na!"],
-    g2Miss:"Missed 😝", g2Combo:n=>`Combo x${n}! 🔥`,
-    g2Over:(n,tot,b)=>`Piggy Clara ate ${n}/${tot} bananas and she's so full 🐷💗 (Best: ${b})`,
+    gTab1:"💗 Catch hearts", gTab2:"🍌 Feed piggy",
+    g2Title:"Bananas for the cutest piggy 🐷",
+    g2Hint:"When the piggy pops up, tap fast to feed her a banana 🍌. King piggy 👑 is worth 3. Stay away from the bee 🐝!",
+    g2Score:n=>`🍌 Eaten: ${n}`,
+    g2Yum:["Nom!","Yum!","😋","+1 💗","From Na!"],
+    g2King:"+3 👑", g2Bee:"Ouch! -2",
+    g2Over:(n,b)=>`Na fed the cutest piggy ${n} bananas, she's so full 🐷💗 (Best: ${b})`,
     gTitle:"Catch hearts for me",
     gHint:"Drag the basket to catch hearts 💗 (⭐ = 3 points)",
     gStart:"Start", gAgain:"Play again",
@@ -469,7 +477,7 @@ function route(){
   if (!PAGES.includes(p)) p = "home";
   PAGES.forEach(x=>$("p-"+x).classList.toggle("on",x===p));
   document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+p));
-  if (p==="game") requestAnimationFrame(()=>{ sizeCanvas(); sizeCanvas2(); });
+  if (p==="game") requestAnimationFrame(sizeCanvas);
   if (p==="album") loadAlbum();
 }
 window.addEventListener("hashchange",route);
@@ -493,8 +501,8 @@ function render(){
   renderAlbum();
   $("gStart").textContent = gameScore ? t.gAgain : t.gStart;
   $("g2Start").textContent = g2.played ? t.gAgain : t.gStart;
-  $("g2Score").textContent = t.g2Score(g2.hits);
-  $("g2Left").textContent = t.g2Left(g2.left);
+  $("g2Score").textContent = t.g2Score(g2.score);
+  $("g2Time").textContent = t.gTime(g2.time);
   $("g2Over").textContent = "";
   showGame(curGame);
   $("gScore").textContent = t.gScore(gameScore);
@@ -751,120 +759,84 @@ function showGame(g){
   $("g1card").style.display = g==="1" ? "" : "none";
   $("g2card").style.display = g==="2" ? "" : "none";
   document.querySelectorAll(".gtabs button").forEach(b=>b.classList.toggle("on",b.dataset.g===g));
-  requestAnimationFrame(g==="1" ? sizeCanvas : sizeCanvas2);
+  if (g==="1") requestAnimationFrame(sizeCanvas);
 }
 document.querySelectorAll(".gtabs button").forEach(b=>b.onclick=()=>showGame(b.dataset.g));
 
-/* ---------- game 2: bananas for the piggy ---------- */
-const cv2 = $("game2"), c2 = cv2.getContext("2d");
-const G2_TOTAL = 20;
-const g2 = { W:0, H:0, aimX:0, pig:{x:0,dir:1,speed:90,size:54}, bananas:[], pops:[], left:G2_TOTAL, hits:0, streak:0, running:false, played:false, last:0, cool:0 };
-function sizeCanvas2(){
-  g2.W = cv2.clientWidth; g2.H = cv2.clientHeight;
-  if (!g2.W) return;
-  const dpr = window.devicePixelRatio || 1;
-  cv2.width = g2.W*dpr; cv2.height = g2.H*dpr;
-  c2.setTransform(dpr,0,0,dpr,0,0);
-  if (!g2.aimX || g2.aimX > g2.W) g2.aimX = g2.W/2;
-  if (!g2.pig.x || g2.pig.x > g2.W) g2.pig.x = g2.W/2;
-  draw2();
+/* ---------- game 2: feed the piggy (whack-a-mole style) ---------- */
+const G2_TIME = 30;
+const g2 = { score:0, time:G2_TIME, running:false, played:false, timers:[] };
+const holes = [];
+for (let i=0;i<9;i++){
+  const h = document.createElement("div"); h.className = "hole";
+  const c = document.createElement("span"); c.className = "critter";
+  h.appendChild(c); $("field").appendChild(h);
+  const hole = {el:h, c, kind:null, hideAt:null};
+  c.addEventListener("pointerdown", e=>{ e.preventDefault(); tapHole(hole); });
+  holes.push(hole);
 }
-window.addEventListener("resize",sizeCanvas2);
-function aim2(clientX){
-  const r = cv2.getBoundingClientRect();
-  g2.aimX = Math.max(20, Math.min(g2.W-20, clientX - r.left));
-  if (!g2.running) draw2();
+function bubble(hole, txt){
+  const b = document.createElement("span"); b.className = "bubble"; b.textContent = txt;
+  hole.el.appendChild(b); setTimeout(()=>b.remove(), 800);
 }
-function throw2(){
-  if (!g2.running || g2.left <= 0 || g2.cool > 0) return;
-  g2.left--; g2.cool = 0.25;
-  g2.bananas.push({x:g2.aimX, y:g2.H-70, rot:0});
-  $("g2Left").textContent = T[lang].g2Left(g2.left);
+function hide(hole){
+  hole.c.classList.remove("up","fed");
+  hole.kind = null; clearTimeout(hole.hideAt);
 }
-cv2.addEventListener("pointerdown",e=>aim2(e.clientX));
-cv2.addEventListener("pointermove",e=>aim2(e.clientX));
-cv2.addEventListener("pointerup",e=>{ aim2(e.clientX); throw2(); });
-cv2.addEventListener("touchmove",e=>e.preventDefault(),{passive:false});
-
-function pop2(x,y,txt,color){ g2.pops.push({x,y,txt,color,t:0}); }
-function draw2(){
-  const {W,H,pig} = g2;
-  c2.clearRect(0,0,W,H);
-  c2.textAlign="center"; c2.textBaseline="middle";
-  // piggy
-  c2.font = `${pig.size}px serif`;
-  c2.fillText("🐷", pig.x, 70);
-  c2.font = "700 13px Nunito, sans-serif"; c2.fillStyle = "#f06b8e";
-  c2.fillText(HER_NAME, pig.x, 70 + pig.size*0.6);
-  // bananas
-  c2.font = "30px serif";
-  g2.bananas.forEach(b=>{ c2.save(); c2.translate(b.x,b.y); c2.rotate(b.rot); c2.fillText("🍌",0,0); c2.restore(); });
-  // aim line + launcher
-  if (g2.running && g2.left > 0){
-    c2.strokeStyle = "rgba(240,107,142,.25)"; c2.setLineDash([6,8]); c2.lineWidth = 2;
-    c2.beginPath(); c2.moveTo(g2.aimX, H-80); c2.lineTo(g2.aimX, 110); c2.stroke(); c2.setLineDash([]);
+function tapHole(hole){
+  if (!g2.running || !hole.kind) return;
+  const t = T[lang], kind = hole.kind;
+  hole.kind = null;
+  if (kind === "bee"){ g2.score = Math.max(0, g2.score-2); bubble(hole, t.g2Bee); hole.c.textContent = "😵"; }
+  else {
+    g2.score += kind === "king" ? 3 : 1;
+    bubble(hole, kind === "king" ? t.g2King : t.g2Yum[Math.floor(Math.random()*t.g2Yum.length)]);
+    hole.c.textContent = "😋"; hole.c.classList.add("fed");
   }
-  c2.font = "38px serif";
-  c2.fillText(g2.left > 0 ? "🍌" : "🧺", g2.aimX, H-50);
-  c2.font = "700 13px Nunito, sans-serif"; c2.fillStyle = "#5a3d4a";
-  c2.fillText("Na", g2.aimX, H-20);
-  // pops
-  g2.pops.forEach(p=>{
-    c2.globalAlpha = Math.max(0, 1 - p.t);
-    c2.font = "700 16px Nunito, sans-serif"; c2.fillStyle = p.color;
-    c2.fillText(p.txt, p.x, p.y - p.t*40);
-  });
-  c2.globalAlpha = 1;
+  $("g2Score").textContent = t.g2Score(g2.score);
+  clearTimeout(hole.hideAt);
+  hole.hideAt = setTimeout(()=>hide(hole), 320);
 }
-function loop2(ts){
+function spawn(){
   if (!g2.running) return;
-  const dt = Math.min(0.05,(ts-g2.last)/1000); g2.last = ts;
-  const {W,pig} = g2;
-  g2.cool = Math.max(0, g2.cool - dt);
-  // piggy wanders left and right, sometimes changing its mind
-  pig.x += pig.dir * pig.speed * dt;
-  const m = pig.size/2;
-  if (pig.x < m){ pig.x = m; pig.dir = 1; }
-  if (pig.x > W-m){ pig.x = W-m; pig.dir = -1; }
-  if (Math.random() < dt*0.6) pig.dir *= -1;
-  // bananas fly up
-  g2.bananas.forEach(b=>{ b.y -= 560*dt; b.rot += 9*dt; });
-  g2.bananas = g2.bananas.filter(b=>{
-    if (b.y < 70 + pig.size*0.4 && b.y > 70 - pig.size*0.5 && Math.abs(b.x-pig.x) < pig.size*0.5){
-      g2.hits++; g2.streak++;
-      pig.size = Math.min(92, pig.size + 2);
-      pig.speed = Math.min(260, pig.speed + 10);
-      const tt = T[lang];
-      pop2(pig.x, 30, g2.streak >= 3 ? tt.g2Combo(g2.streak) : tt.g2Yum[Math.floor(Math.random()*tt.g2Yum.length)], "#f06b8e");
-      $("g2Score").textContent = tt.g2Score(g2.hits);
-      return false;
-    }
-    if (b.y < -20){ g2.streak = 0; pop2(b.x, 30, T[lang].g2Miss, "#9b7f8b"); return false; }
-    return true;
-  });
-  g2.pops.forEach(p=>p.t += dt*1.2);
-  g2.pops = g2.pops.filter(p=>p.t < 1);
-  draw2();
-  if (g2.left <= 0 && !g2.bananas.length && !g2.pops.length) return end2();
-  requestAnimationFrame(loop2);
+  const free = holes.filter(h=>!h.c.classList.contains("up"));
+  if (free.length){
+    const hole = free[Math.floor(Math.random()*free.length)];
+    const r = Math.random();
+    hole.kind = r < 0.15 ? "bee" : r < 0.25 ? "king" : "pig";
+    hole.c.innerHTML = hole.kind === "bee" ? "🐝"
+      : hole.kind === "king" ? '🐷<div style="font-size:18px;margin-top:-58px;position:relative">👑</div>' : "🐷";
+    hole.c.classList.add("up");
+    const elapsed = G2_TIME - g2.time;
+    const stay = Math.max(550, 1100 - elapsed*18) * (hole.kind === "king" ? 0.75 : 1);
+    hole.hideAt = setTimeout(()=>hide(hole), stay);
+  }
+  const elapsed = G2_TIME - g2.time;
+  g2.timers.push(setTimeout(spawn, Math.max(330, 700 - elapsed*12) * (0.7 + Math.random()*0.6)));
 }
 function end2(){
-  g2.running = false; draw2();
-  const best = Math.max(store.get("best2",0), g2.hits); store.set("best2",best);
-  $("g2Over").textContent = T[lang].g2Over(g2.hits, G2_TOTAL, best);
+  g2.running = false;
+  g2.timers.forEach(clearTimeout); g2.timers = [];
+  holes.forEach(hide);
+  const best = Math.max(store.get("best2",0), g2.score); store.set("best2",best);
+  $("g2Over").textContent = T[lang].g2Over(g2.score, best);
   $("g2Start").textContent = T[lang].gAgain;
-  const r = cv2.getBoundingClientRect();
-  burst(r.left + r.width/2, r.top + 80, ["🍌","🐷","💗"]);
+  const r = $("field").getBoundingClientRect();
+  burst(r.left + r.width/2, r.top + r.height/2, ["🍌","🐷","💗"]);
 }
 $("g2Start").onclick = ()=>{
   if (g2.running) return;
-  sizeCanvas2();
-  Object.assign(g2, {bananas:[], pops:[], left:G2_TOTAL, hits:0, streak:0, played:true, cool:0});
-  Object.assign(g2.pig, {x:g2.W/2, dir:1, speed:90, size:54});
-  $("g2Score").textContent = T[lang].g2Score(0);
-  $("g2Left").textContent = T[lang].g2Left(G2_TOTAL);
+  Object.assign(g2, {score:0, time:G2_TIME, running:true, played:true});
+  const t = T[lang];
+  $("g2Score").textContent = t.g2Score(0);
+  $("g2Time").textContent = t.gTime(G2_TIME);
   $("g2Over").textContent = "";
-  g2.running = true; g2.last = performance.now(); requestAnimationFrame(loop2);
+  spawn();
+  const tickId = setInterval(()=>{
+    if (!g2.running) return clearInterval(tickId);
+    g2.time--; $("g2Time").textContent = T[lang].gTime(g2.time);
+    if (g2.time <= 0){ clearInterval(tickId); end2(); }
+  },1000);
 };
 
 /* ---------- init ---------- */
