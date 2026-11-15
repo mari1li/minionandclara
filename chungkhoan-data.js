@@ -401,3 +401,107 @@ l:"Lộ ra các vấn đề kế toán và nhà thuốc liên kết, giá thuố
 "Ban lãnh đạo nói công ty \"chưa bao giờ mạnh hơn\"."],
 l:"Gian lận kế toán bị phanh phui, công ty phá sản trong vài tháng. Nếu không hiểu công ty kiếm tiền thế nào và lãnh đạo bỏ đi đột ngột, hãy tránh xa."}
 ];
+
+/* ---- More situations (each with source links shown after you answer) ---- */
+SCENARIOS.push(
+{n:"NVIDIA",t:"NVDA",s:"Chip bán dẫn",w:"Tháng 5/2023",c:170,f:[
+"Doanh thu quý khoảng 7 tỷ USD, lợi nhuận hơn 2 tỷ USD, đều vượt dự báo của giới phân tích.",
+"Công ty dự báo doanh thu quý tới khoảng 11 tỷ USD, tăng 64% so với cùng kỳ, trong khi giới phân tích chỉ dự báo khoảng 7,2 tỷ USD.",
+"Cổ phiếu tăng 24% trong một ngày, thêm khoảng 184 tỷ USD vốn hóa, đưa công ty tới sát mốc 1.000 tỷ USD.",
+"Một công ty chứng khoán ví đây là \"cơn sốt vàng mới\" và công ty này đang bán \"cuốc xẻng\" cho cả ngành AI.",
+"Dù vậy, công ty vẫn là cổ phiếu đắt nhất trong chỉ số bán dẫn, nơi các hãng chip giao dịch trung bình khoảng 26 lần lợi nhuận dự phóng."],
+l:"Nhu cầu chip AI tiếp tục bùng nổ, công ty vượt dự báo quý này qua quý khác và cổ phiếu tăng khoảng 2,7 lần. Đắt chưa chắc là bong bóng: khi lợi nhuận tăng nhanh hơn giá, cổ phiếu thực ra đang rẻ đi.",
+src:[{t:"AP: Nvidia stuns markets (TechXplore)",u:"https://techxplore.com/news/2023-05-nvidia-stuns-artificial-intelligence-reshape.html"},{t:"Bloomberg: Nvidia's $184 Billion Jump in Five Charts",u:"https://www.bnnbloomberg.ca/nvidia-s-184-billion-jump-in-five-charts-1.1925275"}]},
+
+{n:"Meta Platforms",t:"META",s:"Mạng xã hội · Quảng cáo",w:"Tháng 2/2022",c:-20,f:[
+"Lần đầu tiên trong 18 năm, số người dùng Facebook hằng ngày giảm: từ 1,93 tỷ xuống 1,929 tỷ, mất khoảng 1 triệu người.",
+"Cổ phiếu giảm khoảng 26% trong một ngày, xóa hơn 230 tỷ USD vốn hóa, mức mất giá một ngày lớn nhất lịch sử chứng khoán Mỹ.",
+"Công ty ước tính thay đổi quyền riêng tư trên iPhone có thể làm mất khoảng 10 tỷ USD doanh thu quảng cáo trong năm.",
+"Năm vừa rồi công ty vẫn lãi khoảng 39,4 tỷ USD trên doanh thu 118 tỷ USD.",
+"CEO thừa nhận đang khó cạnh tranh với TikTok; công ty đã đầu tư hơn 10 tỷ USD vào mảng thực tế ảo trong năm."],
+l:"Giảm 26% vẫn chưa phải đáy: cả năm đó quảng cáo yếu đi và chi phí metaverse tăng, cổ phiếu rơi tiếp xuống khoảng 90 USD trước khi hồi lại. So với tình huống Meta tháng 11/2022, cùng một công ty nhưng thời điểm mua quyết định tất cả.",
+src:[{t:"MediaPost: Meta Shares Plunge As Facebook Reports First User Loss",u:"https://www.mediapost.com/publications/article/370869/meta-shares-plunge-20-as-facebook-reports-first-e.html"},{t:"Fortune: Facebook loses $230 billion",u:"https://fortune.com/2022/02/03/facebook-earnings-market-cap-stock-market-zuckerberg-tiktok-metaverse/"}]},
+
+{n:"CrowdStrike",t:"CRWD",s:"An ninh mạng",w:"Tháng 7/2024",c:80,f:[
+"Một bản cập nhật lỗi của công ty làm khoảng 8,5 triệu máy Windows bị sập. Con số này chưa tới 1% số máy Windows nhưng làm tê liệt sân bay, ngân hàng và bệnh viện.",
+"Cổ phiếu giảm khoảng 11% ngày đầu và thêm 13,5% phiên kế tiếp, về khoảng 264 USD. Chỉ 10 ngày trước, giá vừa lập đỉnh 52 tuần khoảng 398 USD.",
+"Ít nhất hai công ty chứng khoán hạ khuyến nghị từ \"mua\" xuống \"giữ\".",
+"Một hãng hàng không lớn nói sự cố làm họ thiệt hại khoảng 500 triệu USD và có thể khởi kiện.",
+"Cổ phiếu một đối thủ nhỏ hơn tăng hơn 20% vì nhà đầu tư nghĩ khách hàng sẽ chuyển sang."],
+l:"Rất ít khách hàng bỏ đi vì đổi hệ thống bảo mật vừa tốn kém vừa rủi ro; công ty bồi thường bằng giảm giá và cổ phiếu tăng khoảng 80%, lập đỉnh mới trong vòng một năm. Sự cố gây ồn ào nhưng không phá vỡ lợi thế cạnh tranh thì thường là cơ hội.",
+src:[{t:"TechCrunch: Microsoft says 8.5M Windows devices were affected",u:"https://techcrunch.com/2024/07/20/microsoft-says-8.5m-windows-devices-were-affected-by-crowdstrike-outage"},{t:"Fortune: CrowdStrike outage and rivals",u:"https://fortune.com/2024/07/23/crowdstrike-cybersecurity-microsoft-windows-outage-falcon-george-kurtz-sentinelone-wiz-mcafee/"}]},
+
+{n:"Boeing",t:"BA",s:"Sản xuất máy bay",w:"Tháng 1/2024",c:-25,f:[
+"Một tấm bịt cửa thoát hiểm văng khỏi chiếc 737 MAX 9 mới giao khi đang bay ở độ cao khoảng 16.000 feet; không ai bị thương nặng.",
+"Cơ quan hàng không Mỹ yêu cầu dừng bay 171 chiếc cùng cấu hình để kiểm tra; một hãng bay tìm thấy bu-lông lỏng trên đội máy bay của họ.",
+"Cổ phiếu giảm khoảng 8–10% trong những ngày đầu, mất hơn 9 tỷ USD vốn hóa.",
+"Dòng MAX 9 chỉ chiếm khoảng 2% số đơn hàng tồn của công ty.",
+"Một ngân hàng lớn giữ khuyến nghị mua, cho rằng ngành máy bay chỉ có hai hãng lớn nên khách hàng khó bỏ đi."],
+l:"Điều tra lộ ra vấn đề chất lượng sản xuất có hệ thống: cơ quan quản lý giới hạn sản lượng, CEO từ chức, rồi đình công kéo dài. Cổ phiếu giảm thêm khoảng 25%. Một sự cố \"nhỏ\" có thể là triệu chứng của vấn đề lớn hơn bên trong."
+,src:[{t:"Spokesman-Review / NYT: Boeing's stock drops",u:"https://www.spokesman.com/stories/2024/jan/08/boeings-stock-drops-as-investors-assess-fallout-fr"},{t:"Fortune: BofA says duopoly makes Boeing almost untouchable",u:"https://fortune.com/2024/01/08/boeing-stock-outlook-bank-of-america-737-max-incident/"}]},
+
+{n:"Chegg",t:"CHGG",s:"Giáo dục trực tuyến",w:"Tháng 5/2023",c:-50,f:[
+"CEO cho biết từ tháng 3, sinh viên quan tâm tới ChatGPT tăng vọt và điều này đang ảnh hưởng tốc độ có khách hàng mới.",
+"Cổ phiếu giảm 48% trong một ngày, đóng cửa khoảng 9,08 USD; hồi đầu 2021 từng trên 100 USD.",
+"Công ty ngừng đưa dự báo cả năm vì \"còn quá sớm để biết\"; dự báo doanh thu quý tới 175–178 triệu USD, thấp hơn mức 186,3 triệu USD thị trường kỳ vọng.",
+"Doanh thu và lợi nhuận quý vừa rồi vẫn vượt dự báo.",
+"Công ty đang ra trợ lý AI riêng dựa trên GPT-4; CEO gọi cú bán tháo là phản ứng \"thái quá\"."],
+l:"Sản phẩm chính (giải bài tập) bị AI miễn phí thay thế, số thuê bao tiếp tục giảm và cổ phiếu mất thêm khoảng một nửa. Khi đối thủ miễn phí làm được việc của bạn, dùng chính công nghệ của đối thủ chưa chắc đã cứu được.",
+src:[{t:"CNBC: Chegg CEO calls 48% stock plunge 'extraordinarily overblown'",u:"https://www.cnbc.com/2023/05/02/chegg-ceo-chatgpt-stock-plunge-was-extraordinarily-overblown.html"},{t:"Business Today: ChatGPT popularity impacts Chegg",u:"https://businesstoday.in/technology/news/story/chatgpt-popularity-impacts-us-tech-company-almost-50-market-value-wiped-off-379787-2023-05-03"}]},
+
+{n:"Nike",t:"NKE",s:"Đồ thể thao",w:"Tháng 6/2024",c:-5,f:[
+"Công ty dự báo doanh thu quý tới giảm khoảng 10%, tệ hơn nhiều so với mức giảm 3,2% giới phân tích dự đoán, và doanh thu cả năm cũng sẽ giảm.",
+"Cổ phiếu giảm khoảng 20% trong một ngày, tệ nhất lịch sử công ty, xóa khoảng 28 tỷ USD và đóng cửa 75,36 USD.",
+"Các dòng giày kinh điển bán chậm, doanh số online và ở Trung Quốc yếu.",
+"Các thương hiệu mới như Hoka, On, Asics, New Balance chiếm khoảng 35% thị phần toàn cầu năm trước, so với khoảng 20% giai đoạn 2013–2020.",
+"Công ty đang cắt giảm 2 tỷ USD chi phí trong 3 năm; ít nhất 6 công ty chứng khoán hạ khuyến nghị."],
+l:"Vài tháng sau công ty đổi CEO, nhưng xoay chuyển một thương hiệu lớn rất chậm; một năm sau giá vẫn quanh mức cũ, thấp hơn một chút. Thương hiệu mạnh rớt giá chưa chắc sẽ bật lại nhanh."
+,src:[{t:"Al Jazeera: Nike stock plunges on surprise forecast",u:"https://www.aljazeera.com/economy/2024/6/28/nike-stock-plunges-on-surprise-forecast-of-drop-in-sales"},{t:"Business Standard / Reuters: Nike stock sinks",u:"https://www.business-standard.com/amp/world-news/nike-stock-sinks-18-6-as-gloomy-sales-forecast-fans-growth-concerns-124062801229_1.html"}]},
+
+{n:"Rivian",t:"RIVN",s:"Xe điện",w:"Tháng 11/2021",c:-80,f:[
+"Công ty vừa lên sàn, huy động khoảng 12 tỷ USD, thương vụ IPO lớn nhất năm.",
+"Vốn hóa vượt 100 tỷ USD, cao hơn cả GM và Ford, dù mới sản xuất được vài trăm chiếc xe.",
+"Công ty lỗ gần 1 tỷ USD chỉ trong nửa đầu năm.",
+"Công ty có khoảng 55.400 đơn đặt trước và hợp đồng 100.000 xe tải giao hàng điện với một tập đoàn thương mại điện tử lớn (cũng là cổ đông).",
+"Ford, GM và Tesla đều sắp ra xe bán tải điện cạnh tranh trực tiếp."],
+l:"Sản xuất chậm, chuỗi cung ứng khó khăn, lãi suất tăng; cổ phiếu mất khoảng 80%. Định giá như một gã khổng lồ khi chưa chứng minh được khả năng sản xuất hàng loạt là đặt cược rất rủi ro."
+,src:[{t:"Al Jazeera / Bloomberg: Rivian is now biggest US company by market value with no revenue",u:"https://www.aljazeera.com/economy/2021/11/12/rivian-is-now-biggest-us-company-by-market-value-with-no-revenue"},{t:"Fortune: Rivian shares surge 29% after IPO",u:"https://fortune.com/2021/11/10/rivian-shares-surge-ipo-first-day-trading-electric-car-gm-ford/"}]},
+
+{n:"Tesla",t:"TSLA",s:"Xe điện",w:"Tháng 11/2021",c:-50,f:[
+"Vốn hóa vượt 1.000 tỷ USD, hãng xe giá trị nhất thế giới; cổ phiếu tăng khoảng 65% từ đầu năm.",
+"Một hãng cho thuê xe công bố đặt mua 100.000 xe, nhưng sau đó CEO nói hợp đồng \"chưa được ký\".",
+"CEO hỏi người theo dõi trên mạng xã hội có nên bán 10% cổ phần (hơn 20 tỷ USD) không; khoảng 58% trong hơn 3,5 triệu phiếu bảo \"có\".",
+"Doanh thu quý gần nhất tăng 57% lên khoảng 13,76 tỷ USD.",
+"Một startup xe điện vừa lên sàn đã được định giá hơn 100 tỷ USD; các hãng xe lớn đang đổ tiền vào xe điện."],
+l:"CEO bán cổ phiếu hàng chục tỷ USD, lãi suất tăng và cổ phiếu tăng trưởng bị bán mạnh; một năm sau giá còn khoảng một nửa. Khi cả thị trường hưng phấn tột độ với một ngành, rủi ro giảm giá thường rất lớn."
+,src:[{t:"AP: Musk: I'll sell 10% of Tesla stock based on Twitter poll",u:"https://techxplore.com/news/2021-11-twitter-votes-elon-musk-percent.html"},{t:"Reuters: Elon Musk sells $5 bln in Tesla shares after Twitter poll",u:"https://www.dailymaverick.co.za/article/2021-11-11-elon-musk-sells-5-bln-in-tesla-shares-after-twitter-poll/"}]},
+
+{n:"Netflix",t:"NFLX",s:"Phim trực tuyến",w:"Tháng 7/2019",c:50,f:[
+"Công ty mất khoảng 130.000 thuê bao ở Mỹ, lần đầu tiên kể từ năm 2011.",
+"Thuê bao mới ở nước ngoài chỉ khoảng 2,83 triệu, thấp hơn nhiều mức 4,8 triệu thị trường dự báo.",
+"Công ty vừa tăng giá ở nhiều nước; một khảo sát cho thấy 81% người dùng Mỹ nói sẽ hủy nếu giá tăng thêm 5 USD/tháng.",
+"Cổ phiếu giảm khoảng 10–12%, về khoảng 324 USD, dù doanh thu vẫn tăng 26%.",
+"Công ty chi hơn 3 tỷ USD cho nội dung trong quý và vẫn đốt tiền; các tập đoàn lớn sắp ra dịch vụ cạnh tranh."],
+l:"Thuê bao tăng lại ngay quý sau, rồi giãn cách xã hội năm sau làm nhu cầu xem phim bùng nổ; cổ phiếu tăng khoảng 50%. Có yếu tố may mắn, nhưng một quý xấu thường không đổi được xu hướng dài hạn."
+,src:[{t:"Reuters: Netflix shares plunge as US customers shrink",u:"https://tribune.com.pk/story/2015969/entertainment"},{t:"Silicon Republic: first decline in US subscribers since 2011",u:"https://siliconrepublic.com/?p=826318"}]},
+
+{n:"AMD",t:"AMD",s:"Chip bán dẫn",w:"Tháng 1/2016",c:400,f:[
+"Doanh thu quý giảm khoảng 23%; công ty dự báo quý tới giảm thêm khoảng 14%.",
+"Cổ phiếu chỉ còn khoảng 1,95 USD; nếu dưới 1 USD trong 30 ngày, sàn có thể bắt đầu hủy niêm yết.",
+"Công ty có 785 triệu USD tiền mặt nhưng nợ 2,26 tỷ USD, và dự kiến đốt khoảng 100 triệu USD trong quý tới.",
+"Kiến trúc chip mới (Zen) dự kiến ra cuối năm, được xem là sản phẩm \"được ăn cả, ngã về không\".",
+"Lỗ đang thu hẹp nhờ biên lợi nhuận cải thiện; công ty vẫn có hợp đồng cung cấp chip cho máy chơi game console."],
+l:"Chip mới thành công vượt mong đợi, cổ phiếu tăng khoảng 5 lần trong năm và hàng chục lần sau đó. Đặt cược vào một sản phẩm duy nhất rất rủi ro, nhưng nếu thắng thì lợi nhuận khổng lồ."
+,src:[{t:"CIO: AMD revenue falls 22 percent",u:"https://www.cio.de/a/amd-revenue-falls-22-percent-as-normally-dependable-console-chips-falter,3252948"},{t:"Motley Fool: Can AMD survive in 2016?",u:"https://www.fool.com/investing/general/2016/01/26/can-advanced-micro-devices-inc-survive-in-2016.aspx"}]}
+);
+
+/* source links for earlier situations that were checked against articles */
+const SRC_EXTRA = {
+"META|Tháng 11/2022":[{t:"Motley Fool: Is Meta Platforms stock a buy?",u:"https://www.fool.com/investing/2022/11/29/is-meta-platforms-stock-a-buy"}],
+"NFLX|Tháng 4/2022":[{t:"Bloomberg: Netflix loses 200,000 customers",u:"https://www.bloomberg.com/news/articles/2022-04-19/netflix-loses-200-000-customers-its-first-decline-in-a-decade"},{t:"S&P Global: Netflix changes tack on ads, password sharing",u:"https://www.spglobal.com/market-intelligence/en/news-insights/articles/2022/4/netflix-changes-tack-on-ads-password-sharing-after-historic-membership-loss-69908261"}],
+"ZM|Tháng 10/2020":[{t:"EasyEquities: Is there still room to ZOOM?",u:"https://research.easyequities.co.za/zoom-stock-analysis"}],
+"NVDA|Tháng 10/2022":[{t:"Investing.com: Is NVIDIA stock getting too cheap to ignore?",u:"https://investing.com/analysis/is-nvida-stock-getting-too-cheap-to-ignore-200631143"},{t:"NVIDIA Q3 FY23 CFO commentary (SEC)",u:"https://www.sec.gov/Archives/edgar/data/1045810/000104581022000163/q3fy23cfocommentary.htm"}],
+"BA|Tháng 3/2019":[{t:"Global Finance: Boeing crashes its growth model",u:"https://gfmag.com/magazine/april-2019/boeing-crashes-its-growth-model"}],
+"AAPL|Tháng 1/2019":[{t:"Seeking Alpha: Apple, a China problem or an iPhone problem?",u:"https://seekingalpha.com/article/4233555-apple-a-china-problem-or-an-iphone-problem"}]
+};
+SCENARIOS.forEach(x => { if (!x.src) x.src = SRC_EXTRA[`${x.t}|${x.w}`] || null; });

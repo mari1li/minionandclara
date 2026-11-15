@@ -32,6 +32,7 @@
   .facts li b{color:var(--accent);min-width:18px}
   .q{font-weight:700;margin:4px 0 12px;text-align:center}
   .choice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .choice button:disabled{opacity:.4;cursor:default}
   .choice button,.btn{font:700 16px 'Nunito';border:2px solid var(--line);background:var(--soft);color:var(--text);border-radius:14px;padding:14px;cursor:pointer;transition:.15s;touch-action:manipulation}
   .choice .up.on{border-color:var(--up);background:rgba(34,197,94,.12);color:var(--up)}
   .choice .down.on{border-color:var(--down);background:rgba(239,68,68,.12);color:var(--down)}
@@ -57,6 +58,11 @@
   .end{display:none;text-align:center}
   .end.show{display:block}
   .history{text-align:left;margin-top:14px}
+  .srcs{margin-top:10px;font-size:13px;line-height:1.5}
+  .srcs b{color:var(--muted)}
+  .srcs a{color:var(--accent);word-break:break-word}
+  .confetti{position:fixed;top:-12px;width:9px;height:14px;z-index:60;pointer-events:none;border-radius:2px;animation:fall linear forwards}
+  @keyframes fall{to{transform:translate(var(--dx),110vh) rotate(var(--rot));opacity:.9}}
   .piggy{position:fixed;pointer-events:none;font-size:30px;z-index:50;animation:piggy 1.4s ease-out forwards}
   @keyframes piggy{0%{transform:translate(-50%,0) scale(.6);opacity:0}20%{opacity:1;transform:translate(-50%,-20px) scale(1.2)}100%{transform:translate(-50%,-120px) scale(1);opacity:0}}
   .levelup{background:linear-gradient(135deg,#fff1e6,#ffe3ea);border:1px solid #ffc9a8;border-radius:12px;padding:10px 12px;font-size:13.5px;margin-bottom:12px;line-height:1.45}
@@ -104,10 +110,11 @@
     <div class="verdict">Chơi bao nhiêu câu?</div>
     <p class="sector">Tình huống thật, mỗi ván chọn ngẫu nhiên.</p>
     <div class="choice" style="grid-template-columns:1fr 1fr 1fr">
-      <button data-r="10">10 câu</button><button data-r="20">20 câu</button><button data-r="50">Tất cả</button>
+      <button data-r="10">10 câu</button><button data-r="20">20 câu</button><button data-r="999">Tất cả</button>
     </div>
     <p class="sector" style="margin-top:12px;margin-bottom:6px">Từ câu 11 trở đi game chuyển sang <b>🔥 chế độ chuyên gia</b>: 10 nguồn tin (báo, báo cáo tài chính, diễn đàn…) nhưng bạn chỉ có thời gian đọc 5.</p>
     <div class="choice" style="grid-template-columns:1fr"><button data-r="10" data-hard="1">🔥 Chơi chế độ chuyên gia luôn (10 câu)</button></div>
+    <button class="btn" id="bReset" style="display:none">🔄 Chơi lại từ đầu</button>
     <div style="text-align:center;margin-top:12px"><button class="linkbtn" id="bHist1">📜 Xem lại các ván cũ</button></div>
   </div>
 
@@ -156,6 +163,7 @@
       <div class="row"><span>Lời / lỗ</span><b id="rPnl"></b></div>
       <div class="row"><span>Tài khoản mới</span><b id="rCash"></b></div>
       <div class="lesson" id="rLesson"></div>
+      <div class="srcs" id="rSrc"></div>
       <button class="btn" id="bNext"></button>
     </div>
   </div>
@@ -176,10 +184,15 @@
 <script src="chungkhoan-data.js"></script>
 <script src="chungkhoan-docs.js"></script>
 <script>
-const ALL = SCENARIOS.map(x=>({name:x.n, ticker:x.t, sector:x.s, when:x.w, change:x.c, facts:x.f, lesson:x.l, docs: DOCS[`${x.t}|${x.w}`]}));
+const ALL = SCENARIOS.map(x=>({id:`${x.t}|${x.w}`, name:x.n, ticker:x.t, sector:x.s, when:x.w, change:x.c, facts:x.f, lesson:x.l, src:x.src, docs: DOCS[`${x.t}|${x.w}`]}));
+/* situations already answered on this device are not shown again (no peeking at answers) */
+const SEEN_KEY = "ck_seen";
+const getSeen = () => { try { return JSON.parse(localStorage.getItem(SEEN_KEY)) || []; } catch(e){ return []; } };
+const addSeen = id => { try { const s = getSeen(); if (!s.includes(id)) { s.push(id); localStorage.setItem(SEEN_KEY, JSON.stringify(s)); } } catch(e){} };
+const unseen = () => { const s = getSeen(); return ALL.filter(x => !s.includes(x.id)); };
 let ROUNDS = 10, HARD_ONLY = false;
 const EASY_N = 10, READS = 5;
-let curDocs = [], readIdx = [], curOrder = [];
+let curDocs = [], readIdx = [], curOrder = [], curFacts = [];
 function docsFor(ticker, when, facts, ord){
   const src = DOCS[`${ticker}|${when}`] || facts.map(f => ({s:"📰 Tin tức", h:f, b:""}));
   return ord.map(k => src[k]);
@@ -200,7 +213,9 @@ function saveGame(){
 function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
 function start(){
-  const withDocs = shuffle(ALL.filter(x=>x.docs)), noDocs = shuffle(ALL.filter(x=>!x.docs));
+  const pool = unseen();
+  ROUNDS = Math.min(ROUNDS, pool.length);
+  const withDocs = shuffle(pool.filter(x=>x.docs)), noDocs = shuffle(pool.filter(x=>!x.docs));
   const easyN = HARD_ONLY ? 0 : Math.min(EASY_N, ROUNDS);
   const easy = noDocs.splice(0, easyN);
   while (easy.length < easyN) easy.push(withDocs.pop());
@@ -234,7 +249,9 @@ function load(){
     renderDocs();
   } else {
     curDocs = []; readIdx = [];
-    s.facts.forEach((f,i)=>{ const li = document.createElement("li"); li.innerHTML = `<b>${i+1}</b><span></span>`; li.querySelector("span").textContent = f; $("facts").appendChild(li); });
+    const factPool = [...s.facts, ...(s.docs ? s.docs.map(d => d.h + ".") : [])];
+    curFacts = shuffle(factPool).slice(0, 5);
+    curFacts.forEach((f,i)=>{ const li = document.createElement("li"); li.innerHTML = `<b>${i+1}</b><span></span>`; li.querySelector("span").textContent = f; $("facts").appendChild(li); });
   }
   pick = null;
   $("bUp").classList.remove("on"); $("bDown").classList.remove("on"); $("bUp").textContent = "📈 Tăng";
@@ -244,6 +261,32 @@ function load(){
   setAlloc(25);
   stats();
   window.scrollTo({top:0, behavior:"smooth"});
+}
+function renderSrc(box, src){
+  box.innerHTML = "";
+  if (!src || !src.length){ box.style.display = "none"; return; }
+  box.style.display = "";
+  box.append(el("b", null, "📎 Nguồn để đọc thêm: "));
+  src.forEach((x,k) => {
+    const a = el("a", null, x.t); a.href = x.u; a.target = "_blank"; a.rel = "noopener";
+    if (k) box.append(" · ");
+    box.append(a);
+  });
+}
+function confetti(){
+  const colors = ["#f06b8e","#ffc2d1","#ffd166","#06d6a0","#118ab2","#cdb4ff","#ff8fab"];
+  for (let i=0;i<140;i++){
+    const c = document.createElement("span"); c.className = "confetti";
+    c.style.left = Math.random()*100 + "vw";
+    c.style.background = colors[i % colors.length];
+    c.style.setProperty("--dx", (Math.random()*200-100) + "px");
+    c.style.setProperty("--rot", (Math.random()*720-360) + "deg");
+    c.style.animationDuration = (1.8 + Math.random()*1.6) + "s";
+    c.style.animationDelay = (Math.random()*0.4) + "s";
+    if (Math.random() < 0.3) c.style.borderRadius = "50%";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 4200);
+  }
 }
 function isHard(){ return HARD_ONLY || idx >= EASY_N; }
 function readsMax(){ return order[idx].docs ? READS : 3; }
@@ -288,7 +331,8 @@ $("bConfirm").onclick = () => {
   if (right) correct++;
   cash += pnl;
   history.push({s, pick, inv, pnl, right});
-  game.rounds.push({ name:s.name, ticker:s.ticker, sector:s.sector, when:s.when, change:s.change, facts:s.facts, lesson:s.lesson,
+  addSeen(s.id);
+  game.rounds.push({ name:s.name, ticker:s.ticker, sector:s.sector, when:s.when, change:s.change, facts: isHard() ? s.facts : curFacts, lesson:s.lesson, src:s.src,
                      pick, pct: pick === "up" ? +$("aRange").value : 0, inv, pnl, right, cashAfter: cash,
                      hard: isHard(), docOrder: isHard() ? curOrder : null, read: isHard() ? [...readIdx] : null });
   if (isHard()){ readIdx = curDocs.map((_,k)=>k); renderDocs(); $("readsLeft").textContent = "∞ (đã chốt lệnh, đọc thoải mái)"; }
@@ -303,6 +347,8 @@ $("bConfirm").onclick = () => {
   $("rCash").textContent = fmt(cash);
   $("rLesson").innerHTML = "<b>💡 Chuyện gì đã xảy ra:</b> ";
   $("rLesson").append(s.lesson);
+  renderSrc($("rSrc"), s.src);
+  if (pnl > 0) confetti();
   $("bNext").textContent = idx + 1 < order.length ? "Câu tiếp theo →" : "Xem kết quả 🏁";
   $("decide").style.display = "none"; $("reveal").classList.add("show");
   stats();
@@ -356,6 +402,7 @@ function roundDetail(r, i){
   ];
   rows.forEach(([k,v]) => { const row = el("div","row"); row.append(el("span",null,k), el("b",null,v)); d.append(row); });
   const ls = el("div","lesson"); ls.innerHTML = "<b>💡 Chuyện gì đã xảy ra:</b> "; ls.append(r.lesson); d.append(ls);
+  const sb = el("div","srcs"); renderSrc(sb, r.src); d.append(sb);
   return d;
 }
 let histFrom = "intro";
@@ -401,11 +448,20 @@ $("hClear").onclick = () => {
 function intro(){
   $("end").classList.remove("show"); $("play").style.display = "none"; $("hist").style.display = "none"; $("intro").style.display = "";
   $("sRound").textContent = "-"; $("sAcc").textContent = "-"; $("sCash").textContent = fmt(START);
+  introText();
 }
 document.querySelectorAll("#intro button[data-r]").forEach(b => b.onclick = () => {
   ROUNDS = Math.min(+b.dataset.r, ALL.length); HARD_ONLY = !!b.dataset.hard; $("intro").style.display = "none"; start();
 });
-$("intro").querySelector("p").textContent = `Có ${ALL.length} tình huống thật, mỗi ván chọn ngẫu nhiên và xáo trộn.`;
+function introText(){
+  const left = unseen().length;
+  $("intro").querySelector("p").textContent = left
+    ? `Còn ${left}/${ALL.length} tình huống bạn chưa chơi. Câu đã trả lời sẽ không hiện lại, để không ai biết trước đáp án.`
+    : `Bạn đã chơi hết ${ALL.length} tình huống rồi! Bấm "Chơi lại từ đầu" để làm lại toàn bộ.`;
+  document.querySelectorAll("#intro button[data-r]").forEach(b => b.disabled = !left);
+  $("bReset").style.display = left ? "none" : "";
+}
+$("bReset").onclick = () => { try { localStorage.removeItem(SEEN_KEY); } catch(e){} introText(); };
 $("bAgain").onclick = intro;
 intro();
 </script>
