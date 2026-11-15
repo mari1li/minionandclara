@@ -107,13 +107,13 @@
   </header>
 
   <div class="card" id="intro">
-    <div class="verdict">Chơi bao nhiêu câu?</div>
+    <div class="verdict">🏦 Ngân hàng câu hỏi</div>
     <p class="sector">Tình huống thật, mỗi ván chọn ngẫu nhiên.</p>
-    <div class="choice" style="grid-template-columns:1fr 1fr 1fr">
-      <button data-r="10">10 câu</button><button data-r="20">20 câu</button><button data-r="999">Tất cả</button>
+    <div class="choice" style="grid-template-columns:1fr">
+      <button data-r="20">▶️ Bắt đầu ván mới (20 câu)</button>
     </div>
     <p class="sector" style="margin-top:12px;margin-bottom:6px">Từ câu 11 trở đi game chuyển sang <b>🔥 chế độ chuyên gia</b>: 10 nguồn tin (báo, báo cáo tài chính, diễn đàn…) nhưng bạn chỉ có thời gian đọc 5.</p>
-    <div class="choice" style="grid-template-columns:1fr"><button data-r="10" data-hard="1">🔥 Chơi chế độ chuyên gia luôn (10 câu)</button></div>
+    <div class="choice" style="grid-template-columns:1fr"><button data-r="20" data-hard="1">🔥 Chơi chế độ chuyên gia luôn (20 câu)</button></div>
     <button class="btn" id="bReset" style="display:none">🔄 Chơi lại từ đầu</button>
     <div style="text-align:center;margin-top:12px"><button class="linkbtn" id="bHist1">📜 Xem lại các ván cũ</button></div>
   </div>
@@ -219,7 +219,7 @@ function start(){
   const easyN = HARD_ONLY ? 0 : Math.min(EASY_N, ROUNDS);
   const easy = noDocs.splice(0, easyN);
   while (easy.length < easyN) easy.push(withDocs.pop());
-  order = [...easy, ...withDocs, ...noDocs].slice(0, ROUNDS); idx = 0; cash = START; correct = 0; history = [];
+  order = spread([...easy, ...withDocs, ...noDocs], ROUNDS, easyN); idx = 0; cash = START; correct = 0; history = [];
   game = { hardOnly: HARD_ONLY, id: Date.now(), date: new Date().toLocaleString("vi-VN"), total: ROUNDS, start: START, end: START, correct: 0, rounds: [] };
   $("end").classList.remove("show"); $("play").style.display = "";
   load();
@@ -264,7 +264,7 @@ function load(){
 }
 function renderSrc(box, src){
   box.innerHTML = "";
-  if (!src || !src.length){ box.style.display = "none"; return; }
+  if (!src || !src.length){ box.style.display = ""; box.append(el("b", null, "📎 Câu này chưa có link nguồn, mình đang bổ sung dần.")); return; }
   box.style.display = "";
   box.append(el("b", null, "📎 Nguồn để đọc thêm: "));
   src.forEach((x,k) => {
@@ -287,6 +287,20 @@ function confetti(){
     document.body.appendChild(c);
     setTimeout(() => c.remove(), 4200);
   }
+}
+function spread(list, n, easyN){
+  // keep the easy/expert split, cap each company at 1 per game (2 if needed), then avoid back-to-back repeats
+  const take = (cap) => {
+    const cnt = {}, out = [];
+    for (const x of list){ if (out.length >= n) break; if ((cnt[x.name]||0) < cap){ cnt[x.name] = (cnt[x.name]||0)+1; out.push(x); } }
+    return out;
+  };
+  let picked = take(1);
+  if (picked.length < n) picked = take(2);
+  if (picked.length < n) picked = list.slice(0, n);
+  const fix = arr => { for (let i=1;i<arr.length;i++) if (arr[i].name === arr[i-1].name){ const j = arr.findIndex((y,k)=>k>i && y.name !== arr[i].name && y.name !== arr[i-1].name); if (j>0) [arr[i],arr[j]] = [arr[j],arr[i]]; } return arr; };
+  const easy = picked.filter((x,i) => i < easyN), hard = picked.filter((x,i) => i >= easyN);
+  return [...fix(shuffle(easy)), ...fix(shuffle(hard))];
 }
 function isHard(){ return HARD_ONLY || idx >= EASY_N; }
 function readsMax(){ return order[idx].docs ? READS : 3; }
