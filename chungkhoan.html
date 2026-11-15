@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đoán Giá Cổ Phiếu 📈</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#fff5f7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#fff5f7;--card:#ffffff;--line:#ffd6e0;--text:#5a3d4a;--muted:#9b7f8b;--up:#16a34a;--down:#e11d48;--accent:#f06b8e;--gold:#d97706;--soft:#fff0f4}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:20px 16px 40px}
+  .wrap{max-width:620px;margin:0 auto}
+  header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;gap:10px;flex-wrap:wrap}
+  h1{font-family:'Mali',cursive;font-size:24px;font-weight:700;color:var(--accent)}
+  h1 small{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-top:2px}
+  .stats{display:flex;gap:8px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;text-align:right}
+  .stat span{display:block;font-size:11px;color:var(--muted)}
+  .stat b{font-size:16px}
+  .card{box-shadow:0 6px 24px rgba(240,107,142,.10);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:14px}
+  .co{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:4px}
+  .co h2{font-size:20px;font-weight:800}
+  .tag{font-size:12px;font-weight:700;background:#ffe3ea;color:var(--accent);padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .sector{color:var(--muted);font-size:13px;margin-bottom:14px}
+  .when{display:inline-block;font-size:12px;font-weight:700;color:var(--gold);background:#fff4e0;padding:4px 10px;border-radius:8px;margin-bottom:14px}
+  .facts{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .facts li{display:flex;gap:10px;background:var(--soft);border-radius:12px;padding:11px 12px;font-size:14.5px;line-height:1.45}
+  .facts li b{color:var(--accent);min-width:18px}
+  .q{font-weight:700;margin:4px 0 12px;text-align:center}
+  .choice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .choice button,.btn{font:700 16px 'Nunito';border:2px solid var(--line);background:var(--soft);color:var(--text);border-radius:14px;padding:14px;cursor:pointer;transition:.15s;touch-action:manipulation}
+  .choice .up.on{border-color:var(--up);background:rgba(34,197,94,.12);color:var(--up)}
+  .choice .down.on{border-color:var(--down);background:rgba(239,68,68,.12);color:var(--down)}
+  .btn{width:100%;margin-top:14px;background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn:disabled{opacity:.4;cursor:default}
+  .alloc{margin-top:16px;display:none}
+  .alloc.show{display:block}
+  .alloc label{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);margin-bottom:8px}
+  .alloc label b{color:var(--text)}
+  input[type=range]{width:100%;accent-color:var(--accent);height:28px}
+  .quick{display:flex;gap:6px;margin-top:6px}
+  .quick button{flex:1;font:600 12px 'Nunito';background:var(--soft);color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:6px;cursor:pointer;touch-action:manipulation}
+  .note{font-size:13px;color:var(--muted);margin-top:10px;text-align:center}
+  .reveal{display:none}
+  .reveal.show{display:block}
+  .verdict{font-size:20px;font-weight:800;margin-bottom:6px}
+  .big{font-size:34px;font-weight:800;margin:6px 0}
+  .pos{color:var(--up)} .neg{color:var(--down)}
+  .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .row:last-child{border:none}
+  .lesson{background:var(--soft);border-left:3px solid var(--gold);border-radius:10px;padding:12px;margin-top:14px;font-size:14px;line-height:1.5}
+  .lesson b{color:var(--gold)}
+  .end{display:none;text-align:center}
+  .end.show{display:block}
+  .history{text-align:left;margin-top:14px}
+  .back{display:inline-block;margin-bottom:12px;color:var(--accent);font-weight:700;text-decoration:none;font-size:14px}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:16px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="./#game">← Về trang của Clara 💌</a>
+  <header>
+    <h1>📈 Đoán Giá Cổ Phiếu<small>Tình huống thật, thời điểm bị giấu</small></h1>
+    <div class="stats">
+      <div class="stat"><span>Vòng</span><b id="sRound"></b></div>
+      <div class="stat"><span>Đoán đúng</span><b id="sAcc"></b></div>
+      <div class="stat"><span>Tài khoản</span><b id="sCash"></b></div>
+    </div>
+  </header>
+
+  <div id="play">
+    <div class="card">
+      <div class="co"><h2 id="coName"></h2><span class="tag" id="coTicker"></span></div>
+      <div class="sector" id="coSector"></div>
+      <div class="when">🕵️ Năm: ??? — đọc dữ kiện rồi tự đoán</div>
+      <ul class="facts" id="facts"></ul>
+    </div>
+
+    <div class="card" id="decide">
+      <p class="q">1 năm sau, cổ phiếu này sẽ…</p>
+      <div class="choice">
+        <button class="up" id="bUp">📈 Tăng</button>
+        <button class="down" id="bDown">📉 Giảm</button>
+      </div>
+      <div class="alloc" id="alloc">
+        <label>Bỏ bao nhiêu % tiền vào? <b id="aVal"></b></label>
+        <input type="range" id="aRange" min="0" max="100" step="5" value="25">
+        <div class="quick">
+          <button data-v="10">10%</button><button data-v="25">25%</button><button data-v="50">50%</button><button data-v="100">Tất tay</button>
+        </div>
+      </div>
+      <p class="note" id="downNote" style="display:none">Đoán giảm thì bạn đứng ngoài, giữ nguyên tiền.</p>
+      <button class="btn" id="bConfirm" disabled>Chốt lệnh</button>
+    </div>
+
+    <div class="card reveal" id="reveal">
+      <div class="verdict" id="rVerdict"></div>
+      <div class="sector" id="rWhen"></div>
+      <div>Giá 1 năm sau: <span class="big" id="rChange"></span></div>
+      <div class="row"><span>Bạn đầu tư</span><b id="rInv"></b></div>
+      <div class="row"><span>Lời / lỗ</span><b id="rPnl"></b></div>
+      <div class="row"><span>Tài khoản mới</span><b id="rCash"></b></div>
+      <div class="lesson" id="rLesson"></div>
+      <button class="btn" id="bNext"></button>
+    </div>
+  </div>
+
+  <div class="card end" id="end">
+    <div class="verdict">🏁 Hết game!</div>
+    <div class="big" id="eCash"></div>
+    <div class="sector" id="eSum"></div>
+    <div class="lesson" id="eRate"></div>
+    <div class="history" id="eHist"></div>
+    <button class="btn" id="bAgain">Chơi lại (xáo trộn câu hỏi)</button>
+  </div>
+
+  <footer>Dữ kiện lấy từ tin tức thật; giá và % là số làm tròn, xấp xỉ.<br>Game để luyện tư duy, không phải lời khuyên đầu tư.</footer>
+</div>
+
+<script>
+/* Each scenario: 5 real facts known at that moment, then what happened ~1 year later. */
+const SCENARIOS = [
+  { name:"Meta Platforms", ticker:"META", sector:"Mạng xã hội · Quảng cáo",
+    facts:[
+      "Cổ phiếu đã rơi khoảng 77% từ đỉnh, mất hơn 750 tỷ USD vốn hóa.",
+      "P/E chỉ khoảng 9–11 lần, rẻ hơn mặt bằng chung thị trường S&P 500.",
+      "Mảng metaverse (Reality Labs) lỗ 3,7 tỷ USD chỉ trong một quý, và công ty nói năm sau còn lỗ nhiều hơn.",
+      "Công ty vừa sa thải 11.000 người (~13% nhân sự), đợt lớn nhất lịch sử, và tuyên bố cắt giảm chi tiêu.",
+      "Apple đổi chính sách quyền riêng tư khiến quảng cáo nhắm mục tiêu kém hiệu quả; TikTok đang giành người dùng trẻ."
+    ],
+    when:"Tháng 11/2022", change:260,
+    lesson:"Công ty vẫn lãi rất lớn từ quảng cáo, P/E thấp, và việc cắt giảm chi phí (\"năm của hiệu quả\") làm lợi nhuận bật lại. Khi một doanh nghiệp còn kiếm tiền tốt mà thị trường quá bi quan, đó thường là cơ hội." },
+
+  { name:"Netflix", ticker:"NFLX", sector:"Phim trực tuyến",
+    facts:[
+      "Lần đầu tiên sau hơn 10 năm mất thuê bao: giảm 200.000 người trong một quý.",
+      "Công ty dự báo quý tới mất thêm khoảng 2 triệu thuê bao.",
+      "Cổ phiếu rơi 35% chỉ trong một ngày, giảm khoảng 62% từ đầu năm.",
+      "Khoảng 100 triệu hộ đang dùng chung mật khẩu mà không trả tiền.",
+      "Sau nhiều năm từ chối, công ty quay sang tính làm gói rẻ có quảng cáo và thu phí chia sẻ mật khẩu."
+    ],
+    when:"Tháng 4/2022", change:45,
+    lesson:"Giá còn rơi thêm vài tuần sau đó, nhưng gói quảng cáo và việc chặn chia sẻ mật khẩu kéo thuê bao tăng trở lại. Tin xấu đã phản ánh hết vào giá, và công ty có kế hoạch rõ ràng để sửa." },
+
+  { name:"Zoom Video", ticker:"ZM", sector:"Phần mềm họp trực tuyến",
+    facts:[
+      "Doanh thu quý tăng 355% so với cùng kỳ năm trước.",
+      "Cổ phiếu đã tăng khoảng 690% chỉ từ đầu năm.",
+      "Định giá cực cao: P/E khoảng 200 lần, P/B khoảng 128 lần.",
+      "Microsoft Teams tăng 53% người dùng; Google cho họp miễn phí đến 100 người.",
+      "Khách hàng nhỏ (dưới 10 nhân viên, dễ hủy) chiếm khoảng 36% doanh thu; tin vaccine đang tới gần."
+    ],
+    when:"Tháng 10/2020", change:-50,
+    lesson:"Tăng trưởng tuyệt vời nhưng giá đã \"trả trước\" cho rất nhiều năm. Khi mọi người quay lại văn phòng và đối thủ miễn phí cạnh tranh, tăng trưởng chậm lại và giá sụp. Công ty tốt chưa chắc là cổ phiếu tốt nếu mua quá đắt." },
+
+  { name:"NVIDIA", ticker:"NVDA", sector:"Chip bán dẫn",
+    facts:[
+      "Cổ phiếu giảm khoảng 62% từ đầu năm, chạm đáy 52 tuần.",
+      "Mỹ cấm bán chip AI cao cấp (A100, H100) sang Trung Quốc, ảnh hưởng khoảng 400 triệu USD doanh thu mỗi quý.",
+      "Doanh thu mảng game giảm mạnh, nhu cầu GPU đào coin gần như biến mất.",
+      "Ngân hàng trung ương Mỹ tăng lãi suất liên tục, lạm phát khoảng 8,2%.",
+      "P/E dự phóng khoảng 23 lần; công ty vừa bắt đầu giao chip data center thế hệ mới."
+    ],
+    when:"Tháng 10/2022", change:300,
+    lesson:"Vài tuần sau ChatGPT ra mắt, cơn sốt AI làm nhu cầu chip data center bùng nổ. Bài học: thị trường hay nhìn vào mảng đang xấu (game, crypto) mà bỏ qua mảng sắp bùng nổ." },
+
+  { name:"Boeing", ticker:"BA", sector:"Hàng không · Sản xuất máy bay",
+    facts:[
+      "Dòng máy bay chủ lực rơi lần thứ hai trong chưa đầy 5 tháng; nhiều nước lệnh cấm bay toàn bộ dòng này.",
+      "Chỉ 10 ngày trước, cổ phiếu vừa lập đỉnh mọi thời đại.",
+      "Sau tai nạn, giá mới giảm khoảng 16% và vẫn tăng khoảng 15% từ đầu năm.",
+      "Nhiều năm liền công ty dồn hàng chục tỷ USD mua lại cổ phiếu của chính mình.",
+      "Dòng máy bay bị cấm là dòng bán chạy và lời nhất của công ty."
+    ],
+    when:"Tháng 3/2019", change:-60,
+    lesson:"Lệnh cấm bay kéo dài cả năm, doanh thu năm đó giảm 25%, CEO bị sa thải, rồi dịch bệnh đóng băng ngành hàng không. Khi vấn đề nằm ở sản phẩm cốt lõi và niềm tin an toàn, mức giảm 16% ban đầu thường chưa phải là đáy." },
+
+  { name:"Apple", ticker:"AAPL", sector:"Điện thoại · Công nghệ tiêu dùng",
+    facts:[
+      "Công ty cảnh báo doanh thu lần đầu tiên sau 17 năm, hạ dự báo quý xuống còn 84 tỷ USD.",
+      "Lý do chính: iPhone bán kém ở Trung Quốc khi kinh tế nước này chậm lại.",
+      "Cổ phiếu đã giảm hơn 30% từ đỉnh 52 tuần.",
+      "P/E dự phóng khoảng 12,6 lần, cổ tức khoảng 1,9%/năm.",
+      "Mảng dịch vụ (App Store, iCloud…) lập kỷ lục và số thiết bị đang được dùng vẫn tăng."
+    ],
+    when:"Tháng 1/2019", change:100,
+    lesson:"Một quý xấu không làm hỏng một doanh nghiệp có hệ sinh thái mạnh. P/E thấp + mảng dịch vụ tăng đều giúp cổ phiếu tăng gấp đôi trong năm đó." },
+
+  { name:"GameStop", ticker:"GME", sector:"Bán lẻ trò chơi điện tử",
+    facts:[
+      "Giá cổ phiếu tăng hơn 1.500% chỉ trong khoảng một tháng.",
+      "Số cổ phiếu bị bán khống từng vượt 100% số cổ phiếu đang lưu hành.",
+      "Một diễn đàn trên Reddit đang rủ nhau mua để \"ép\" các quỹ bán khống.",
+      "Doanh thu giảm nhiều năm liền, công ty liên tục lỗ và đóng bớt cửa hàng.",
+      "Người chơi game ngày càng tải game online thay vì mua đĩa ở cửa hàng."
+    ],
+    when:"Cuối tháng 1/2021", change:-70,
+    lesson:"Giá được đẩy lên bởi đám đông chứ không phải lợi nhuận. Chỉ vài tuần sau giá rơi gần 90% từ đỉnh. Khi giá tăng điên cuồng mà doanh nghiệp đi xuống, người mua sau cùng thường chịu lỗ." },
+
+  { name:"Microsoft", ticker:"MSFT", sector:"Phần mềm · Điện toán đám mây",
+    facts:[
+      "Công ty vừa bổ nhiệm CEO mới, người từng lãnh đạo mảng điện toán đám mây.",
+      "Doanh số máy tính cá nhân giảm nhiều năm liền.",
+      "Hệ điều hành Windows mới bị người dùng chê nhiều.",
+      "P/E khoảng 14–15 lần, cổ tức khoảng 3%/năm.",
+      "Nhiều người coi công ty là \"gã khổng lồ cũ\" đã lỡ cuộc đua điện thoại di động."
+    ],
+    when:"Tháng 2/2014", change:20,
+    lesson:"CEO mới đặt cược vào đám mây (Azure) và phần mềm thuê bao. Năm đầu tăng vừa phải, nhưng 5 năm sau cổ phiếu tăng hơn 3 lần. Định giá rẻ + chiến lược mới đúng hướng là công thức mạnh." },
+
+  { name:"Peloton", ticker:"PTON", sector:"Thiết bị tập thể dục tại nhà",
+    facts:[
+      "Công ty hạ dự báo doanh thu cả năm tới 1 tỷ USD.",
+      "Cổ phiếu rơi khoảng 35% trong một ngày, giảm khoảng 70% từ đỉnh.",
+      "Công ty lỗ ngày càng lớn, hàng tồn kho chất đống.",
+      "Phòng gym mở cửa trở lại, mọi người bớt tập ở nhà.",
+      "Không có lợi nhuận nên không tính được P/E."
+    ],
+    when:"Tháng 11/2021", change:-80,
+    lesson:"Giảm 70% chưa có nghĩa là rẻ. Khi doanh nghiệp lỗ, nhu cầu thật đang giảm và không có lợi nhuận để định giá, \"bắt đáy\" rất nguy hiểm. Năm sau giá còn rơi thêm khoảng 80%." }
+];
+
+const START = 10000;
+const $ = id => document.getElementById(id);
+const fmt = n => "$" + Math.round(n).toLocaleString("en-US");
+const pct = n => (n > 0 ? "+" : "") + n + "%";
+let order, idx, cash, correct, pick, history;
+
+function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function start(){
+  order = shuffle([...SCENARIOS]); idx = 0; cash = START; correct = 0; history = [];
+  $("end").classList.remove("show"); $("play").style.display = "";
+  load();
+}
+function stats(){
+  $("sRound").textContent = `${Math.min(idx+1, order.length)}/${order.length}`;
+  $("sAcc").textContent = `${correct}/${history.length}`;
+  $("sCash").textContent = fmt(cash);
+}
+function load(){
+  const s = order[idx];
+  $("coName").textContent = s.name; $("coTicker").textContent = s.ticker; $("coSector").textContent = s.sector;
+  $("facts").innerHTML = "";
+  s.facts.forEach((f,i)=>{ const li = document.createElement("li"); li.innerHTML = `<b>${i+1}</b><span></span>`; li.querySelector("span").textContent = f; $("facts").appendChild(li); });
+  pick = null;
+  $("bUp").classList.remove("on"); $("bDown").classList.remove("on");
+  $("alloc").classList.remove("show"); $("downNote").style.display = "none";
+  $("bConfirm").disabled = true;
+  $("decide").style.display = ""; $("reveal").classList.remove("show");
+  setAlloc(25);
+  stats();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+function setAlloc(v){ $("aRange").value = v; $("aVal").textContent = `${v}% = ${fmt(cash * v / 100)}`; }
+$("aRange").oninput = e => setAlloc(+e.target.value);
+document.querySelectorAll(".quick button").forEach(b => b.onclick = () => setAlloc(+b.dataset.v));
+$("bUp").onclick = () => { pick = "up"; $("bUp").classList.add("on"); $("bDown").classList.remove("on"); $("alloc").classList.add("show"); $("downNote").style.display = "none"; $("bConfirm").disabled = false; };
+$("bDown").onclick = () => { pick = "down"; $("bDown").classList.add("on"); $("bUp").classList.remove("on"); $("alloc").classList.remove("show"); $("downNote").style.display = ""; $("bConfirm").disabled = false; };
+
+$("bConfirm").onclick = () => {
+  const s = order[idx];
+  const inv = pick === "up" ? cash * (+$("aRange").value) / 100 : 0;
+  const pnl = inv * s.change / 100;
+  const right = (pick === "up") === (s.change > 0);
+  if (right) correct++;
+  cash += pnl;
+  history.push({s, pick, inv, pnl, right});
+  $("rVerdict").textContent = right ? "✅ Đoán đúng!" : "❌ Đoán sai rồi";
+  $("rWhen").textContent = `Thời điểm thật: ${s.when}`;
+  $("rChange").textContent = "≈ " + pct(s.change);
+  $("rChange").className = "big " + (s.change > 0 ? "pos" : "neg");
+  $("rInv").textContent = inv ? fmt(inv) : "Đứng ngoài";
+  $("rPnl").textContent = (pnl >= 0 ? "+" : "-") + fmt(Math.abs(pnl));
+  $("rPnl").className = pnl > 0 ? "pos" : pnl < 0 ? "neg" : "";
+  $("rCash").textContent = fmt(cash);
+  $("rLesson").innerHTML = "<b>💡 Chuyện gì đã xảy ra:</b> ";
+  $("rLesson").append(s.lesson);
+  $("bNext").textContent = idx + 1 < order.length ? "Câu tiếp theo →" : "Xem kết quả 🏁";
+  $("decide").style.display = "none"; $("reveal").classList.add("show");
+  stats();
+  $("reveal").scrollIntoView({behavior:"smooth", block:"start"});
+};
+$("bNext").onclick = () => { idx++; idx < order.length ? load() : finish(); };
+
+function finish(){
+  $("play").style.display = "none"; $("end").classList.add("show");
+  const ret = Math.round((cash / START - 1) * 100);
+  $("eCash").textContent = fmt(cash);
+  $("eCash").className = "big " + (cash >= START ? "pos" : "neg");
+  $("eSum").textContent = `Từ ${fmt(START)} → ${pct(ret)} · Đoán đúng ${correct}/${order.length}`;
+  const rate = correct >= 8 ? "🏆 Nhà đầu tư huyền thoại! Bạn đọc dữ kiện rất sắc."
+    : correct >= 6 ? "👍 Khá lắm! Bạn đã nhận ra nhiều tín hiệu quan trọng."
+    : correct >= 4 ? "🙂 Tạm ổn. Thử để ý kỹ hơn: định giá (P/E), công ty còn lãi không, và tin xấu đã vào giá chưa."
+    : "📚 Thị trường khó đoán lắm! Đọc lại phần bài học mỗi câu rồi thử lại nha.";
+  $("eRate").textContent = rate;
+  $("eHist").innerHTML = "";
+  history.forEach(h => {
+    const d = document.createElement("div"); d.className = "row";
+    d.innerHTML = `<span></span><b class="${h.right ? "pos" : "neg"}"></b>`;
+    d.querySelector("span").textContent = `${h.right ? "✅" : "❌"} ${h.s.ticker} (${h.s.when})`;
+    d.querySelector("b").textContent = pct(h.s.change);
+    $("eHist").appendChild(d);
+  });
+  stats();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+$("bAgain").onclick = start;
+start();
+</script>
+</body>
+</html>
