@@ -66,6 +66,9 @@
   .fin td{padding:6px 4px;border-bottom:1px dashed var(--line);vertical-align:top}
   .fin td:last-child{text-align:right;font-weight:800;white-space:nowrap}
   .fin tr:last-child td{border-bottom:none}
+  .ygrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));column-gap:22px;margin-top:6px}
+  .ygrid div{display:flex;justify-content:space-between;gap:10px;padding:7px 2px;border-bottom:1px dashed var(--line);font-size:13.5px}
+  .ygrid b{white-space:nowrap}
   .finttl{font-size:12.5px;font-weight:800;color:var(--muted);margin-top:12px}
   .srcs{margin-top:10px;font-size:13px;line-height:1.5}
   .srcs b{color:var(--muted)}
@@ -195,10 +198,11 @@
 <script src="chungkhoan-data.js"></script>
 <script src="chungkhoan-docs.js"></script>
 <script src="chungkhoan-charts.js"></script>
+<script src="chungkhoan-stats.js"></script>
 <script>
 const ALL = SCENARIOS.map(x=>{ const id = `${x.t}|${x.w}`, ch = CHARTS[id];
   // when real price data exists, the 1-year result comes from it instead of the rounded estimate
-  return {id, name:x.n, ticker:x.t, sector:x.s, when:x.w, change: ch ? ch.actual : x.c, facts:x.f, lesson:x.l, src:x.src, fin:x.fin, chart: ch, docs: DOCS[id]}; });
+  return {id, name:x.n, ticker:x.t, sector:x.s, when:x.w, change: ch ? ch.actual : x.c, facts:x.f, lesson:x.l, src:x.src, fin:x.fin, chart: ch, stats: STATS[id], docs: DOCS[id]}; });
 /* situations already answered on this device are not shown again (no peeking at answers) */
 const SEEN_KEY = "ck_seen";
 const getSeen = () => { try { return JSON.parse(localStorage.getItem(SEEN_KEY)) || []; } catch(e){ return []; } };
@@ -215,7 +219,9 @@ const START = 10000;
 const $ = id => document.getElementById(id);
 const fmt = n => "$" + Math.round(n).toLocaleString("en-US");
 const pct = n => (n > 0 ? "+" : "") + n + "%";
-let order, idx, cash, correct, pick, history, game;
+let order, idx, cash, correct, pick, history, game, numIds = new Set();
+const NUM_N = 5; // rounds per game that show only the chart and the numbers
+const isNum = s => numIds.has(s.id);
 const HKEY = "ck_history";
 const loadGames = () => { try { return JSON.parse(localStorage.getItem(HKEY)) || []; } catch(e){ return []; } };
 const saveGames = g => { try { localStorage.setItem(HKEY, JSON.stringify(g.slice(0,50))); } catch(e){} };
@@ -227,13 +233,25 @@ function saveGame(){
 function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
 function start(){
-  const pool = unseen();
-  ROUNDS = Math.min(ROUNDS, pool.length);
+  const all = unseen();
+  ROUNDS = Math.min(ROUNDS, all.length);
+  // a few rounds show only the price chart and the market numbers, one company each
+  const numPicks = [], numNames = new Set();
+  for (const x of shuffle(all.filter(x=>x.stats))){ if (numPicks.length >= Math.min(NUM_N, ROUNDS)) break; if (!numNames.has(x.name)){ numNames.add(x.name); numPicks.push(x); } }
+  numIds = new Set(numPicks.map(x=>x.id));
+  let pool = all.filter(x => !numNames.has(x.name));
+  if (pool.length < ROUNDS - numPicks.length) pool = all.filter(x => !numIds.has(x.id));
+  const baseN = Math.min(ROUNDS - numPicks.length, pool.length);
+  const slots = shuffle([...Array(baseN + numPicks.length).keys()]).slice(0, numPicks.length).sort((a,b)=>a-b);
+  const easyAll = HARD_ONLY ? 0 : Math.min(EASY_N, baseN + numPicks.length);
+  const easyN = Math.max(0, easyAll - slots.filter(p => p < easyAll).length);
   const withDocs = shuffle(pool.filter(x=>x.docs)), noDocs = shuffle(pool.filter(x=>!x.docs));
-  const easyN = HARD_ONLY ? 0 : Math.min(EASY_N, ROUNDS);
   const easy = noDocs.splice(0, easyN);
-  while (easy.length < easyN) easy.push(withDocs.pop());
-  order = spread([...easy, ...withDocs, ...noDocs], ROUNDS, easyN); idx = 0; cash = START; correct = 0; history = [];
+  while (easy.length < easyN && withDocs.length) easy.push(withDocs.pop());
+  const base = spread([...easy, ...withDocs, ...noDocs], baseN, easyN);
+  order = []; let bi = 0, ni = 0;
+  for (let p = 0; p < baseN + numPicks.length; p++) order.push(slots.includes(p) ? numPicks[ni++] : base[bi++]);
+  ROUNDS = order.length; idx = 0; cash = START; correct = 0; history = [];
   game = { hardOnly: HARD_ONLY, id: Date.now(), date: new Date().toLocaleString("vi-VN"), total: ROUNDS, start: START, end: START, correct: 0, rounds: [] };
   $("end").classList.remove("show"); $("play").style.display = "";
   load();
@@ -249,17 +267,21 @@ function load(){
   $("facts").innerHTML = "";
   $("snap").innerHTML = "";
   if (s.chart) $("snap").append(chartBox(s.chart, false, 0));
-  $("snap").append(numbersBox(s));
-  const hard = isHard();
-  $("facts").style.display = hard ? "none" : "";
+  const num = isNum(s);
+  if (num) $("snap").append(statsBox(s.stats), numbersBox({fin: s.fin}));
+  else $("snap").append(numbersBox(s));
+  const hard = isHard() && !num;
+  $("facts").style.display = hard || num ? "none" : "";
   $("docsBox").style.display = hard ? "" : "none";
-  document.querySelector(".when").textContent = hard ? "🔥 Chế độ chuyên gia · Năm: ???" : "🕵️ Năm: ??? — đọc dữ kiện rồi tự đoán";
+  document.querySelector(".when").textContent = num ? "📊 Chỉ có biểu đồ và con số · Năm: ???" : hard ? "🔥 Chế độ chuyên gia · Năm: ???" : "🕵️ Năm: ??? — đọc dữ kiện rồi tự đoán";
   $("levelup").style.display = "none";
   if (hard && idx === EASY_N && !HARD_ONLY){
     $("levelup").style.display = "";
     $("levelup").innerHTML = "<b>🔥 Lên cấp chuyên gia!</b> Không còn 5 dữ kiện soạn sẵn nữa. Mỗi câu có 10 nguồn tin thật hơn: báo chí, báo cáo tài chính, chuyên gia, diễn đàn… Có nguồn hữu ích, có nguồn gây nhiễu. Bạn chỉ có thời gian đọc " + READS + " nguồn, chọn khôn ngoan nha!";
   }
-  if (hard){
+  if (num){
+    curDocs = []; readIdx = []; curFacts = [];
+  } else if (hard){
     curOrder = shuffle((s.docs || s.facts).map((_,k)=>k));
     curDocs = docsFor(s.ticker, s.when, s.facts, curOrder);
     readIdx = [];
@@ -342,6 +364,33 @@ function numbersBox(s){
   const t = el("table","fin");
   rows.forEach(([k,v]) => { const tr = el("tr"); tr.append(el("td", null, k), el("td", null, v)); t.append(tr); });
   wrap.append(t);
+  return wrap;
+}
+
+const n2 = v => v.toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2});
+const nInt = v => v.toLocaleString("en-US");
+function statsBox(st){
+  const wrap = el("div");
+  if (!st) return wrap;
+  wrap.append(el("div","finttl", "📋 Bảng chỉ số ngày phải quyết định"));
+  const rows = [
+    ["Giá đóng cửa phiên trước", n2(st.prev)],
+    ["Giá mở cửa", n2(st.open)],
+    ["Biên độ trong ngày", `${n2(st.dlo)} – ${n2(st.dhi)}`],
+    ["Biên độ 52 tuần", `${n2(st.lo52)} – ${n2(st.hi52)}`],
+    ["Khối lượng giao dịch", nInt(st.vol)],
+    ["KL trung bình 3 tháng", nInt(st.avg)],
+    ["Beta (so với S&P 500)", st.beta != null ? n2(st.beta) : "—"],
+    ["P/E (4 quý gần nhất)", st.pe != null ? n2(st.pe) : (st.eps < 0 ? "Không tính (đang lỗ)" : "—")],
+    ["EPS (4 quý gần nhất)", (st.eps < 0 ? "−" : "") + n2(Math.abs(st.eps))],
+  ];
+  if (st.pb != null) rows.push(["P/B (giá / giá trị sổ sách)", n2(st.pb)]);
+  rows.push(["Cổ tức 12 tháng & tỷ suất", st.div == null ? "—" : st.div > 0 ? `${n2(st.div)} (${n2(st.yld)}%)` : "Không trả cổ tức"]);
+  if (st.ytd != null) rows.push(["Từ đầu năm", pct(st.ytd)]);
+  const g = el("div","ygrid");
+  rows.forEach(([k,v]) => { const r = el("div"); r.append(el("span", null, k), el("b", null, v)); g.append(r); });
+  wrap.append(g);
+  wrap.append(el("div","note", "Giá tính bằng USD, đã điều chỉnh theo chia tách cổ phiếu. P/E = giá đóng cửa phiên trước ÷ EPS 4 quý đã công bố. Beta tính theo tuần, tối đa 5 năm trước đó. Nguồn: dữ liệu giá Yahoo Finance; EPS và giá trị sổ sách từ macrotrends.net."));
   return wrap;
 }
 
@@ -429,10 +478,10 @@ $("bConfirm").onclick = () => {
   cash += pnl;
   history.push({s, pick, inv, pnl, right});
   addSeen(s.id);
-  game.rounds.push({ id:s.id, name:s.name, ticker:s.ticker, sector:s.sector, when:s.when, change:s.change, facts: isHard() ? s.facts : curFacts, lesson:s.lesson, src:s.src,
-                     pick, pct: pick === "up" ? +$("aRange").value : 0, inv, pnl, right, cashAfter: cash,
-                     hard: isHard(), docOrder: isHard() ? curOrder : null, read: isHard() ? [...readIdx] : null });
-  if (isHard()){ readIdx = curDocs.map((_,k)=>k); renderDocs(); $("readsLeft").textContent = "∞ (đã chốt lệnh, đọc thoải mái)"; }
+  game.rounds.push({ id:s.id, name:s.name, ticker:s.ticker, sector:s.sector, when:s.when, change:s.change, facts: isNum(s) ? [] : isHard() ? s.facts : curFacts, lesson:s.lesson, src:s.src,
+                     pick, pct: pick === "up" ? +$("aRange").value : 0, inv, pnl, right, cashAfter: cash, num: isNum(s),
+                     hard: isHard() && !isNum(s), docOrder: isHard() && !isNum(s) ? curOrder : null, read: isHard() && !isNum(s) ? [...readIdx] : null });
+  if (isHard() && !isNum(s)){ readIdx = curDocs.map((_,k)=>k); renderDocs(); $("readsLeft").textContent = "∞ (đã chốt lệnh, đọc thoải mái)"; }
   game.end = cash; game.correct = correct; saveGame();
   $("rVerdict").textContent = right ? "✅ Đoán đúng!" : "❌ Đoán sai rồi";
   $("rWhen").textContent = `Thời điểm thật: ${s.when}`;
@@ -477,7 +526,7 @@ function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.c
 function roundDetail(r, i){
   const d = el("details","rd");
   const sm = el("summary");
-  sm.append(el("span", null, `${i+1}. ${r.right ? "✅" : "❌"} ${r.hard ? "🔥 " : ""}${r.name} (${r.when})`));
+  sm.append(el("span", null, `${i+1}. ${r.right ? "✅" : "❌"} ${r.num ? "📊 " : r.hard ? "🔥 " : ""}${r.name} (${r.when})`));
   sm.append(el("b", r.change > 0 ? "pos" : "neg", pct(r.change)));
   d.append(sm);
   d.append(el("div","sector", r.sector));
@@ -490,6 +539,10 @@ function roundDetail(r, i){
       if (doc.b) box.append(el("div", null, doc.b));
       d.append(box);
     });
+  } else if (r.num && STATS[r.id]){
+    d.append(el("div","sector", "📊 Câu chỉ có biểu đồ và con số"));
+    const sc = ALL.find(x => x.id === r.id);
+    d.append(statsBox(STATS[r.id]), numbersBox({fin: sc && sc.fin}));
   } else {
     const ol = el("ol"); r.facts.forEach(f => ol.append(el("li", null, f))); d.append(ol);
   }
