@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đi Chợ Thông Minh 🛍️</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#fff5f7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#fff5f7;--card:#fff;--line:#ffd6e0;--text:#5a3d4a;--muted:#9b7f8b;--accent:#f06b8e;--soft:#fff0f4;--ok:#16a34a;--bad:#e11d48}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:20px 16px 40px}
+  button{touch-action:manipulation;font-family:inherit}
+  .wrap{max-width:560px;margin:0 auto}
+  .back{display:inline-block;margin-bottom:12px;color:var(--accent);font-weight:700;text-decoration:none;font-size:14px}
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+  h1{font-family:'Mali',cursive;font-size:24px;color:var(--accent)}
+  h1 small{display:block;font-family:'Nunito';font-size:13px;color:var(--muted);font-weight:600}
+  .stats{display:flex;gap:8px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;text-align:right}
+  .stat span{display:block;font-size:11px;color:var(--muted)}
+  .stat b{font-size:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:14px;box-shadow:0 6px 24px rgba(240,107,142,.10)}
+  .kind{display:inline-block;font-size:12px;font-weight:800;color:var(--accent);background:#ffe3ea;padding:4px 10px;border-radius:999px;margin-bottom:10px}
+  .q{font-size:17px;font-weight:700;line-height:1.45}
+  .opts{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+  .opt{display:flex;align-items:center;gap:12px;text-align:left;background:var(--soft);border:2px solid transparent;border-radius:14px;padding:12px 14px;cursor:pointer;color:var(--text);transition:.15s}
+  .opt:hover{border-color:var(--line)}
+  .opt .ico{font-size:28px}
+  .opt .lbl{font-weight:800;font-size:15.5px}
+  .opt .sub{font-size:13.5px;color:var(--muted);margin-top:2px}
+  .opt .cost{margin-left:auto;font-weight:800;font-size:15px;white-space:nowrap;display:none}
+  .done .opt{cursor:default}
+  .done .opt .cost{display:block}
+  .opt.right{border-color:var(--ok);background:#ecfdf3}
+  .opt.wrong{border-color:var(--bad);background:#fff1f3}
+  .result{display:none;margin-top:14px}
+  .result.show{display:block}
+  .verdict{font-size:19px;font-weight:800;margin-bottom:8px}
+  .tip{background:#fff7e8;border-left:3px solid #f59e0b;border-radius:10px;padding:12px;font-size:14px;line-height:1.5}
+  .tip b{color:#b45309}
+  .btn{width:100%;margin-top:14px;font-weight:800;font-size:16px;background:var(--accent);color:#fff;border:none;border-radius:14px;padding:14px;cursor:pointer}
+  .end{display:none;text-align:center}
+  .end.show{display:block}
+  .big{font-size:40px;font-weight:800;color:var(--accent);margin:8px 0}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="./#game">← Về trang của Clara 💌</a>
+  <header>
+    <h1>🛍️ Đi Chợ Thông Minh<small>Chọn món hời nhất, đừng để khuyến mãi lừa!</small></h1>
+    <div class="stats">
+      <div class="stat"><span>Câu</span><b id="sRound"></b></div>
+      <div class="stat"><span>Đúng</span><b id="sScore"></b></div>
+      <div class="stat"><span>Chuỗi</span><b id="sStreak"></b></div>
+    </div>
+  </header>
+
+  <div class="card" id="play">
+    <span class="kind" id="kind"></span>
+    <p class="q" id="q"></p>
+    <div class="opts" id="opts"></div>
+    <div class="result" id="result">
+      <div class="verdict" id="verdict"></div>
+      <div class="tip" id="tip"></div>
+      <button class="btn" id="next"></button>
+    </div>
+  </div>
+
+  <div class="card end" id="end">
+    <div class="verdict">🧺 Đi chợ xong rồi!</div>
+    <div class="big" id="eScore"></div>
+    <div class="tip" id="eRate" style="text-align:left"></div>
+    <button class="btn" id="again">Đi chợ lần nữa (câu hỏi mới)</button>
+  </div>
+
+  <footer>Mỗi lần chơi là một bộ câu hỏi mới với giá ngẫu nhiên. Giá là giá giả lập.</footer>
+</div>
+
+<script>
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const rnd = (a,b) => a + Math.random()*(b-a);
+const ri = (a,b) => Math.floor(rnd(a, b+1));
+const pickOne = a => a[Math.floor(Math.random()*a.length)];
+const shuffle = a => { for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const money = n => "$" + n.toFixed(2);
+const tagPrice = p => Math.max(0.49, Math.round(p*2)/2 - 0.01);   // prices like $4.99, $5.49
+// true when the cheapest option beats the runner-up by at least `gap` (so every round has one clear answer)
+function clearWinner(costs, gap=0.03){
+  const s = [...costs].sort((a,b)=>a-b);
+  return s[1] - s[0] >= s[0]*gap && s[1] - s[0] >= 0.05;
+}
+
+/* ---------- round generators: each returns {kind, q, opts:[{ico,lbl,sub,cost,costText}], tip} ---------- */
+const GEN = {
+  unit(){
+    const pool = [
+      {n:"dầu gội", ico:"🧴", u:"ml", per:100, perTxt:"100ml", sizes:[250,400,650,1000], b:[0.9,1.6]},
+      {n:"sữa tươi", ico:"🥛", u:"L", per:1, perTxt:"1L", sizes:[0.95,1.9,3.8], b:[1.1,1.8]},
+      {n:"gạo thơm", ico:"🍚", u:"kg", per:1, perTxt:"1kg", sizes:[2,5,9,20], b:[1.8,3.2]},
+      {n:"cà phê hạt", ico:"☕", u:"g", per:100, perTxt:"100g", sizes:[250,340,500,1000], b:[2,4]},
+      {n:"nước suối", ico:"💧", u:" chai", per:1, perTxt:"1 chai", sizes:[6,12,24,40], b:[0.25,0.6]},
+      {n:"giấy vệ sinh", ico:"🧻", u:" cuộn", per:1, perTxt:"1 cuộn", sizes:[4,12,24,30], b:[0.6,1.2]},
+      {n:"trứng gà", ico:"🥚", u:" quả", per:1, perTxt:"1 quả", sizes:[6,12,18,30], b:[0.25,0.5]},
+      {n:"snack khoai tây", ico:"🥔", u:"g", per:100, perTxt:"100g", sizes:[40,150,280], b:[1.5,3]}
+    ];
+    for (;;){
+      const it = pickOne(pool), base = rnd(...it.b);
+      const sizes = shuffle([...it.sizes]).slice(0,3).sort((a,b)=>a-b);
+      const opts = sizes.map(sz => {
+        const price = tagPrice(sz/it.per*base*rnd(0.75,1.2));
+        const unit = price/(sz/it.per);
+        return {ico:it.ico, lbl:`${sz}${it.u} · ${money(price)}`, sub:"", cost:unit, costText:`${money(unit)}/${it.perTxt}`};
+      });
+      if (!clearWinner(opts.map(o=>o.cost), 0.04)) continue;
+      return {kind:"So giá theo đơn vị", q:`Bạn muốn mua ${it.n}. Loại nào rẻ nhất tính theo ${it.perTxt}?`, opts,
+        tip:"<b>Mẹo:</b> Chia giá cho số lượng để ra giá mỗi đơn vị. Gói to <i>thường</i> rẻ hơn nhưng không phải lúc nào cũng vậy, siêu thị hay đặt bẫy ở đây!"};
+    }
+  },
+  deal(){
+    const pool = [{n:"hộp bánh quy",ico:"🍪",p:[3,6]},{n:"chai nước giặt",ico:"🫧",p:[8,15]},{n:"ly mì",ico:"🍜",p:[1,2.5]},{n:"lốc sữa chua",ico:"🥣",p:[4,7]},{n:"hũ kem dưỡng",ico:"🧴",p:[12,25]},{n:"gói kẹo dẻo",ico:"🍬",p:[2,4]}];
+    for (;;){
+      const it = pickOne(pool), p = tagPrice(rnd(...it.p)), need = ri(1,5);
+      const pct = pickOne([20,25,30,35,40]);
+      const T = Math.ceil(p*ri(2,4)/5)*5, K = Math.max(2, Math.round(T*rnd(0.15,0.3)));
+      const full = need*p;
+      const payFor = need - Math.floor(need/3);
+      const opts = [
+        {ico:"🏷️", lbl:`Giảm ${pct}%`, sub:"Áp dụng cho mọi sản phẩm", cost:full*(1-pct/100)},
+        {ico:"🎁", lbl:"Mua 2 tặng 1", sub:"Cứ 3 món thì 1 món miễn phí", cost:payFor*p},
+        {ico:"🎟️", lbl:`Giảm $${K} cho đơn từ $${T}`, sub:"Không cộng dồn", cost: full >= T ? full-K : full}
+      ];
+      if (!clearWinner(opts.map(o=>o.cost))) continue;
+      opts.forEach(o=>o.costText = money(o.cost));
+      return {kind:"Chọn khuyến mãi", q:`Bạn cần đúng <b>${need}</b> ${it.n}, giá ${money(p)} mỗi món (tổng ${money(full)}). Chọn khuyến mãi nào để trả ít nhất?`, opts: shuffle(opts),
+        tip:"<b>Mẹo:</b> \"Mua 2 tặng 1\" chỉ có lợi khi bạn thật sự cần 3 món. Phiếu giảm theo đơn tối thiểu chỉ có ích khi đơn của bạn đã đủ mức, đừng mua thêm đồ không cần để đủ điều kiện."};
+    }
+  },
+  stack(){
+    const pool = [{n:"đôi giày",ico:"👟"},{n:"chiếc áo khoác",ico:"🧥"},{n:"bộ nồi",ico:"🍳"},{n:"cái balo",ico:"🎒"},{n:"bộ mỹ phẩm",ico:"💄"}];
+    for (;;){
+      const it = pickOne(pool), P = tagPrice(rnd(40,140)), x = pickOne([15,20,25,30]), C = pickOne([5,10,15]);
+      const y = x + pickOne([5,10]);
+      const opts = [
+        {ico:"🏷️", lbl:`Giảm ${x}% trước, rồi trừ phiếu $${C}`, sub:"", cost:P*(1-x/100)-C},
+        {ico:"🎟️", lbl:`Trừ phiếu $${C} trước, rồi giảm ${x}%`, sub:"", cost:(P-C)*(1-x/100)},
+        {ico:"💸", lbl:`Chỉ giảm ${y}%, không dùng phiếu`, sub:"", cost:P*(1-y/100)}
+      ];
+      if (!clearWinner(opts.map(o=>o.cost), 0.01)) continue;
+      opts.forEach(o=>o.costText = money(o.cost));
+      return {kind:"Thứ tự giảm giá", q:`${it.n[0].toUpperCase()+it.n.slice(1)} giá ${money(P)}. Bạn có phiếu giảm $${C} và shop đang giảm giá. Cách nào rẻ nhất?`, opts: shuffle(opts),
+        tip:"<b>Mẹo:</b> Giảm % trước rồi mới trừ tiền mặt thì luôn lợi hơn, vì phiếu tiền mặt giữ nguyên giá trị, còn % thì giảm trên số tiền lớn hơn. Nhưng nhớ so cả với phương án giảm % lớn hơn!"};
+    }
+  },
+  fake(){
+    const pool = [{n:"tai nghe không dây",ico:"🎧",p:[40,90]},{n:"nồi chiên không dầu",ico:"🍟",p:[50,110]},{n:"áo khoác",ico:"🧥",p:[35,80]},{n:"giày thể thao",ico:"👟",p:[45,100]},{n:"máy sấy tóc",ico:"💨",p:[25,60]}];
+    for (;;){
+      const it = pickOne(pool), T = rnd(...it.p);
+      const a = tagPrice(T*rnd(0.95,1.15)), b = tagPrice(T*rnd(0.85,1.05)), c = tagPrice(T*rnd(0.9,1.1));
+      const opts = [
+        {ico:"🔥", lbl:`Shop A: GIẢM 50%!!!`, sub:`Giá gốc ${money(a*2)} → còn ${money(a)}`, cost:a},
+        {ico:"🏪", lbl:"Shop B: không khuyến mãi", sub:`Giá bán ${money(b)}`, cost:b},
+        {ico:"🏷️", lbl:"Shop C: giảm 20%", sub:`${money(c/0.8)} → còn ${money(c)}`, cost:c}
+      ];
+      if (!clearWinner(opts.map(o=>o.cost))) continue;
+      opts.forEach(o=>o.costText = money(o.cost));
+      return {kind:"Giảm giá ảo?", q:`Cùng một mẫu ${it.n} y hệt nhau ở 3 shop. Mua ở đâu rẻ nhất?`, opts: shuffle(opts),
+        tip:"<b>Mẹo:</b> Đừng nhìn số % giảm, hãy nhìn <i>giá cuối cùng</i>. Nhiều shop nâng \"giá gốc\" lên thật cao rồi ghi giảm 50% cho hấp dẫn."};
+    }
+  },
+  ship(){
+    const pool = [{n:"hộp trà",ico:"🍵",p:[4,9]},{n:"cuốn sách",ico:"📚",p:[8,18]},{n:"chai nước rửa chén",ico:"🧽",p:[3,6]},{n:"hộp thức ăn cho mèo",ico:"🐱",p:[5,12]}];
+    for (;;){
+      const it = pickOne(pool), base = rnd(...it.p), need = ri(1,6);
+      const pLocal = tagPrice(base*rnd(1.05,1.25)), pOn1 = tagPrice(base*rnd(0.8,0.95)), pOn2 = tagPrice(base*rnd(0.9,1.05));
+      const S = pickOne([4.99,5.99,6.99,7.99]), F = pickOne([25,35,50]);
+      const on2 = need*pOn2;
+      const opts = [
+        {ico:"🏪", lbl:"Cửa hàng gần nhà", sub:`${money(pLocal)}/món, không tốn phí ship`, cost:need*pLocal},
+        {ico:"📦", lbl:"Shop online A", sub:`${money(pOn1)}/món + phí ship ${money(S)}`, cost:need*pOn1+S},
+        {ico:"🚚", lbl:"Shop online B", sub:`${money(pOn2)}/món, freeship cho đơn từ $${F} (dưới thì ship ${money(S)})`, cost: on2 >= F ? on2 : on2+S}
+      ];
+      if (!clearWinner(opts.map(o=>o.cost))) continue;
+      opts.forEach(o=>o.costText = money(o.cost));
+      return {kind:"Tính cả phí ship", q:`Bạn cần mua <b>${need}</b> ${it.n}. Mua ở đâu tổng tiền thấp nhất?`, opts: shuffle(opts),
+        tip:"<b>Mẹo:</b> Giá online rẻ chưa chắc đã rẻ: luôn cộng phí ship. Mua ít thì phí ship \"ăn\" hết phần rẻ; mua nhiều thì online mới thật sự lợi."};
+    }
+  },
+  sub(){
+    const pool = [{n:"app nghe nhạc",ico:"🎵",m:[9,13]},{n:"phòng gym",ico:"🏋️",m:[25,45]},{n:"app học tiếng Anh",ico:"📖",m:[10,15]},{n:"app xem phim",ico:"🎬",m:[12,18]}];
+    for (;;){
+      const it = pickOne(pool), m = tagPrice(rnd(...it.m)), K = ri(2,12);
+      const y = tagPrice(m*rnd(8.5,10.5)), s6 = tagPrice(m*rnd(4.6,5.6));
+      const opts = [
+        {ico:"📅", lbl:"Gói tháng", sub:`${money(m)}/tháng, hủy lúc nào cũng được`, cost:K*m},
+        {ico:"🗓️", lbl:"Gói 6 tháng", sub:`${money(s6)} cho 6 tháng`, cost:Math.ceil(K/6)*s6},
+        {ico:"📆", lbl:"Gói năm", sub:`${money(y)} cho 12 tháng`, cost:y}
+      ];
+      if (!clearWinner(opts.map(o=>o.cost))) continue;
+      opts.forEach(o=>o.costText = money(o.cost));
+      return {kind:"Gói tháng hay gói năm", q:`Bạn chỉ dùng ${it.n} khoảng <b>${K} tháng</b>. Chọn gói nào tốn ít tiền nhất?`, opts: shuffle(opts),
+        tip:"<b>Mẹo:</b> Gói năm chỉ rẻ khi bạn thật sự dùng đủ lâu. Hãy tính số tháng bạn <i>chắc chắn</i> dùng, đừng tính theo số tháng bạn <i>hy vọng</i> sẽ dùng."};
+    }
+  }
+};
+
+/* ---------- game ---------- */
+const ROUNDS = 12;
+let rounds, i, score, streak, best;
+function newGame(){
+  const kinds = shuffle([...Object.keys(GEN), ...Object.keys(GEN)]);
+  rounds = kinds.slice(0, ROUNDS).map(k => GEN[k]());
+  i = 0; score = 0; streak = 0; best = 0;
+  $("end").classList.remove("show"); $("play").style.display = "";
+  show();
+}
+function stats(){
+  $("sRound").textContent = `${Math.min(i+1,ROUNDS)}/${ROUNDS}`;
+  $("sScore").textContent = score;
+  $("sStreak").textContent = streak ? `🔥${streak}` : "0";
+}
+function show(){
+  const r = rounds[i];
+  $("kind").textContent = r.kind;
+  $("q").innerHTML = r.q;
+  $("opts").innerHTML = ""; $("opts").classList.remove("done");
+  $("result").classList.remove("show");
+  const min = Math.min(...r.opts.map(o=>o.cost));
+  r.opts.forEach(o => {
+    const b = document.createElement("button"); b.className = "opt";
+    b.innerHTML = `<span class="ico"></span><span><div class="lbl"></div><div class="sub"></div></span><span class="cost"></span>`;
+    b.querySelector(".ico").textContent = o.ico;
+    b.querySelector(".lbl").textContent = o.lbl;
+    b.querySelector(".sub").textContent = o.sub;
+    b.querySelector(".cost").textContent = o.costText;
+    if (!o.sub) b.querySelector(".sub").remove();
+    b.onclick = () => answer(b, o.cost === min);
+    o.el = b; o.best = o.cost === min;
+    $("opts").appendChild(b);
+  });
+  stats();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+function answer(btn, ok){
+  if ($("opts").classList.contains("done")) return;
+  $("opts").classList.add("done");
+  rounds[i].opts.forEach(o => { if (o.best) o.el.classList.add("right"); });
+  if (!ok) btn.classList.add("wrong");
+  if (ok){ score++; streak++; best = Math.max(best, streak); } else streak = 0;
+  $("verdict").textContent = ok ? pickOne(["✅ Chuẩn luôn! Đi chợ đỉnh quá","✅ Đúng rồi! Ví tiền cảm ơn bạn","✅ Hời! Không bị lừa nha"]) : "❌ Hụt rồi! Xem lại cách tính bên dưới nè";
+  $("tip").innerHTML = rounds[i].tip;
+  $("next").textContent = i+1 < ROUNDS ? "Câu tiếp theo →" : "Xem kết quả 🧺";
+  $("result").classList.add("show");
+  stats();
+  $("result").scrollIntoView({behavior:"smooth", block:"nearest"});
+}
+$("next").onclick = () => { i++; i < ROUNDS ? show() : finish(); };
+function finish(){
+  $("play").style.display = "none"; $("end").classList.add("show");
+  $("eScore").textContent = `${score}/${ROUNDS}`;
+  const r = score/ROUNDS;
+  $("eRate").innerHTML = (r >= 0.9 ? "🏆 <b>Bà hoàng đi chợ!</b> Không khuyến mãi nào lừa được bạn."
+    : r >= 0.7 ? "👍 <b>Đi chợ giỏi!</b> Chỉ cần cẩn thận hơn với vài cái bẫy nhỏ."
+    : r >= 0.5 ? "🙂 <b>Tạm ổn.</b> Nhớ luôn tính giá cuối cùng và giá mỗi đơn vị nha."
+    : "📚 <b>Siêu thị đang thắng bạn!</b> Đọc lại mẹo mỗi câu rồi chơi lại nhé.") + `<br>Chuỗi đúng dài nhất: 🔥${best}`;
+  stats();
+}
+$("again").onclick = newGame;
+newGame();
+</script>
+</body>
+</html>

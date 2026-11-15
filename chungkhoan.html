@@ -73,7 +73,15 @@
     </div>
   </header>
 
-  <div id="play">
+  <div class="card" id="intro">
+    <div class="verdict">Chơi bao nhiêu câu?</div>
+    <p class="sector">Tình huống thật, mỗi ván chọn ngẫu nhiên.</p>
+    <div class="choice" style="grid-template-columns:1fr 1fr 1fr">
+      <button data-r="10">10 câu</button><button data-r="20">20 câu</button><button data-r="50">Tất cả</button>
+    </div>
+  </div>
+
+  <div id="play" style="display:none">
     <div class="card">
       <div class="co"><h2 id="coName"></h2><span class="tag" id="coTicker"></span></div>
       <div class="sector" id="coSector"></div>
@@ -116,115 +124,16 @@
     <div class="sector" id="eSum"></div>
     <div class="lesson" id="eRate"></div>
     <div class="history" id="eHist"></div>
-    <button class="btn" id="bAgain">Chơi lại (xáo trộn câu hỏi)</button>
+    <button class="btn" id="bAgain">Chơi ván mới</button>
   </div>
 
   <footer>Dữ kiện lấy từ tin tức thật; giá và % là số làm tròn, xấp xỉ.<br>Game để luyện tư duy, không phải lời khuyên đầu tư.</footer>
 </div>
 
+<script src="chungkhoan-data.js"></script>
 <script>
-/* Each scenario: 5 real facts known at that moment, then what happened ~1 year later. */
-const SCENARIOS = [
-  { name:"Meta Platforms", ticker:"META", sector:"Mạng xã hội · Quảng cáo",
-    facts:[
-      "Cổ phiếu đã rơi khoảng 77% từ đỉnh, mất hơn 750 tỷ USD vốn hóa.",
-      "P/E chỉ khoảng 9–11 lần, rẻ hơn mặt bằng chung thị trường S&P 500.",
-      "Mảng metaverse (Reality Labs) lỗ 3,7 tỷ USD chỉ trong một quý, và công ty nói năm sau còn lỗ nhiều hơn.",
-      "Công ty vừa sa thải 11.000 người (~13% nhân sự), đợt lớn nhất lịch sử, và tuyên bố cắt giảm chi tiêu.",
-      "Apple đổi chính sách quyền riêng tư khiến quảng cáo nhắm mục tiêu kém hiệu quả; TikTok đang giành người dùng trẻ."
-    ],
-    when:"Tháng 11/2022", change:260,
-    lesson:"Công ty vẫn lãi rất lớn từ quảng cáo, P/E thấp, và việc cắt giảm chi phí (\"năm của hiệu quả\") làm lợi nhuận bật lại. Khi một doanh nghiệp còn kiếm tiền tốt mà thị trường quá bi quan, đó thường là cơ hội." },
-
-  { name:"Netflix", ticker:"NFLX", sector:"Phim trực tuyến",
-    facts:[
-      "Lần đầu tiên sau hơn 10 năm mất thuê bao: giảm 200.000 người trong một quý.",
-      "Công ty dự báo quý tới mất thêm khoảng 2 triệu thuê bao.",
-      "Cổ phiếu rơi 35% chỉ trong một ngày, giảm khoảng 62% từ đầu năm.",
-      "Khoảng 100 triệu hộ đang dùng chung mật khẩu mà không trả tiền.",
-      "Sau nhiều năm từ chối, công ty quay sang tính làm gói rẻ có quảng cáo và thu phí chia sẻ mật khẩu."
-    ],
-    when:"Tháng 4/2022", change:45,
-    lesson:"Giá còn rơi thêm vài tuần sau đó, nhưng gói quảng cáo và việc chặn chia sẻ mật khẩu kéo thuê bao tăng trở lại. Tin xấu đã phản ánh hết vào giá, và công ty có kế hoạch rõ ràng để sửa." },
-
-  { name:"Zoom Video", ticker:"ZM", sector:"Phần mềm họp trực tuyến",
-    facts:[
-      "Doanh thu quý tăng 355% so với cùng kỳ năm trước.",
-      "Cổ phiếu đã tăng khoảng 690% chỉ từ đầu năm.",
-      "Định giá cực cao: P/E khoảng 200 lần, P/B khoảng 128 lần.",
-      "Microsoft Teams tăng 53% người dùng; Google cho họp miễn phí đến 100 người.",
-      "Khách hàng nhỏ (dưới 10 nhân viên, dễ hủy) chiếm khoảng 36% doanh thu; tin vaccine đang tới gần."
-    ],
-    when:"Tháng 10/2020", change:-50,
-    lesson:"Tăng trưởng tuyệt vời nhưng giá đã \"trả trước\" cho rất nhiều năm. Khi mọi người quay lại văn phòng và đối thủ miễn phí cạnh tranh, tăng trưởng chậm lại và giá sụp. Công ty tốt chưa chắc là cổ phiếu tốt nếu mua quá đắt." },
-
-  { name:"NVIDIA", ticker:"NVDA", sector:"Chip bán dẫn",
-    facts:[
-      "Cổ phiếu giảm khoảng 62% từ đầu năm, chạm đáy 52 tuần.",
-      "Mỹ cấm bán chip AI cao cấp (A100, H100) sang Trung Quốc, ảnh hưởng khoảng 400 triệu USD doanh thu mỗi quý.",
-      "Doanh thu mảng game giảm mạnh, nhu cầu GPU đào coin gần như biến mất.",
-      "Ngân hàng trung ương Mỹ tăng lãi suất liên tục, lạm phát khoảng 8,2%.",
-      "P/E dự phóng khoảng 23 lần; công ty vừa bắt đầu giao chip data center thế hệ mới."
-    ],
-    when:"Tháng 10/2022", change:300,
-    lesson:"Vài tuần sau ChatGPT ra mắt, cơn sốt AI làm nhu cầu chip data center bùng nổ. Bài học: thị trường hay nhìn vào mảng đang xấu (game, crypto) mà bỏ qua mảng sắp bùng nổ." },
-
-  { name:"Boeing", ticker:"BA", sector:"Hàng không · Sản xuất máy bay",
-    facts:[
-      "Dòng máy bay chủ lực rơi lần thứ hai trong chưa đầy 5 tháng; nhiều nước lệnh cấm bay toàn bộ dòng này.",
-      "Chỉ 10 ngày trước, cổ phiếu vừa lập đỉnh mọi thời đại.",
-      "Sau tai nạn, giá mới giảm khoảng 16% và vẫn tăng khoảng 15% từ đầu năm.",
-      "Nhiều năm liền công ty dồn hàng chục tỷ USD mua lại cổ phiếu của chính mình.",
-      "Dòng máy bay bị cấm là dòng bán chạy và lời nhất của công ty."
-    ],
-    when:"Tháng 3/2019", change:-60,
-    lesson:"Lệnh cấm bay kéo dài cả năm, doanh thu năm đó giảm 25%, CEO bị sa thải, rồi dịch bệnh đóng băng ngành hàng không. Khi vấn đề nằm ở sản phẩm cốt lõi và niềm tin an toàn, mức giảm 16% ban đầu thường chưa phải là đáy." },
-
-  { name:"Apple", ticker:"AAPL", sector:"Điện thoại · Công nghệ tiêu dùng",
-    facts:[
-      "Công ty cảnh báo doanh thu lần đầu tiên sau 17 năm, hạ dự báo quý xuống còn 84 tỷ USD.",
-      "Lý do chính: iPhone bán kém ở Trung Quốc khi kinh tế nước này chậm lại.",
-      "Cổ phiếu đã giảm hơn 30% từ đỉnh 52 tuần.",
-      "P/E dự phóng khoảng 12,6 lần, cổ tức khoảng 1,9%/năm.",
-      "Mảng dịch vụ (App Store, iCloud…) lập kỷ lục và số thiết bị đang được dùng vẫn tăng."
-    ],
-    when:"Tháng 1/2019", change:100,
-    lesson:"Một quý xấu không làm hỏng một doanh nghiệp có hệ sinh thái mạnh. P/E thấp + mảng dịch vụ tăng đều giúp cổ phiếu tăng gấp đôi trong năm đó." },
-
-  { name:"GameStop", ticker:"GME", sector:"Bán lẻ trò chơi điện tử",
-    facts:[
-      "Giá cổ phiếu tăng hơn 1.500% chỉ trong khoảng một tháng.",
-      "Số cổ phiếu bị bán khống từng vượt 100% số cổ phiếu đang lưu hành.",
-      "Một diễn đàn trên Reddit đang rủ nhau mua để \"ép\" các quỹ bán khống.",
-      "Doanh thu giảm nhiều năm liền, công ty liên tục lỗ và đóng bớt cửa hàng.",
-      "Người chơi game ngày càng tải game online thay vì mua đĩa ở cửa hàng."
-    ],
-    when:"Cuối tháng 1/2021", change:-70,
-    lesson:"Giá được đẩy lên bởi đám đông chứ không phải lợi nhuận. Chỉ vài tuần sau giá rơi gần 90% từ đỉnh. Khi giá tăng điên cuồng mà doanh nghiệp đi xuống, người mua sau cùng thường chịu lỗ." },
-
-  { name:"Microsoft", ticker:"MSFT", sector:"Phần mềm · Điện toán đám mây",
-    facts:[
-      "Công ty vừa bổ nhiệm CEO mới, người từng lãnh đạo mảng điện toán đám mây.",
-      "Doanh số máy tính cá nhân giảm nhiều năm liền.",
-      "Hệ điều hành Windows mới bị người dùng chê nhiều.",
-      "P/E khoảng 14–15 lần, cổ tức khoảng 3%/năm.",
-      "Nhiều người coi công ty là \"gã khổng lồ cũ\" đã lỡ cuộc đua điện thoại di động."
-    ],
-    when:"Tháng 2/2014", change:20,
-    lesson:"CEO mới đặt cược vào đám mây (Azure) và phần mềm thuê bao. Năm đầu tăng vừa phải, nhưng 5 năm sau cổ phiếu tăng hơn 3 lần. Định giá rẻ + chiến lược mới đúng hướng là công thức mạnh." },
-
-  { name:"Peloton", ticker:"PTON", sector:"Thiết bị tập thể dục tại nhà",
-    facts:[
-      "Công ty hạ dự báo doanh thu cả năm tới 1 tỷ USD.",
-      "Cổ phiếu rơi khoảng 35% trong một ngày, giảm khoảng 70% từ đỉnh.",
-      "Công ty lỗ ngày càng lớn, hàng tồn kho chất đống.",
-      "Phòng gym mở cửa trở lại, mọi người bớt tập ở nhà.",
-      "Không có lợi nhuận nên không tính được P/E."
-    ],
-    when:"Tháng 11/2021", change:-80,
-    lesson:"Giảm 70% chưa có nghĩa là rẻ. Khi doanh nghiệp lỗ, nhu cầu thật đang giảm và không có lợi nhuận để định giá, \"bắt đáy\" rất nguy hiểm. Năm sau giá còn rơi thêm khoảng 80%." }
-];
-
+const ALL = SCENARIOS.map(x=>({name:x.n, ticker:x.t, sector:x.s, when:x.w, change:x.c, facts:x.f, lesson:x.l}));
+let ROUNDS = 10;
 const START = 10000;
 const $ = id => document.getElementById(id);
 const fmt = n => "$" + Math.round(n).toLocaleString("en-US");
@@ -234,7 +143,7 @@ let order, idx, cash, correct, pick, history;
 function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
 function start(){
-  order = shuffle([...SCENARIOS]); idx = 0; cash = START; correct = 0; history = [];
+  order = shuffle([...ALL]).slice(0, ROUNDS); idx = 0; cash = START; correct = 0; history = [];
   $("end").classList.remove("show"); $("play").style.display = "";
   load();
 }
@@ -294,9 +203,10 @@ function finish(){
   $("eCash").textContent = fmt(cash);
   $("eCash").className = "big " + (cash >= START ? "pos" : "neg");
   $("eSum").textContent = `Từ ${fmt(START)} → ${pct(ret)} · Đoán đúng ${correct}/${order.length}`;
-  const rate = correct >= 8 ? "🏆 Nhà đầu tư huyền thoại! Bạn đọc dữ kiện rất sắc."
-    : correct >= 6 ? "👍 Khá lắm! Bạn đã nhận ra nhiều tín hiệu quan trọng."
-    : correct >= 4 ? "🙂 Tạm ổn. Thử để ý kỹ hơn: định giá (P/E), công ty còn lãi không, và tin xấu đã vào giá chưa."
+  const r = correct / order.length;
+  const rate = r >= 0.85 ? "🏆 Nhà đầu tư huyền thoại! Bạn đọc dữ kiện rất sắc."
+    : r >= 0.65 ? "👍 Khá lắm! Bạn đã nhận ra nhiều tín hiệu quan trọng."
+    : r >= 0.45 ? "🙂 Tạm ổn. Thử để ý kỹ hơn: định giá (P/E), công ty còn lãi không, và tin xấu đã vào giá chưa."
     : "📚 Thị trường khó đoán lắm! Đọc lại phần bài học mỗi câu rồi thử lại nha.";
   $("eRate").textContent = rate;
   $("eHist").innerHTML = "";
@@ -310,8 +220,16 @@ function finish(){
   stats();
   window.scrollTo({top:0, behavior:"smooth"});
 }
-$("bAgain").onclick = start;
-start();
+function intro(){
+  $("end").classList.remove("show"); $("play").style.display = "none"; $("intro").style.display = "";
+  $("sRound").textContent = "-"; $("sAcc").textContent = "-"; $("sCash").textContent = fmt(START);
+}
+document.querySelectorAll("#intro button").forEach(b => b.onclick = () => {
+  ROUNDS = Math.min(+b.dataset.r, ALL.length); $("intro").style.display = "none"; start();
+});
+$("intro").querySelector("p").textContent = `Có ${ALL.length} tình huống thật, mỗi ván chọn ngẫu nhiên và xáo trộn.`;
+$("bAgain").onclick = intro;
+intro();
 </script>
 </body>
 </html>

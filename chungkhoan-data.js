@@ -1,0 +1,403 @@
+/* Stock game scenarios: 5 facts known at that moment, then roughly what happened ~1 year later.
+   c = approximate % change of the share price after ~1 year (rounded). */
+const SCENARIOS = [
+{n:"Meta Platforms",t:"META",s:"Mạng xã hội · Quảng cáo",w:"Tháng 11/2022",c:260,f:[
+"Cổ phiếu đã rơi khoảng 77% từ đỉnh, mất hơn 750 tỷ USD vốn hóa.",
+"P/E chỉ khoảng 9–11 lần, rẻ hơn mặt bằng chung thị trường S&P 500.",
+"Mảng metaverse (Reality Labs) lỗ 3,7 tỷ USD chỉ trong một quý, và công ty nói năm sau còn lỗ nhiều hơn.",
+"Công ty vừa sa thải 11.000 người (~13% nhân sự), đợt lớn nhất lịch sử, và tuyên bố cắt giảm chi tiêu.",
+"Apple đổi chính sách quyền riêng tư khiến quảng cáo nhắm mục tiêu kém hiệu quả; TikTok đang giành người dùng trẻ."],
+l:"Công ty vẫn lãi rất lớn từ quảng cáo, P/E thấp, và việc cắt giảm chi phí (\"năm của hiệu quả\") làm lợi nhuận bật lại. Doanh nghiệp còn kiếm tiền tốt mà thị trường quá bi quan thường là cơ hội."},
+
+{n:"Netflix",t:"NFLX",s:"Phim trực tuyến",w:"Tháng 4/2022",c:45,f:[
+"Lần đầu tiên sau hơn 10 năm mất thuê bao: giảm 200.000 người trong một quý.",
+"Công ty dự báo quý tới mất thêm khoảng 2 triệu thuê bao.",
+"Cổ phiếu rơi 35% chỉ trong một ngày, giảm khoảng 62% từ đầu năm.",
+"Khoảng 100 triệu hộ đang dùng chung mật khẩu mà không trả tiền.",
+"Sau nhiều năm từ chối, công ty quay sang tính làm gói rẻ có quảng cáo và thu phí chia sẻ mật khẩu."],
+l:"Giá còn rơi thêm vài tuần, nhưng gói quảng cáo và việc chặn chia sẻ mật khẩu kéo thuê bao tăng trở lại. Tin xấu đã vào giá, và công ty có kế hoạch rõ để sửa."},
+
+{n:"Zoom Video",t:"ZM",s:"Phần mềm họp trực tuyến",w:"Tháng 10/2020",c:-50,f:[
+"Doanh thu quý tăng 355% so với cùng kỳ năm trước.",
+"Cổ phiếu đã tăng khoảng 690% chỉ từ đầu năm.",
+"Định giá cực cao: P/E khoảng 200 lần, P/B khoảng 128 lần.",
+"Microsoft Teams tăng 53% người dùng; Google cho họp miễn phí đến 100 người.",
+"Khách hàng nhỏ (dưới 10 nhân viên, dễ hủy) chiếm khoảng 36% doanh thu; tin vaccine đang tới gần."],
+l:"Tăng trưởng tuyệt vời nhưng giá đã \"trả trước\" cho nhiều năm. Khi mọi người quay lại văn phòng và đối thủ miễn phí cạnh tranh, giá sụp. Công ty tốt chưa chắc là cổ phiếu tốt nếu mua quá đắt."},
+
+{n:"NVIDIA",t:"NVDA",s:"Chip bán dẫn",w:"Tháng 10/2022",c:300,f:[
+"Cổ phiếu giảm khoảng 62% từ đầu năm, chạm đáy 52 tuần.",
+"Mỹ cấm bán chip AI cao cấp (A100, H100) sang Trung Quốc, ảnh hưởng khoảng 400 triệu USD doanh thu mỗi quý.",
+"Doanh thu mảng game giảm mạnh, nhu cầu GPU đào coin gần như biến mất.",
+"Ngân hàng trung ương Mỹ tăng lãi suất liên tục, lạm phát khoảng 8,2%.",
+"P/E dự phóng khoảng 23 lần; công ty vừa bắt đầu giao chip data center thế hệ mới."],
+l:"Vài tuần sau ChatGPT ra mắt, cơn sốt AI làm nhu cầu chip data center bùng nổ. Thị trường hay nhìn vào mảng đang xấu mà bỏ qua mảng sắp bùng nổ."},
+
+{n:"Boeing",t:"BA",s:"Sản xuất máy bay",w:"Tháng 3/2019",c:-60,f:[
+"Dòng máy bay chủ lực rơi lần thứ hai trong chưa đầy 5 tháng; nhiều nước cấm bay toàn bộ dòng này.",
+"Chỉ 10 ngày trước, cổ phiếu vừa lập đỉnh mọi thời đại.",
+"Sau tai nạn, giá mới giảm khoảng 16% và vẫn tăng khoảng 15% từ đầu năm.",
+"Nhiều năm liền công ty dồn hàng chục tỷ USD mua lại cổ phiếu của chính mình.",
+"Dòng máy bay bị cấm là dòng bán chạy và lời nhất của công ty."],
+l:"Lệnh cấm bay kéo dài cả năm, doanh thu giảm 25%, CEO bị sa thải, rồi dịch bệnh đóng băng hàng không. Khi vấn đề nằm ở sản phẩm cốt lõi, mức giảm ban đầu thường chưa phải đáy."},
+
+{n:"Apple",t:"AAPL",s:"Điện thoại · Công nghệ",w:"Tháng 1/2019",c:100,f:[
+"Công ty cảnh báo doanh thu lần đầu tiên sau 17 năm, hạ dự báo quý xuống còn 84 tỷ USD.",
+"Lý do chính: iPhone bán kém ở Trung Quốc khi kinh tế nước này chậm lại.",
+"Cổ phiếu đã giảm hơn 30% từ đỉnh 52 tuần.",
+"P/E dự phóng khoảng 12,6 lần, cổ tức khoảng 1,9%/năm.",
+"Mảng dịch vụ (App Store, iCloud…) lập kỷ lục và số thiết bị đang dùng vẫn tăng."],
+l:"Một quý xấu không làm hỏng doanh nghiệp có hệ sinh thái mạnh. P/E thấp + dịch vụ tăng đều giúp cổ phiếu tăng gấp đôi."},
+
+{n:"GameStop",t:"GME",s:"Bán lẻ trò chơi điện tử",w:"Cuối tháng 1/2021",c:-70,f:[
+"Giá cổ phiếu tăng hơn 1.500% chỉ trong khoảng một tháng.",
+"Số cổ phiếu bị bán khống từng vượt 100% số cổ phiếu đang lưu hành.",
+"Một diễn đàn trên Reddit đang rủ nhau mua để \"ép\" các quỹ bán khống.",
+"Doanh thu giảm nhiều năm liền, công ty liên tục lỗ và đóng bớt cửa hàng.",
+"Người chơi ngày càng tải game online thay vì mua đĩa ở cửa hàng."],
+l:"Giá được đẩy bởi đám đông chứ không phải lợi nhuận. Vài tuần sau giá rơi gần 90% từ đỉnh. Người mua sau cùng thường chịu lỗ."},
+
+{n:"Microsoft",t:"MSFT",s:"Phần mềm · Đám mây",w:"Tháng 2/2014",c:20,f:[
+"Công ty vừa bổ nhiệm CEO mới, người từng lãnh đạo mảng điện toán đám mây.",
+"Doanh số máy tính cá nhân giảm nhiều năm liền.",
+"Hệ điều hành Windows mới bị người dùng chê nhiều.",
+"P/E khoảng 14–15 lần, cổ tức khoảng 3%/năm.",
+"Nhiều người coi công ty là \"gã khổng lồ cũ\" đã lỡ cuộc đua điện thoại."],
+l:"CEO mới đặt cược vào đám mây và phần mềm thuê bao. Năm đầu tăng vừa phải, nhưng 5 năm sau tăng hơn 3 lần. Rẻ + chiến lược mới đúng hướng là công thức mạnh."},
+
+{n:"Peloton",t:"PTON",s:"Thiết bị tập tại nhà",w:"Tháng 11/2021",c:-80,f:[
+"Công ty hạ dự báo doanh thu cả năm tới 1 tỷ USD.",
+"Cổ phiếu rơi khoảng 35% trong một ngày, giảm khoảng 70% từ đỉnh.",
+"Công ty lỗ ngày càng lớn, hàng tồn kho chất đống.",
+"Phòng gym mở cửa trở lại, mọi người bớt tập ở nhà.",
+"Không có lợi nhuận nên không tính được P/E."],
+l:"Giảm 70% chưa có nghĩa là rẻ. Doanh nghiệp lỗ, nhu cầu thật đang giảm thì \"bắt đáy\" rất nguy hiểm."},
+
+{n:"Tesla",t:"TSLA",s:"Xe điện",w:"Tháng 1/2023",c:100,f:[
+"Cổ phiếu vừa trải qua năm tệ nhất, giảm khoảng 65%.",
+"Công ty bắt đầu giảm giá xe mạnh ở nhiều nước để kích cầu.",
+"CEO bận rộn với việc mua lại một mạng xã hội lớn, bán bớt cổ phiếu công ty.",
+"Số xe giao năm vừa rồi vẫn tăng khoảng 40%, công ty vẫn có lãi.",
+"Lãi suất vay mua xe đang tăng cao."],
+l:"Nỗi lo về CEO và giảm giá xe đã bị đẩy quá đà; lợi nhuận vẫn còn và thị trường quay lại hứng thú với công nghệ. Cổ phiếu tăng gấp đôi trong năm."},
+
+{n:"Amazon",t:"AMZN",s:"Thương mại điện tử · Đám mây",w:"Tháng 1/2023",c:80,f:[
+"Cổ phiếu giảm khoảng 50% trong năm vừa rồi.",
+"Công ty sa thải khoảng 18.000 người, đợt lớn nhất lịch sử.",
+"Tăng trưởng mảng đám mây (AWS) chậm lại khi khách hàng cắt chi phí.",
+"Sau thời kỳ dịch bệnh, công ty xây kho quá nhiều, chi phí phình to.",
+"Mảng quảng cáo đang tăng trưởng nhanh và có biên lợi nhuận cao."],
+l:"Cắt giảm chi phí + quảng cáo + AWS hồi phục nhờ AI khiến lợi nhuận tăng mạnh. Công ty lớn tự \"dọn dẹp\" sau giai đoạn tiêu hoang thường được thưởng."},
+
+{n:"Alphabet (Google)",t:"GOOGL",s:"Tìm kiếm · Quảng cáo",w:"Tháng 2/2023",c:50,f:[
+"Một chatbot AI của công ty khác vừa gây sốt, nhiều người nói nó sẽ \"giết\" Google Search.",
+"Buổi demo chatbot của Google trả lời sai, cổ phiếu mất khoảng 9% trong một ngày.",
+"P/E khoảng 18–20 lần, thấp so với lịch sử của chính công ty.",
+"Công ty có hàng trăm tỷ USD tiền mặt và vẫn kiếm lời rất lớn từ quảng cáo.",
+"YouTube và Google Cloud vẫn tăng trưởng."],
+l:"Search không chết như lo ngại; Google đưa AI vào sản phẩm và lợi nhuận tiếp tục tăng. Một buổi demo hỏng không phải là kết thúc của một cỗ máy kiếm tiền."},
+
+{n:"Ford",t:"F",s:"Ô tô",w:"Tháng 11/2008",c:400,f:[
+"Khủng hoảng tài chính toàn cầu, doanh số xe tại Mỹ lao dốc.",
+"Cổ phiếu chỉ còn khoảng 1–2 USD.",
+"Hai đối thủ lớn cùng nước đang xin chính phủ cứu trợ.",
+"Hai năm trước, công ty đã vay lớn (thế chấp cả logo) để có tiền vượt khủng hoảng.",
+"Công ty đang lỗ nặng."],
+l:"Nhờ có sẵn tiền vay từ trước, Ford không phải phá sản như đối thủ. Khi kinh tế hồi phục, cổ phiếu tăng khoảng 5 lần. Thanh khoản (có đủ tiền sống sót) quyết định ai còn đứng vững."},
+
+{n:"General Motors (cũ)",t:"GM",s:"Ô tô",w:"Tháng 11/2008",c:-95,f:[
+"Khủng hoảng tài chính toàn cầu, doanh số xe tại Mỹ lao dốc.",
+"Cổ phiếu chỉ còn khoảng 3 USD, thấp nhất nhiều thập kỷ.",
+"Công ty đốt tiền rất nhanh và đang xin chính phủ cứu trợ.",
+"Gánh nặng chi phí lương hưu và bảo hiểm cho công nhân rất lớn.",
+"Các thương hiệu xe của công ty bị coi là lỗi thời so với xe Nhật."],
+l:"Công ty phá sản vài tháng sau; cổ phiếu cũ gần như mất trắng dù công ty mới sau này vẫn chạy. Khi phá sản, cổ đông là người cuối cùng được trả tiền."},
+
+{n:"Lehman Brothers",t:"LEH",s:"Ngân hàng đầu tư",w:"Tháng 3/2008",c:-100,f:[
+"Một ngân hàng đầu tư đối thủ vừa sụp đổ và bị bán tháo với giá rẻ mạt.",
+"Công ty vay nợ khoảng 30 đồng cho mỗi 1 đồng vốn.",
+"Công ty nắm rất nhiều tài sản gắn với cho vay mua nhà, trong khi giá nhà Mỹ đang giảm.",
+"Ban lãnh đạo khẳng định công ty đủ vốn và vẫn có lãi.",
+"Cổ phiếu đã giảm khoảng 40% từ đỉnh."],
+l:"Sáu tháng sau công ty phá sản, vụ lớn nhất lịch sử Mỹ. Nợ quá cao + tài sản rủi ro thì một cú sốc là đủ sụp đổ. Lời trấn an của ban lãnh đạo không thay được bảng cân đối kế toán."},
+
+{n:"Bank of America",t:"BAC",s:"Ngân hàng",w:"Tháng 3/2009",c:300,f:[
+"Cổ phiếu chỉ còn khoảng 3–4 USD, giảm hơn 90% từ đỉnh.",
+"Ngân hàng đã nhận tiền cứu trợ từ chính phủ.",
+"Nhiều người lo các ngân hàng lớn sẽ bị quốc hữu hóa.",
+"Ngân hàng vừa mua lại một công ty môi giới lớn và một công ty cho vay mua nhà đang gặp rắc rối.",
+"Chính phủ chuẩn bị kiểm tra sức chịu đựng (stress test) cho các ngân hàng lớn."],
+l:"Ngân hàng vượt qua stress test, thị trường đi lên từ đáy và cổ phiếu tăng khoảng 4 lần trong năm. Mua lúc sợ hãi tột độ có thể lời lớn, nhưng chỉ khi công ty sống sót."},
+
+{n:"Apple",t:"AAPL",s:"Máy tính · Điện thoại",w:"Tháng 1/2009",c:130,f:[
+"Kinh tế đang suy thoái nặng, người tiêu dùng thắt chặt chi tiêu.",
+"Nhà sáng lập kiêm CEO tạm nghỉ vì lý do sức khỏe.",
+"Cổ phiếu đã giảm khoảng 55% từ đỉnh.",
+"iPhone mới ra mắt khoảng 1,5 năm và App Store đang phát triển nhanh.",
+"Công ty không có nợ và có nhiều tiền mặt."],
+l:"Sản phẩm mạnh + không nợ giúp Apple vượt suy thoái; cổ phiếu tăng hơn gấp đôi trong năm. Lo lắng về một người có thể làm giá rẻ quá mức nếu doanh nghiệp vẫn tốt."},
+
+{n:"Starbucks",t:"SBUX",s:"Chuỗi cà phê",w:"Tháng 11/2008",c:130,f:[
+"Cổ phiếu chỉ còn khoảng 8–9 USD, giảm khoảng 75% từ đỉnh.",
+"Công ty đóng khoảng 600 cửa hàng kém hiệu quả ở Mỹ.",
+"Nhà sáng lập vừa quay lại làm CEO để vực dậy công ty.",
+"Kinh tế suy thoái, nhiều người coi cà phê đắt tiền là thứ nên cắt.",
+"Công ty vẫn có lãi."],
+l:"Cắt bớt cửa hàng yếu, tập trung lại trải nghiệm khách hàng; cổ phiếu tăng hơn gấp đôi trong năm. Thương hiệu mạnh còn lãi lúc suy thoái thường hồi phục nhanh."},
+
+{n:"BlackBerry (RIM)",t:"RIMM",s:"Điện thoại",w:"Tháng 6/2011",c:-70,f:[
+"Từng là điện thoại thông minh phổ biến nhất cho dân văn phòng.",
+"Thị phần đang mất nhanh vào iPhone và điện thoại Android.",
+"Máy tính bảng mới của công ty bán rất kém.",
+"P/E chỉ khoảng 4–5 lần, trông cực kỳ rẻ.",
+"Công ty vừa hạ dự báo lợi nhuận và sắp cắt giảm nhân sự."],
+l:"P/E thấp vì lợi nhuận tương lai đang biến mất. Một năm sau giá còn khoảng 1/3. \"Rẻ\" có thể là cái bẫy khi sản phẩm đang bị thay thế."},
+
+{n:"Kodak",t:"EK",s:"Nhiếp ảnh",w:"Tháng 6/2011",c:-95,f:[
+"Từng thống trị phim chụp ảnh, nhưng gần như ai cũng chụp bằng máy số và điện thoại.",
+"Công ty đốt tiền nhiều năm liền.",
+"Công ty đang tìm cách bán kho bằng sáng chế để có tiền.",
+"Cổ phiếu chỉ còn vài USD.",
+"Công ty có nhiều nghĩa vụ trả lương hưu lớn."],
+l:"Công ty nộp đơn phá sản khoảng nửa năm sau. Khi mảng kinh doanh chính biến mất và tiền đang cạn, hy vọng bán tài sản hiếm khi cứu được cổ đông."},
+
+{n:"Chipotle",t:"CMG",s:"Chuỗi nhà hàng",w:"Tháng 12/2015",c:-20,f:[
+"Nhiều đợt khách bị ngộ độc thực phẩm (E. coli, norovirus) liên quan đến chuỗi.",
+"Doanh số tại các cửa hàng cũ bắt đầu giảm mạnh.",
+"Cổ phiếu đã giảm khoảng 30% từ đỉnh.",
+"P/E vẫn khoảng 30 lần, cao hơn mặt bằng ngành.",
+"Thương hiệu từng nổi tiếng nhờ \"thực phẩm sạch\"."],
+l:"Niềm tin của khách mất nhiều thời gian để quay lại; doanh số tiếp tục yếu và giá còn giảm thêm. Khi lời hứa cốt lõi của thương hiệu bị phá vỡ, hồi phục thường chậm."},
+
+{n:"Facebook",t:"FB",s:"Mạng xã hội",w:"Tháng 9/2012",c:150,f:[
+"Cổ phiếu đã mất khoảng một nửa giá trị chỉ vài tháng sau khi lên sàn.",
+"Nhà đầu tư lo công ty chưa biết kiếm tiền trên điện thoại.",
+"Hơn 1 tỷ người dùng mỗi tháng.",
+"Nhân viên sắp được phép bán cổ phiếu, tạo áp lực bán.",
+"Doanh thu quảng cáo trên điện thoại bắt đầu xuất hiện."],
+l:"Quảng cáo trên điện thoại bùng nổ nhanh hơn dự đoán, cổ phiếu tăng khoảng 2,5 lần. Một tài sản người dùng khổng lồ thường tìm ra cách kiếm tiền."},
+
+{n:"Cisco",t:"CSCO",s:"Thiết bị mạng",w:"Tháng 3/2000",c:-75,f:[
+"Công ty vừa trở thành công ty giá trị nhất thế giới.",
+"P/E khoảng 150–200 lần.",
+"Ai cũng nói Internet sẽ thay đổi mọi thứ và cần rất nhiều thiết bị mạng.",
+"Doanh thu tăng khoảng 50%/năm.",
+"Rất nhiều khách hàng là các công ty Internet mới, đang lỗ, sống nhờ vốn đầu tư."],
+l:"Bong bóng dot-com vỡ, khách hàng phá sản, đơn hàng biến mất; cổ phiếu mất khoảng 3/4. Kể cả 20 năm sau giá vẫn chưa quay lại đỉnh. Câu chuyện đúng (Internet) nhưng giá sai."},
+
+{n:"Domino's Pizza",t:"DPZ",s:"Chuỗi pizza",w:"Tháng 12/2009",c:100,f:[
+"Khảo sát cho thấy khách đánh giá pizza của hãng rất tệ.",
+"Hãng chạy quảng cáo thừa nhận \"pizza của chúng tôi dở\" và đổi toàn bộ công thức.",
+"Cổ phiếu chỉ khoảng 8 USD.",
+"Hãng đầu tư mạnh vào đặt hàng online.",
+"Kinh tế vừa qua suy thoái, người ta chuộng đồ ăn rẻ."],
+l:"Công thức mới + đặt hàng online giúp doanh số tăng vọt; cổ phiếu gấp đôi trong năm và tăng hàng chục lần trong 10 năm. Dám nhận lỗi và sửa sản phẩm thật sự là tín hiệu tốt."},
+
+{n:"McDonald's",t:"MCD",s:"Chuỗi thức ăn nhanh",w:"Tháng 3/2003",c:100,f:[
+"Công ty vừa báo lỗ quý đầu tiên trong lịch sử.",
+"Cổ phiếu khoảng 13 USD, thấp nhất nhiều năm.",
+"Khách phàn nàn về chất lượng và dịch vụ; công ty mở cửa hàng quá nhanh.",
+"Ban lãnh đạo mới tuyên bố ngừng mở ồ ạt, tập trung cải thiện cửa hàng cũ.",
+"Cổ tức vẫn được duy trì."],
+l:"Chiến lược \"sửa nhà trước khi xây thêm\" thành công; cổ phiếu gấp đôi trong năm. Thương hiệu lớn gặp vấn đề tạm thời và có kế hoạch rõ thường hồi phục."},
+
+{n:"Moderna",t:"MRNA",s:"Dược phẩm · Vaccine",w:"Tháng 12/2021",c:-40,f:[
+"Doanh thu vaccine năm nay lên tới hàng chục tỷ USD.",
+"P/E chỉ khoảng 10 lần nhờ lợi nhuận khổng lồ.",
+"Gần như toàn bộ doanh thu đến từ một sản phẩm.",
+"Phần lớn dân số các nước giàu đã tiêm vaccine.",
+"Cổ phiếu đã tăng hơn 10 lần so với 2 năm trước."],
+l:"P/E thấp là vì lợi nhuận đang ở đỉnh và sẽ giảm khi nhu cầu vaccine giảm. Cổ phiếu mất khoảng 40%. Lợi nhuận \"một lần\" không đáng được trả giá như lợi nhuận bền vững."},
+
+{n:"Carvana",t:"CVNA",s:"Bán xe cũ online",w:"Tháng 12/2021",c:-98,f:[
+"Cổ phiếu gần đỉnh sau khi tăng rất mạnh trong thời kỳ dịch bệnh.",
+"Công ty chưa bao giờ có lãi.",
+"Công ty vay nhiều tiền để mua lại một công ty đấu giá xe lớn.",
+"Lãi suất sắp tăng, giá xe cũ đang ở mức cao kỷ lục.",
+"Doanh thu tăng rất nhanh."],
+l:"Lãi suất tăng + giá xe cũ giảm + nợ lớn khiến cổ phiếu mất khoảng 98%. Tăng trưởng nhờ vay nợ rất mong manh khi điều kiện đổi chiều."},
+
+{n:"Carvana",t:"CVNA",s:"Bán xe cũ online",w:"Tháng 12/2022",c:1000,f:[
+"Cổ phiếu đã mất khoảng 98% trong năm, chỉ còn khoảng 4–5 USD.",
+"Nhiều người dự đoán công ty sẽ phá sản.",
+"Công ty đang đàm phán tái cấu trúc khoản nợ khổng lồ.",
+"Công ty đang cắt giảm nhân sự và chi phí mạnh.",
+"Số cổ phiếu bị bán khống rất cao."],
+l:"Công ty tái cấu trúc nợ thành công và bắt đầu có lãi; cổ phiếu tăng khoảng 10 lần. Cùng một công ty, mua sai thời điểm thì mất trắng, mua lúc tuyệt vọng nhất lại lời khủng (nhưng rất rủi ro)."},
+
+{n:"Bed Bath & Beyond",t:"BBBY",s:"Bán lẻ đồ gia dụng",w:"Tháng 8/2022",c:-99,f:[
+"Cổ phiếu vừa tăng vọt gấp mấy lần trong vài tuần nhờ nhà đầu tư nhỏ lẻ trên mạng.",
+"Doanh số giảm mạnh nhiều quý liên tiếp.",
+"Công ty đang đốt tiền và vay thêm để duy trì.",
+"Một nhà đầu tư nổi tiếng vừa bán hết cổ phần ngay khi giá tăng.",
+"Công ty đóng bớt cửa hàng và cắt giảm nhân sự."],
+l:"Công ty phá sản chưa đầy một năm sau. Một đợt tăng giá do mạng xã hội không sửa được doanh nghiệp đang chết."},
+
+{n:"AMC Entertainment",t:"AMC",s:"Chuỗi rạp chiếu phim",w:"Tháng 6/2021",c:-80,f:[
+"Cổ phiếu tăng hơn 20 lần từ đầu năm nhờ phong trào nhà đầu tư nhỏ lẻ.",
+"Công ty liên tục phát hành thêm cổ phiếu để có tiền.",
+"Rạp chiếu phim vừa mở lại sau thời gian đóng cửa vì dịch.",
+"Công ty gánh nợ rất lớn và đang lỗ.",
+"Phim ngày càng ra mắt sớm trên các nền tảng trực tuyến."],
+l:"Phát hành thêm cổ phiếu làm loãng giá trị; khi cơn sốt qua, giá mất khoảng 80%. Hãy nhìn vào doanh nghiệp, không phải độ ồn ào trên mạng."},
+
+{n:"Coinbase",t:"COIN",s:"Sàn giao dịch tiền mã hóa",w:"Tháng 12/2022",c:380,f:[
+"Một sàn tiền mã hóa đối thủ rất lớn vừa sụp đổ vì gian lận.",
+"Giá Bitcoin giảm khoảng 75% từ đỉnh.",
+"Cổ phiếu giảm khoảng 85% từ đầu năm.",
+"Công ty sa thải gần 20% nhân sự và đang lỗ.",
+"Công ty là sàn lớn, niêm yết công khai tại Mỹ, tuân thủ quy định."],
+l:"Thị trường tiền mã hóa hồi phục mạnh, người dùng chuyển sang sàn được coi là an toàn hơn; cổ phiếu tăng gần 5 lần. Đối thủ sụp đổ đôi khi là cơ hội cho người sống sót."},
+
+{n:"Robinhood",t:"HOOD",s:"Ứng dụng đầu tư",w:"Tháng 8/2021",c:-85,f:[
+"Cổ phiếu vừa tăng vọt ngay sau khi lên sàn, được dân mạng săn đón.",
+"Phần lớn doanh thu đến từ giao dịch quyền chọn và tiền mã hóa của nhà đầu tư nhỏ.",
+"Công ty đang lỗ.",
+"Lượng người dùng mới bắt đầu chững lại khi cơn sốt đầu tư thời dịch bệnh qua đi.",
+"Cơ quan quản lý đang xem xét mô hình kiếm tiền của công ty."],
+l:"Khi cơn sốt giao dịch nguội đi, doanh thu giảm mạnh và cổ phiếu mất khoảng 85%. Doanh thu phụ thuộc vào \"cơn sốt\" thì không bền."},
+
+{n:"Shopify",t:"SHOP",s:"Phần mềm bán hàng online",w:"Tháng 11/2021",c:-75,f:[
+"Cổ phiếu ở gần đỉnh, định giá khoảng 40–50 lần doanh thu.",
+"Doanh thu tăng rất mạnh trong thời kỳ mua sắm online bùng nổ.",
+"Mọi người bắt đầu quay lại cửa hàng truyền thống.",
+"Lãi suất sắp tăng, cổ phiếu tăng trưởng đắt đỏ dễ bị bán.",
+"Công ty đầu tư mạnh vào hệ thống kho vận riêng."],
+l:"Tăng trưởng chậm lại và lãi suất tăng làm định giá co lại; cổ phiếu mất khoảng 3/4. Định giá theo nhiều lần doanh thu rất nhạy với lãi suất."},
+
+{n:"Palantir",t:"PLTR",s:"Phần mềm phân tích dữ liệu",w:"Tháng 12/2022",c:160,f:[
+"Cổ phiếu giảm khoảng 65% trong năm, chỉ còn khoảng 6–7 USD.",
+"Công ty sắp đạt lợi nhuận lần đầu theo chuẩn kế toán.",
+"Khách hàng lớn là chính phủ, hợp đồng dài hạn.",
+"Công ty chi rất nhiều tiền thưởng cổ phiếu cho nhân viên.",
+"AI đang bắt đầu được chú ý trở lại."],
+l:"Công ty có lãi liên tục và làn sóng AI kéo cổ phiếu tăng khoảng 2,5 lần. Bước ngoặt từ lỗ sang lãi thường là chất xúc tác mạnh."},
+
+{n:"AMD",t:"AMD",s:"Chip bán dẫn",w:"Tháng 10/2022",c:80,f:[
+"Công ty cảnh báo doanh thu quý thấp hơn dự kiến vì thị trường máy tính cá nhân lao dốc.",
+"Cổ phiếu giảm khoảng 60% từ đỉnh.",
+"Chip máy chủ (data center) vẫn giành thị phần từ đối thủ lớn.",
+"P/E dự phóng khoảng 15–20 lần.",
+"Công ty vừa mua lại một hãng chip lớn khác."],
+l:"Máy tính cá nhân chạm đáy, mảng data center và AI giúp cổ phiếu tăng khoảng 80%. Hãy tách mảng đang xấu tạm thời khỏi mảng tăng trưởng dài hạn."},
+
+{n:"ExxonMobil",t:"XOM",s:"Dầu khí",w:"Tháng 10/2020",c:85,f:[
+"Công ty vừa bị loại khỏi chỉ số Dow Jones sau gần 100 năm.",
+"Giá dầu đã từng rơi xuống âm vài tháng trước vì dịch bệnh.",
+"Cổ phiếu giảm khoảng 50% từ đầu năm; cổ tức tương đương khoảng 10%/năm.",
+"Công ty đang lỗ và cắt giảm đầu tư.",
+"Nhiều quỹ bán cổ phiếu dầu khí vì lo ngại môi trường."],
+l:"Khi kinh tế mở cửa lại, giá dầu tăng mạnh và cổ phiếu tăng khoảng 85%. Khi ai cũng ghét một ngành, giá có thể đã quá rẻ."},
+
+{n:"Vàng (quỹ GLD)",t:"GLD",s:"Kim loại quý",w:"Tháng 8/2011",c:-15,f:[
+"Giá vàng vừa lập đỉnh mọi thời đại, khoảng 1.900 USD/ounce.",
+"Giá vàng đã tăng liên tục khoảng 10 năm liền.",
+"Ngân hàng trung ương Mỹ đang in tiền (QE) để hỗ trợ kinh tế.",
+"Mỹ vừa bị hạ xếp hạng tín nhiệm lần đầu tiên trong lịch sử.",
+"Ai cũng nói về vàng như nơi trú ẩn an toàn."],
+l:"Nỗi sợ qua đi, vàng giảm khoảng 15% sau 1 năm và còn giảm sâu hơn sau đó. Mua khi tài sản lên trang nhất và ai cũng nói về nó thường là mua ở đỉnh."},
+
+{n:"Vàng (quỹ GLD)",t:"GLD",s:"Kim loại quý",w:"Tháng 1/2024",c:35,f:[
+"Giá vàng khoảng 2.050 USD/ounce, gần đỉnh lịch sử.",
+"Các ngân hàng trung ương mua vàng ở mức kỷ lục nhiều năm liền.",
+"Thị trường kỳ vọng lãi suất ở Mỹ sắp giảm.",
+"Căng thẳng địa chính trị ở nhiều nơi trên thế giới.",
+"Nợ công của Mỹ tiếp tục tăng mạnh."],
+l:"Lãi suất giảm và ngân hàng trung ương tiếp tục mua, vàng tăng khoảng 35%. Gần đỉnh không có nghĩa là hết dư địa nếu lực mua thật vẫn còn."},
+
+{n:"Novo Nordisk",t:"NVO",s:"Dược phẩm · Thuốc giảm cân",w:"Tháng 6/2024",c:-50,f:[
+"Thuốc giảm cân và tiểu đường của công ty đang cháy hàng toàn cầu.",
+"Công ty trở thành công ty giá trị nhất châu Âu.",
+"P/E khoảng 40–45 lần.",
+"Một đối thủ Mỹ có thuốc tương tự, hiệu quả giảm cân cao hơn trong thử nghiệm.",
+"Nhiều nơi bán thuốc pha chế \"nhái\" với giá rẻ."],
+l:"Cạnh tranh mạnh hơn dự kiến và tăng trưởng chậm lại, cổ phiếu mất khoảng một nửa. Định giá cao đòi hỏi mọi thứ phải hoàn hảo; chỉ cần lệch một chút là rơi mạnh."},
+
+{n:"Eli Lilly",t:"LLY",s:"Dược phẩm",w:"Tháng 1/2023",c:80,f:[
+"Thuốc tiểu đường mới của công ty cho thấy hiệu quả giảm cân rất mạnh.",
+"Công ty đang chờ phê duyệt thuốc này cho điều trị béo phì.",
+"P/E khoảng 50 lần, đắt so với ngành dược.",
+"Béo phì ảnh hưởng hàng trăm triệu người trên thế giới.",
+"Công ty còn nhiều thuốc tiềm năng khác đang thử nghiệm (ví dụ Alzheimer)."],
+l:"Thuốc được duyệt cho béo phì và doanh thu bùng nổ, cổ phiếu tăng khoảng 80%. Đắt vẫn có thể đúng nếu thị trường của sản phẩm đủ lớn."},
+
+{n:"Silicon Valley Bank",t:"SIVB",s:"Ngân hàng",w:"Tháng 2/2023",c:-100,f:[
+"Khách hàng chủ yếu là các startup công nghệ và quỹ đầu tư mạo hiểm.",
+"Ngân hàng dùng tiền gửi mua rất nhiều trái phiếu dài hạn khi lãi suất còn thấp.",
+"Lãi suất đã tăng nhanh, khiến các trái phiếu đó lỗ lớn trên giấy.",
+"Các startup đang rút tiền gửi vì gọi vốn khó hơn.",
+"Phần lớn tiền gửi vượt mức được bảo hiểm."],
+l:"Chỉ vài tuần sau, khách hàng rút tiền ồ ạt và ngân hàng sụp đổ trong 2 ngày. Lãi suất tăng + tiền gửi dễ rút + khách hàng giống nhau = rủi ro cực lớn."},
+
+{n:"Uber",t:"UBER",s:"Gọi xe · Giao đồ ăn",w:"Tháng 12/2022",c:150,f:[
+"Cổ phiếu giảm khoảng 40% trong năm.",
+"Công ty sắp đạt lợi nhuận hoạt động lần đầu sau nhiều năm lỗ.",
+"Số chuyến đi đã vượt mức trước dịch bệnh.",
+"Mảng giao đồ ăn tăng trưởng mạnh trong thời kỳ dịch.",
+"Công ty bắt đầu tạo ra dòng tiền tự do dương."],
+l:"Lợi nhuận và dòng tiền đến như kỳ vọng, cổ phiếu tăng khoảng 2,5 lần. Thời điểm doanh nghiệp chuyển từ \"đốt tiền\" sang \"kiếm tiền\" là lúc thị trường định giá lại."},
+
+{n:"Spotify",t:"SPOT",s:"Nghe nhạc trực tuyến",w:"Tháng 12/2022",c:140,f:[
+"Cổ phiếu giảm khoảng 65% trong năm.",
+"Công ty đang lỗ vì chi rất nhiều cho podcast độc quyền.",
+"Số người dùng vẫn tăng đều, hơn 450 triệu người.",
+"Công ty chưa tăng giá gói trả phí nhiều năm.",
+"Công ty sắp cắt giảm nhân sự và chi phí."],
+l:"Cắt chi phí + tăng giá gói giúp công ty có lãi; cổ phiếu tăng khoảng 2,4 lần. Người dùng trung thành cho phép doanh nghiệp tăng giá mà không mất khách."},
+
+{n:"Beyond Meat",t:"BYND",s:"Thịt thực vật",w:"Tháng 7/2019",c:-40,f:[
+"Cổ phiếu tăng khoảng 8 lần chỉ sau vài tháng lên sàn.",
+"Doanh thu tăng hơn gấp đôi mỗi năm.",
+"Công ty đang lỗ.",
+"Nhiều hãng thực phẩm lớn chuẩn bị ra sản phẩm cạnh tranh.",
+"Công ty sắp phát hành thêm cổ phiếu."],
+l:"Cạnh tranh tăng và giá đã quá cao, cổ phiếu mất khoảng 40% sau 1 năm, về sau còn mất hơn 95%. Sản phẩm \"hot\" không có rào cản cạnh tranh thì khó giữ giá trị."},
+
+{n:"Apple",t:"AAPL",s:"Điện thoại · Công nghệ",w:"Tháng 5/2016",c:65,f:[
+"Doanh số iPhone giảm lần đầu tiên trong lịch sử.",
+"Một nhà đầu tư nổi tiếng vừa bán hết cổ phiếu Apple.",
+"P/E chỉ khoảng 10–11 lần.",
+"Công ty có hơn 200 tỷ USD tiền mặt và đang mua lại cổ phiếu mạnh.",
+"Mảng dịch vụ tăng trưởng đều."],
+l:"Chu kỳ iPhone mới và dịch vụ giúp cổ phiếu tăng khoảng 65%. P/E rất thấp cho một công ty còn mạnh thường là giá hời."},
+
+{n:"BP",t:"BP",s:"Dầu khí",w:"Tháng 6/2010",c:60,f:[
+"Giàn khoan của công ty phát nổ, gây vụ tràn dầu lớn nhất lịch sử Mỹ, dầu vẫn đang rò rỉ.",
+"Cổ phiếu mất khoảng một nửa giá trị.",
+"Công ty bị buộc lập quỹ bồi thường 20 tỷ USD và tạm ngừng trả cổ tức.",
+"Có tin đồn công ty có thể phá sản.",
+"Các mảng kinh doanh khác trên toàn cầu vẫn hoạt động bình thường."],
+l:"Giếng dầu được bịt lại, chi phí lớn nhưng công ty không phá sản; cổ phiếu tăng khoảng 60%. Thị trường hay định giá thảm họa như kịch bản tệ nhất."},
+
+{n:"Equifax",t:"EFX",s:"Xếp hạng tín dụng",w:"Tháng 9/2017",c:40,f:[
+"Công ty bị hack, lộ dữ liệu cá nhân của khoảng 147 triệu người Mỹ.",
+"Cổ phiếu mất khoảng 35% chỉ trong vài tuần.",
+"CEO từ chức; nhiều vụ kiện được đệ trình.",
+"Công ty là một trong ba đơn vị xếp hạng tín dụng lớn nhất nước Mỹ.",
+"Ngân hàng vẫn bắt buộc cần dữ liệu tín dụng để cho vay."],
+l:"Khách hàng không có nhiều lựa chọn thay thế; doanh nghiệp vẫn chạy và cổ phiếu hồi khoảng 40%. Doanh nghiệp gần như độc quyền thường sống sót qua bê bối."},
+
+{n:"General Electric",t:"GE",s:"Tập đoàn công nghiệp",w:"Tháng 11/2017",c:-55,f:[
+"Công ty vừa cắt cổ tức một nửa, lần thứ hai trong lịch sử.",
+"Cổ phiếu đã giảm khoảng 40% trong năm.",
+"Mảng điện (tua-bin) đang suy yếu mạnh.",
+"Công ty có nợ lớn và các khoản bảo hiểm cũ chưa rõ rủi ro.",
+"CEO mới tuyên bố tái cấu trúc."],
+l:"Nhiều vấn đề hơn dự kiến lộ ra, cổ tức gần như bị cắt hết, cổ phiếu mất thêm hơn một nửa. Cắt cổ tức thường là tín hiệu vấn đề sâu hơn."},
+
+{n:"Valeant Pharmaceuticals",t:"VRX",s:"Dược phẩm",w:"Tháng 8/2015",c:-90,f:[
+"Cổ phiếu tăng hơn 10 lần trong vài năm.",
+"Công ty tăng trưởng chủ yếu nhờ mua lại công ty khác và tăng giá thuốc rất mạnh.",
+"Công ty gánh khoản nợ khoảng 30 tỷ USD.",
+"Nhiều quỹ đầu tư nổi tiếng đang nắm giữ cổ phiếu.",
+"Chính trị gia bắt đầu chỉ trích việc tăng giá thuốc."],
+l:"Lộ ra các vấn đề kế toán và nhà thuốc liên kết, giá thuốc bị siết; cổ phiếu mất khoảng 90%. Tăng trưởng nhờ nợ + tăng giá vô lý thì không bền, dù quỹ lớn có mua."},
+
+{n:"Enron",t:"ENE",s:"Năng lượng · Giao dịch",w:"Tháng 8/2001",c:-99,f:[
+"Từng được tạp chí kinh doanh bình chọn là công ty sáng tạo nhất nước Mỹ nhiều năm liền.",
+"CEO bất ngờ từ chức chỉ sau vài tháng nhậm chức, vì \"lý do cá nhân\".",
+"Báo cáo tài chính rất phức tạp, khó hiểu công ty kiếm tiền thế nào.",
+"Cổ phiếu đã giảm khoảng một nửa từ đỉnh.",
+"Ban lãnh đạo nói công ty \"chưa bao giờ mạnh hơn\"."],
+l:"Gian lận kế toán bị phanh phui, công ty phá sản trong vài tháng. Nếu không hiểu công ty kiếm tiền thế nào và lãnh đạo bỏ đi đột ngột, hãy tránh xa."}
+];
