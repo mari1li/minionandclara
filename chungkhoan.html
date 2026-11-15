@@ -57,6 +57,8 @@
   .end{display:none;text-align:center}
   .end.show{display:block}
   .history{text-align:left;margin-top:14px}
+  .piggy{position:fixed;pointer-events:none;font-size:30px;z-index:50;animation:piggy 1.4s ease-out forwards}
+  @keyframes piggy{0%{transform:translate(-50%,0) scale(.6);opacity:0}20%{opacity:1;transform:translate(-50%,-20px) scale(1.2)}100%{transform:translate(-50%,-120px) scale(1);opacity:0}}
   .levelup{background:linear-gradient(135deg,#fff1e6,#ffe3ea);border:1px solid #ffc9a8;border-radius:12px;padding:10px 12px;font-size:13.5px;margin-bottom:12px;line-height:1.45}
   .reads{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;font-weight:700;margin-bottom:8px}
   .reads b{color:var(--accent)}
@@ -235,7 +237,7 @@ function load(){
     s.facts.forEach((f,i)=>{ const li = document.createElement("li"); li.innerHTML = `<b>${i+1}</b><span></span>`; li.querySelector("span").textContent = f; $("facts").appendChild(li); });
   }
   pick = null;
-  $("bUp").classList.remove("on"); $("bDown").classList.remove("on");
+  $("bUp").classList.remove("on"); $("bDown").classList.remove("on"); $("bUp").textContent = "📈 Tăng";
   $("alloc").classList.remove("show"); $("downNote").style.display = "none";
   $("bConfirm").disabled = true;
   $("decide").style.display = ""; $("reveal").classList.remove("show");
@@ -269,8 +271,14 @@ function renderDocs(){
 function setAlloc(v){ $("aRange").value = v; $("aVal").textContent = `${v}% = ${fmt(cash * v / 100)}`; }
 $("aRange").oninput = e => setAlloc(+e.target.value);
 document.querySelectorAll(".quick button").forEach(b => b.onclick = () => setAlloc(+b.dataset.v));
-$("bUp").onclick = () => { pick = "up"; $("bUp").classList.add("on"); $("bDown").classList.remove("on"); $("alloc").classList.add("show"); $("downNote").style.display = "none"; $("bConfirm").disabled = false; };
-$("bDown").onclick = () => { pick = "down"; $("bDown").classList.add("on"); $("bUp").classList.remove("on"); $("alloc").classList.remove("show"); $("downNote").style.display = ""; $("bConfirm").disabled = false; };
+$("bUp").onclick = () => {
+  $("bUp").textContent = "📈 Tăng Hoàng Ngân iu 🐷🎀";
+  const r = $("bUp").getBoundingClientRect();
+  const p = document.createElement("span"); p.className = "piggy"; p.textContent = "🐷🎀";
+  p.style.left = (r.left + r.width/2) + "px"; p.style.top = r.top + "px";
+  document.body.appendChild(p); setTimeout(() => p.remove(), 1500);
+  pick = "up"; $("bUp").classList.add("on"); $("bDown").classList.remove("on"); $("alloc").classList.add("show"); $("downNote").style.display = "none"; $("bConfirm").disabled = false; };
+$("bDown").onclick = () => { $("bUp").textContent = "📈 Tăng"; pick = "down"; $("bDown").classList.add("on"); $("bUp").classList.remove("on"); $("alloc").classList.remove("show"); $("downNote").style.display = ""; $("bConfirm").disabled = false; };
 
 $("bConfirm").onclick = () => {
   const s = order[idx];
