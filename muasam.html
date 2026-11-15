@@ -46,6 +46,17 @@
   .end{display:none;text-align:center}
   .end.show{display:block}
   .big{font-size:40px;font-weight:800;color:var(--accent);margin:8px 0}
+  .linkbtn{background:none;border:none;color:var(--accent);font:700 14px 'Nunito';cursor:pointer;padding:6px 0}
+  .game-item{display:block;width:100%;text-align:left;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:8px;cursor:pointer;color:var(--text);font:600 14px 'Nunito'}
+  .game-item small{display:block;color:var(--muted);font-weight:600;margin-top:2px}
+  details.rd{background:var(--soft);border-radius:12px;margin-top:8px;padding:10px 12px;text-align:left}
+  details.rd summary{cursor:pointer;font-weight:700;font-size:14px}
+  details.rd .q{font-size:14.5px;margin:8px 0}
+  .hopt{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;padding:7px 10px;border-radius:10px;margin-top:6px;background:#fff;border:2px solid transparent}
+  .hopt.right{border-color:var(--ok)} .hopt.wrong{border-color:var(--bad)}
+  .hopt small{display:block;color:var(--muted)}
+  details.rd .tip{margin-top:8px;font-size:13.5px}
+  .hd{display:flex;justify-content:space-between;align-items:center;gap:8px}
   footer{color:var(--muted);font-size:12px;text-align:center;margin-top:16px}
 </style>
 </head>
@@ -76,9 +87,19 @@
     <div class="verdict">🧺 Đi chợ xong rồi!</div>
     <div class="big" id="eScore"></div>
     <div class="tip" id="eRate" style="text-align:left"></div>
+    <div id="eHist" style="margin-top:12px"></div>
     <button class="btn" id="again">Đi chợ lần nữa (câu hỏi mới)</button>
+    <div style="margin-top:10px"><button class="linkbtn" id="bHist">📜 Xem lại các lần đi chợ cũ</button></div>
   </div>
 
+  <div class="card" id="hist" style="display:none">
+    <div class="hd"><div class="verdict" id="hTitle">📜 Các lần đi chợ</div><button class="linkbtn" id="hBack">← Quay lại</button></div>
+    <p style="color:var(--muted);font-size:13px" id="hSub"></p>
+    <div id="hBody"></div>
+    <div style="text-align:center;margin-top:14px"><button class="linkbtn" id="hClear" style="color:var(--muted)">🗑️ Xoá lịch sử</button></div>
+  </div>
+
+  <div style="text-align:center"><button class="linkbtn" id="bHistTop">📜 Xem lại các lần đi chợ cũ</button></div>
   <footer>Mỗi lần chơi là một bộ câu hỏi mới với giá ngẫu nhiên. Giá là giá giả lập.</footer>
 </div>
 
@@ -212,11 +233,17 @@ const GEN = {
 
 /* ---------- game ---------- */
 const ROUNDS = 12;
-let rounds, i, score, streak, best;
+let rounds, i, score, streak, best, game;
+const HKEY = "ms_history";
+const loadGames = () => { try { return JSON.parse(localStorage.getItem(HKEY)) || []; } catch(e){ return []; } };
+const saveGames = g => { try { localStorage.setItem(HKEY, JSON.stringify(g.slice(0,50))); } catch(e){} };
+function saveGame(){ const g = loadGames().filter(x => x.id !== game.id); g.unshift(game); saveGames(g); }
 function newGame(){
   const kinds = shuffle([...Object.keys(GEN), ...Object.keys(GEN)]);
   rounds = kinds.slice(0, ROUNDS).map(k => GEN[k]());
   i = 0; score = 0; streak = 0; best = 0;
+  game = { id: Date.now(), date: new Date().toLocaleString("vi-VN"), total: ROUNDS, score: 0, rounds: [] };
+  $("hist").style.display = "none";
   $("end").classList.remove("show"); $("play").style.display = "";
   show();
 }
@@ -240,19 +267,23 @@ function show(){
     b.querySelector(".sub").textContent = o.sub;
     b.querySelector(".cost").textContent = o.costText;
     if (!o.sub) b.querySelector(".sub").remove();
-    b.onclick = () => answer(b, o.cost === min);
+    b.onclick = () => answer(b, o.cost === min, o);
     o.el = b; o.best = o.cost === min;
     $("opts").appendChild(b);
   });
   stats();
   window.scrollTo({top:0, behavior:"smooth"});
 }
-function answer(btn, ok){
+function answer(btn, ok, picked){
   if ($("opts").classList.contains("done")) return;
+  const r = rounds[i];
+  game.rounds.push({ kind:r.kind, q:r.q, tip:r.tip, ok,
+    opts: r.opts.map(o => ({ico:o.ico, lbl:o.lbl, sub:o.sub, costText:o.costText, best:o.best, picked:o === picked})) });
   $("opts").classList.add("done");
   rounds[i].opts.forEach(o => { if (o.best) o.el.classList.add("right"); });
   if (!ok) btn.classList.add("wrong");
   if (ok){ score++; streak++; best = Math.max(best, streak); } else streak = 0;
+  game.score = score; saveGame();
   $("verdict").textContent = ok ? pickOne(["✅ Chuẩn luôn! Đi chợ đỉnh quá","✅ Đúng rồi! Ví tiền cảm ơn bạn","✅ Hời! Không bị lừa nha"]) : "❌ Hụt rồi! Xem lại cách tính bên dưới nè";
   $("tip").innerHTML = rounds[i].tip;
   $("next").textContent = i+1 < ROUNDS ? "Câu tiếp theo →" : "Xem kết quả 🧺";
@@ -269,8 +300,64 @@ function finish(){
     : r >= 0.7 ? "👍 <b>Đi chợ giỏi!</b> Chỉ cần cẩn thận hơn với vài cái bẫy nhỏ."
     : r >= 0.5 ? "🙂 <b>Tạm ổn.</b> Nhớ luôn tính giá cuối cùng và giá mỗi đơn vị nha."
     : "📚 <b>Siêu thị đang thắng bạn!</b> Đọc lại mẹo mỗi câu rồi chơi lại nhé.") + `<br>Chuỗi đúng dài nhất: 🔥${best}`;
+  $("eHist").innerHTML = "<p style='color:var(--muted);font-size:13px;text-align:left'>Bấm vào từng câu để xem lại:</p>";
+  game.rounds.forEach((r,k) => $("eHist").append(roundDetail(r,k)));
   stats();
 }
+
+/* ---------- history: re-read old games ---------- */
+function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+function roundDetail(r, k){
+  const d = el("details","rd");
+  d.append(el("summary", null, `${k+1}. ${r.ok ? "✅" : "❌"} ${r.kind}`));
+  const q = el("p","q"); q.innerHTML = r.q; d.append(q);
+  r.opts.forEach(o => {
+    const row = el("div", "hopt" + (o.best ? " right" : o.picked ? " wrong" : ""));
+    const left = el("span", null, `${o.ico} ${o.lbl}${o.picked ? "  ← bạn chọn" : ""}`);
+    if (o.sub) left.append(el("small", null, o.sub));
+    row.append(left, el("b", null, o.costText));
+    d.append(row);
+  });
+  const tip = el("div","tip"); tip.innerHTML = r.tip; d.append(tip);
+  return d;
+}
+let histFrom = "end";
+function showList(){
+  const games = loadGames();
+  $("hTitle").textContent = "📜 Các lần đi chợ";
+  $("hSub").textContent = games.length ? `${games.length} lần, lưu trên máy này. Bấm vào để xem lại.` : "Chưa có lần nào.";
+  $("hBody").innerHTML = ""; $("hClear").style.display = games.length ? "" : "none";
+  games.forEach(g => {
+    const b = el("button","game-item", g.date);
+    b.append(el("small", null, `${g.rounds.length < g.total ? `Đang dở (${g.rounds.length}/${g.total} câu)` : `${g.total} câu`} · đúng ${g.score}/${g.rounds.length}`));
+    b.onclick = () => showGameDetail(g);
+    $("hBody").append(b);
+  });
+  $("hBack").onclick = closeHist;
+}
+function showGameDetail(g){
+  $("hTitle").textContent = g.date;
+  $("hSub").textContent = `Đúng ${g.score}/${g.rounds.length}`;
+  $("hBody").innerHTML = ""; $("hClear").style.display = "none";
+  g.rounds.forEach((r,k) => $("hBody").append(roundDetail(r,k)));
+  $("hBack").onclick = showList;
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+function openHist(from){
+  histFrom = from;
+  $("play").style.display = "none"; $("end").classList.remove("show");
+  $("hist").style.display = ""; showList(); window.scrollTo({top:0, behavior:"smooth"});
+}
+function closeHist(){
+  $("hist").style.display = "none";
+  if (histFrom === "end") $("end").classList.add("show"); else $("play").style.display = "";
+}
+$("bHist").onclick = () => openHist("end");
+$("bHistTop").onclick = () => openHist($("end").classList.contains("show") ? "end" : "play");
+$("hClear").onclick = () => {
+  if ($("hClear").dataset.sure){ saveGames([]); delete $("hClear").dataset.sure; $("hClear").textContent = "🗑️ Xoá lịch sử"; showList(); }
+  else { $("hClear").dataset.sure = 1; $("hClear").textContent = "Bấm lần nữa để xoá hết"; }
+};
 $("again").onclick = newGame;
 newGame();
 </script>
