@@ -57,6 +57,21 @@
   .end{display:none;text-align:center}
   .end.show{display:block}
   .history{text-align:left;margin-top:14px}
+  .levelup{background:linear-gradient(135deg,#fff1e6,#ffe3ea);border:1px solid #ffc9a8;border-radius:12px;padding:10px 12px;font-size:13.5px;margin-bottom:12px;line-height:1.45}
+  .reads{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;font-weight:700;margin-bottom:8px}
+  .reads b{color:var(--accent)}
+  .docs{display:flex;flex-direction:column;gap:8px}
+  .doc{text-align:left;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:11px 12px;cursor:pointer;color:var(--text);font-family:'Nunito';touch-action:manipulation}
+  .doc .src{font-size:12px;font-weight:800;color:var(--muted)}
+  .doc .hl{font-size:14.5px;font-weight:700;margin-top:3px;line-height:1.35}
+  .doc .body{display:none;font-size:14px;line-height:1.55;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .doc.open{background:#fff;border-color:var(--accent)}
+  .doc.open .body{display:block}
+  .doc.locked{opacity:.45;cursor:not-allowed}
+  .doc .eye{float:right;font-size:12px;color:var(--accent);font-weight:800}
+  .hdoc{background:#fff;border-radius:10px;padding:8px 10px;margin-top:6px;font-size:13.5px;line-height:1.5}
+  .hdoc .src{font-size:12px;font-weight:800;color:var(--muted)}
+  .hdoc.read{border:1px solid var(--accent)}
   .linkbtn{background:none;border:none;color:var(--accent);font:700 14px 'Nunito';cursor:pointer;padding:6px 0;touch-action:manipulation}
   .game-item{display:block;width:100%;text-align:left;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:8px;cursor:pointer;color:var(--text);font:600 14px 'Nunito';touch-action:manipulation}
   .game-item small{display:block;color:var(--muted);font-weight:600;margin-top:2px}
@@ -89,6 +104,8 @@
     <div class="choice" style="grid-template-columns:1fr 1fr 1fr">
       <button data-r="10">10 câu</button><button data-r="20">20 câu</button><button data-r="50">Tất cả</button>
     </div>
+    <p class="sector" style="margin-top:12px;margin-bottom:6px">Từ câu 11 trở đi game chuyển sang <b>🔥 chế độ chuyên gia</b>: 10 nguồn tin (báo, báo cáo tài chính, diễn đàn…) nhưng bạn chỉ có thời gian đọc 5.</p>
+    <div class="choice" style="grid-template-columns:1fr"><button data-r="10" data-hard="1">🔥 Chơi chế độ chuyên gia luôn (10 câu)</button></div>
     <div style="text-align:center;margin-top:12px"><button class="linkbtn" id="bHist1">📜 Xem lại các ván cũ</button></div>
   </div>
 
@@ -104,7 +121,12 @@
       <div class="co"><h2 id="coName"></h2><span class="tag" id="coTicker"></span></div>
       <div class="sector" id="coSector"></div>
       <div class="when">🕵️ Năm: ??? — đọc dữ kiện rồi tự đoán</div>
+      <div class="levelup" id="levelup" style="display:none"></div>
       <ul class="facts" id="facts"></ul>
+      <div id="docsBox" style="display:none">
+        <div class="reads"><span>Chọn nguồn tin muốn đọc</span><span>📖 Còn <b id="readsLeft"></b> lượt đọc</span></div>
+        <div class="docs" id="docs"></div>
+      </div>
     </div>
 
     <div class="card" id="decide">
@@ -150,9 +172,16 @@
 </div>
 
 <script src="chungkhoan-data.js"></script>
+<script src="chungkhoan-docs.js"></script>
 <script>
-const ALL = SCENARIOS.map(x=>({name:x.n, ticker:x.t, sector:x.s, when:x.w, change:x.c, facts:x.f, lesson:x.l}));
-let ROUNDS = 10;
+const ALL = SCENARIOS.map(x=>({name:x.n, ticker:x.t, sector:x.s, when:x.w, change:x.c, facts:x.f, lesson:x.l, docs: DOCS[`${x.t}|${x.w}`]}));
+let ROUNDS = 10, HARD_ONLY = false;
+const EASY_N = 10, READS = 5;
+let curDocs = [], readIdx = [], curOrder = [];
+function docsFor(ticker, when, facts, ord){
+  const src = DOCS[`${ticker}|${when}`] || facts.map(f => ({s:"📰 Tin tức", h:f, b:""}));
+  return ord.map(k => src[k]);
+}
 const START = 10000;
 const $ = id => document.getElementById(id);
 const fmt = n => "$" + Math.round(n).toLocaleString("en-US");
@@ -169,8 +198,12 @@ function saveGame(){
 function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
 function start(){
-  order = shuffle([...ALL]).slice(0, ROUNDS); idx = 0; cash = START; correct = 0; history = [];
-  game = { id: Date.now(), date: new Date().toLocaleString("vi-VN"), total: ROUNDS, start: START, end: START, correct: 0, rounds: [] };
+  const withDocs = shuffle(ALL.filter(x=>x.docs)), noDocs = shuffle(ALL.filter(x=>!x.docs));
+  const easyN = HARD_ONLY ? 0 : Math.min(EASY_N, ROUNDS);
+  const easy = noDocs.splice(0, easyN);
+  while (easy.length < easyN) easy.push(withDocs.pop());
+  order = [...easy, ...withDocs, ...noDocs].slice(0, ROUNDS); idx = 0; cash = START; correct = 0; history = [];
+  game = { hardOnly: HARD_ONLY, id: Date.now(), date: new Date().toLocaleString("vi-VN"), total: ROUNDS, start: START, end: START, correct: 0, rounds: [] };
   $("end").classList.remove("show"); $("play").style.display = "";
   load();
 }
@@ -183,7 +216,24 @@ function load(){
   const s = order[idx];
   $("coName").textContent = s.name; $("coTicker").textContent = s.ticker; $("coSector").textContent = s.sector;
   $("facts").innerHTML = "";
-  s.facts.forEach((f,i)=>{ const li = document.createElement("li"); li.innerHTML = `<b>${i+1}</b><span></span>`; li.querySelector("span").textContent = f; $("facts").appendChild(li); });
+  const hard = isHard();
+  $("facts").style.display = hard ? "none" : "";
+  $("docsBox").style.display = hard ? "" : "none";
+  document.querySelector(".when").textContent = hard ? "🔥 Chế độ chuyên gia · Năm: ???" : "🕵️ Năm: ??? — đọc dữ kiện rồi tự đoán";
+  $("levelup").style.display = "none";
+  if (hard && idx === EASY_N && !HARD_ONLY){
+    $("levelup").style.display = "";
+    $("levelup").innerHTML = "<b>🔥 Lên cấp chuyên gia!</b> Không còn 5 dữ kiện soạn sẵn nữa. Mỗi câu có 10 nguồn tin thật hơn: báo chí, báo cáo tài chính, chuyên gia, diễn đàn… Có nguồn hữu ích, có nguồn gây nhiễu. Bạn chỉ có thời gian đọc " + READS + " nguồn, chọn khôn ngoan nha!";
+  }
+  if (hard){
+    curOrder = shuffle((s.docs || s.facts).map((_,k)=>k));
+    curDocs = docsFor(s.ticker, s.when, s.facts, curOrder);
+    readIdx = [];
+    renderDocs();
+  } else {
+    curDocs = []; readIdx = [];
+    s.facts.forEach((f,i)=>{ const li = document.createElement("li"); li.innerHTML = `<b>${i+1}</b><span></span>`; li.querySelector("span").textContent = f; $("facts").appendChild(li); });
+  }
   pick = null;
   $("bUp").classList.remove("on"); $("bDown").classList.remove("on");
   $("alloc").classList.remove("show"); $("downNote").style.display = "none";
@@ -192,6 +242,29 @@ function load(){
   setAlloc(25);
   stats();
   window.scrollTo({top:0, behavior:"smooth"});
+}
+function isHard(){ return HARD_ONLY || idx >= EASY_N; }
+function readsMax(){ return order[idx].docs ? READS : 3; }
+function renderDocs(){
+  const left = readsMax() - readIdx.length;
+  $("readsLeft").textContent = left;
+  $("docs").innerHTML = "";
+  curDocs.forEach((d,i) => {
+    const b = document.createElement("button");
+    const isRead = readIdx.includes(i);
+    b.className = "doc" + (isRead ? " open" : (left <= 0 ? " locked" : ""));
+    b.innerHTML = `<div class="src"></div><div class="hl"></div><div class="body"></div>`;
+    b.querySelector(".src").textContent = d.s;
+    if (isRead){ const e = document.createElement("span"); e.className = "eye"; e.textContent = "👁️ đã đọc"; b.querySelector(".src").append(e); }
+    b.querySelector(".hl").textContent = d.h;
+    b.querySelector(".body").textContent = d.b;
+    if (!d.b) b.querySelector(".body").remove();
+    b.onclick = () => {
+      if (readIdx.includes(i) || readsMax() - readIdx.length <= 0) return;
+      readIdx.push(i); renderDocs();
+    };
+    $("docs").appendChild(b);
+  });
 }
 function setAlloc(v){ $("aRange").value = v; $("aVal").textContent = `${v}% = ${fmt(cash * v / 100)}`; }
 $("aRange").oninput = e => setAlloc(+e.target.value);
@@ -208,7 +281,9 @@ $("bConfirm").onclick = () => {
   cash += pnl;
   history.push({s, pick, inv, pnl, right});
   game.rounds.push({ name:s.name, ticker:s.ticker, sector:s.sector, when:s.when, change:s.change, facts:s.facts, lesson:s.lesson,
-                     pick, pct: pick === "up" ? +$("aRange").value : 0, inv, pnl, right, cashAfter: cash });
+                     pick, pct: pick === "up" ? +$("aRange").value : 0, inv, pnl, right, cashAfter: cash,
+                     hard: isHard(), docOrder: isHard() ? curOrder : null, read: isHard() ? [...readIdx] : null });
+  if (isHard()){ readIdx = curDocs.map((_,k)=>k); renderDocs(); $("readsLeft").textContent = "∞ (đã chốt lệnh, đọc thoải mái)"; }
   game.end = cash; game.correct = correct; saveGame();
   $("rVerdict").textContent = right ? "✅ Đoán đúng!" : "❌ Đoán sai rồi";
   $("rWhen").textContent = `Thời điểm thật: ${s.when}`;
@@ -249,11 +324,22 @@ function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.c
 function roundDetail(r, i){
   const d = el("details","rd");
   const sm = el("summary");
-  sm.append(el("span", null, `${i+1}. ${r.right ? "✅" : "❌"} ${r.name} (${r.when})`));
+  sm.append(el("span", null, `${i+1}. ${r.right ? "✅" : "❌"} ${r.hard ? "🔥 " : ""}${r.name} (${r.when})`));
   sm.append(el("b", r.change > 0 ? "pos" : "neg", pct(r.change)));
   d.append(sm);
   d.append(el("div","sector", r.sector));
-  const ol = el("ol"); r.facts.forEach(f => ol.append(el("li", null, f))); d.append(ol);
+  if (r.docOrder){
+    const docs = docsFor(r.ticker, r.when, r.facts, r.docOrder);
+    d.append(el("div","sector", `🔥 Chế độ chuyên gia · bạn đã đọc ${r.read.length}/${docs.length} nguồn (viền hồng = đã đọc)`));
+    docs.forEach((doc,k) => {
+      const box = el("div", "hdoc" + (r.read.includes(k) ? " read" : ""));
+      box.append(el("div","src", doc.s + (r.read.includes(k) ? "  · 👁️ đã đọc" : "")), el("b", null, doc.h));
+      if (doc.b) box.append(el("div", null, doc.b));
+      d.append(box);
+    });
+  } else {
+    const ol = el("ol"); r.facts.forEach(f => ol.append(el("li", null, f))); d.append(ol);
+  }
   const rows = [
     ["Bạn đoán", r.pick === "up" ? `📈 Tăng, bỏ vào ${r.pct}%` : "📉 Giảm (đứng ngoài)"],
     ["Số tiền đầu tư", r.inv ? fmt(r.inv) : "—"],
@@ -309,7 +395,7 @@ function intro(){
   $("sRound").textContent = "-"; $("sAcc").textContent = "-"; $("sCash").textContent = fmt(START);
 }
 document.querySelectorAll("#intro button[data-r]").forEach(b => b.onclick = () => {
-  ROUNDS = Math.min(+b.dataset.r, ALL.length); $("intro").style.display = "none"; start();
+  ROUNDS = Math.min(+b.dataset.r, ALL.length); HARD_ONLY = !!b.dataset.hard; $("intro").style.display = "none"; start();
 });
 $("intro").querySelector("p").textContent = `Có ${ALL.length} tình huống thật, mỗi ván chọn ngẫu nhiên và xáo trộn.`;
 $("bAgain").onclick = intro;
