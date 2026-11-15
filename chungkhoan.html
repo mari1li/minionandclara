@@ -58,6 +58,15 @@
   .end{display:none;text-align:center}
   .end.show{display:block}
   .history{text-align:left;margin-top:14px}
+  .chartbox{background:var(--soft);border-radius:12px;padding:10px 10px 4px;margin:12px 0}
+  .chartbox .ttl{font-size:12.5px;font-weight:800;color:var(--muted);margin-bottom:4px;display:flex;justify-content:space-between;gap:6px}
+  .chartbox svg{width:100%;height:auto;display:block}
+  .chartbox .note{font-size:11px;color:var(--muted);margin:2px 0 4px}
+  .fin{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px}
+  .fin td{padding:6px 4px;border-bottom:1px dashed var(--line);vertical-align:top}
+  .fin td:last-child{text-align:right;font-weight:800;white-space:nowrap}
+  .fin tr:last-child td{border-bottom:none}
+  .finttl{font-size:12.5px;font-weight:800;color:var(--muted);margin-top:12px}
   .srcs{margin-top:10px;font-size:13px;line-height:1.5}
   .srcs b{color:var(--muted)}
   .srcs a{color:var(--accent);word-break:break-word}
@@ -131,6 +140,7 @@
       <div class="sector" id="coSector"></div>
       <div class="when">🕵️ Năm: ??? — đọc dữ kiện rồi tự đoán</div>
       <div class="levelup" id="levelup" style="display:none"></div>
+      <div id="snap"></div>
       <ul class="facts" id="facts"></ul>
       <div id="docsBox" style="display:none">
         <div class="reads"><span>Chọn nguồn tin muốn đọc</span><span>📖 Còn <b id="readsLeft"></b> lượt đọc</span></div>
@@ -159,6 +169,7 @@
       <div class="verdict" id="rVerdict"></div>
       <div class="sector" id="rWhen"></div>
       <div>Giá 1 năm sau: <span class="big" id="rChange"></span></div>
+      <div id="rChart"></div>
       <div class="row"><span>Bạn đầu tư</span><b id="rInv"></b></div>
       <div class="row"><span>Lời / lỗ</span><b id="rPnl"></b></div>
       <div class="row"><span>Tài khoản mới</span><b id="rCash"></b></div>
@@ -183,8 +194,11 @@
 
 <script src="chungkhoan-data.js"></script>
 <script src="chungkhoan-docs.js"></script>
+<script src="chungkhoan-charts.js"></script>
 <script>
-const ALL = SCENARIOS.map(x=>({id:`${x.t}|${x.w}`, name:x.n, ticker:x.t, sector:x.s, when:x.w, change:x.c, facts:x.f, lesson:x.l, src:x.src, docs: DOCS[`${x.t}|${x.w}`]}));
+const ALL = SCENARIOS.map(x=>{ const id = `${x.t}|${x.w}`, ch = CHARTS[id];
+  // when real price data exists, the 1-year result comes from it instead of the rounded estimate
+  return {id, name:x.n, ticker:x.t, sector:x.s, when:x.w, change: ch ? ch.actual : x.c, facts:x.f, lesson:x.l, src:x.src, fin:x.fin, chart: ch, docs: DOCS[id]}; });
 /* situations already answered on this device are not shown again (no peeking at answers) */
 const SEEN_KEY = "ck_seen";
 const getSeen = () => { try { return JSON.parse(localStorage.getItem(SEEN_KEY)) || []; } catch(e){ return []; } };
@@ -233,6 +247,9 @@ function load(){
   const s = order[idx];
   $("coName").textContent = s.name; $("coTicker").textContent = s.ticker; $("coSector").textContent = s.sector;
   $("facts").innerHTML = "";
+  $("snap").innerHTML = "";
+  if (s.chart) $("snap").append(chartBox(s.chart, false, 0));
+  $("snap").append(numbersBox(s));
   const hard = isHard();
   $("facts").style.display = hard ? "none" : "";
   $("docsBox").style.display = hard ? "" : "none";
@@ -262,6 +279,72 @@ function load(){
   stats();
   window.scrollTo({top:0, behavior:"smooth"});
 }
+/* ---------- price snapshots (SVG) ---------- */
+const NS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs, text){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; }
+const money2 = v => "$" + (v >= 100 ? Math.round(v) : v >= 10 ? v.toFixed(1) : v.toFixed(2));
+function drawChart(ch, showPost, change){
+  const pre = ch.pre || [], post = showPost ? ch.post : [];
+  const preM = ch.preMonths || [], postM = ch.postMonths || [];
+  const W = 600, H = 210, L = 46, R = 12, T = 14, B = 26;
+  const all = [...pre, ...post.slice(1)];
+  if (all.length < 2) return null;
+  const lo = Math.min(...all), hi = Math.max(...all), pad = (hi - lo) * 0.08 || hi * 0.05;
+  const y = v => T + (H - T - B) * (1 - (v - (lo - pad)) / ((hi + pad) - (lo - pad)));
+  const n = pre.length + Math.max(post.length - 1, 0);
+  const x = i => L + (W - L - R) * (n > 1 ? i / (n - 1) : 0);
+  const svg = svgEl("svg", {viewBox:`0 0 ${W} ${H}`, role:"img"});
+  [lo, (lo+hi)/2, hi].forEach(v => {
+    svg.append(svgEl("line", {x1:L, x2:W-R, y1:y(v), y2:y(v), stroke:"#ffd6e0", "stroke-dasharray":"3 4"}));
+    svg.append(svgEl("text", {x:L-6, y:y(v)+4, "text-anchor":"end", "font-size":11, fill:"#9b7f8b"}, money2(v)));
+  });
+  // month ticks without years, so the timeline stays hidden
+  const months = [...preM, ...postM.slice(1)];
+  let last = null;
+  months.forEach((m,i) => { if (m !== last && (m % 2 === 1 || n < 30)){ svg.append(svgEl("text", {x:x(i), y:H-8, "text-anchor":"middle", "font-size":10.5, fill:"#9b7f8b"}, "T" + m)); } last = m; });
+  const path = (pts, off) => pts.map((v,i) => `${i ? "L" : "M"}${x(i+off).toFixed(1)},${y(v).toFixed(1)}`).join("");
+  if (pre.length) svg.append(svgEl("path", {d:path(pre,0), fill:"none", stroke: showPost ? "#b9a3ae" : "#f06b8e", "stroke-width":2.4, "stroke-linejoin":"round"}));
+  if (post.length){
+    const col = change >= 0 ? "#16a34a" : "#e11d48";
+    const off = Math.max(pre.length - 1, 0);
+    svg.append(svgEl("path", {d:path(post, off), fill:"none", stroke:col, "stroke-width":2.6, "stroke-linejoin":"round"}));
+    const xd = x(off);
+    svg.append(svgEl("line", {x1:xd, x2:xd, y1:T, y2:H-B, stroke:"#5a3d4a", "stroke-dasharray":"4 3", "stroke-width":1}));
+    svg.append(svgEl("circle", {cx:xd, cy:y(post[0]), r:4.5, fill:"#5a3d4a"}));
+    svg.append(svgEl("text", {x:Math.min(xd+6, W-120), y:T+10, "font-size":11, fill:"#5a3d4a", "font-weight":700}, "◀ lúc bạn quyết định"));
+  } else if (pre.length){
+    svg.append(svgEl("circle", {cx:x(pre.length-1), cy:y(pre[pre.length-1]), r:4.5, fill:"#f06b8e"}));
+  }
+  return svg;
+}
+function chartBox(ch, showPost, change){
+  const box = el("div","chartbox");
+  const ttl = el("div","ttl");
+  ttl.append(el("span", null, showPost ? "📈 Giá trước và 1 năm sau thời điểm quyết định" : (ch.ytd ? "📈 Giá từ đầu năm tới thời điểm này" : "📈 Giá 12 tháng gần nhất")));
+  box.append(ttl);
+  const svg = drawChart(ch, showPost, change);
+  if (svg) box.append(svg); else box.append(el("div","note", "Công ty vừa lên sàn nên chưa có lịch sử giá."));
+  box.append(el("div","note", "Giá đóng cửa hằng tuần, đã điều chỉnh theo chia tách cổ phiếu. Nguồn: dữ liệu Yahoo Finance lưu trên GitHub."));
+  return box;
+}
+function numbersBox(s){
+  const wrap = el("div");
+  const rows = [];
+  const ch = s.chart;
+  if (ch && ch.pre && ch.pre.length > 1){
+    const p0 = ch.pre[0], p1 = ch.pre[ch.pre.length-1];
+    rows.push([ch.ytd ? "Giá từ đầu năm" : "Giá 12 tháng qua", pct(Math.round((p1/p0-1)*100))]);
+  }
+  if (ch && ch.offHigh != null && ch.pre && ch.pre.length > 1) rows.push(["So với đỉnh 52 tuần", ch.offHigh === 0 ? "đang ở đỉnh" : pct(ch.offHigh)]);
+  (s.fin || []).forEach(r => rows.push(r));
+  if (!rows.length) return wrap;
+  wrap.append(el("div","finttl", "🔢 Con số chính"));
+  const t = el("table","fin");
+  rows.forEach(([k,v]) => { const tr = el("tr"); tr.append(el("td", null, k), el("td", null, v)); t.append(tr); });
+  wrap.append(t);
+  return wrap;
+}
+
 function renderSrc(box, src){
   box.innerHTML = "";
   if (!src || !src.length){ box.style.display = ""; box.append(el("b", null, "📎 Câu này chưa có link nguồn, mình đang bổ sung dần.")); return; }
@@ -346,7 +429,7 @@ $("bConfirm").onclick = () => {
   cash += pnl;
   history.push({s, pick, inv, pnl, right});
   addSeen(s.id);
-  game.rounds.push({ name:s.name, ticker:s.ticker, sector:s.sector, when:s.when, change:s.change, facts: isHard() ? s.facts : curFacts, lesson:s.lesson, src:s.src,
+  game.rounds.push({ id:s.id, name:s.name, ticker:s.ticker, sector:s.sector, when:s.when, change:s.change, facts: isHard() ? s.facts : curFacts, lesson:s.lesson, src:s.src,
                      pick, pct: pick === "up" ? +$("aRange").value : 0, inv, pnl, right, cashAfter: cash,
                      hard: isHard(), docOrder: isHard() ? curOrder : null, read: isHard() ? [...readIdx] : null });
   if (isHard()){ readIdx = curDocs.map((_,k)=>k); renderDocs(); $("readsLeft").textContent = "∞ (đã chốt lệnh, đọc thoải mái)"; }
@@ -362,6 +445,8 @@ $("bConfirm").onclick = () => {
   $("rLesson").innerHTML = "<b>💡 Chuyện gì đã xảy ra:</b> ";
   $("rLesson").append(s.lesson);
   renderSrc($("rSrc"), s.src);
+  $("rChart").innerHTML = "";
+  if (s.chart) $("rChart").append(chartBox(s.chart, true, s.change));
   if (pnl > 0) confetti();
   $("bNext").textContent = idx + 1 < order.length ? "Câu tiếp theo →" : "Xem kết quả 🏁";
   $("decide").style.display = "none"; $("reveal").classList.add("show");
@@ -416,6 +501,7 @@ function roundDetail(r, i){
   ];
   rows.forEach(([k,v]) => { const row = el("div","row"); row.append(el("span",null,k), el("b",null,v)); d.append(row); });
   const ls = el("div","lesson"); ls.innerHTML = "<b>💡 Chuyện gì đã xảy ra:</b> "; ls.append(r.lesson); d.append(ls);
+  if (r.id && CHARTS[r.id]) d.append(chartBox(CHARTS[r.id], true, r.change));
   const sb = el("div","srcs"); renderSrc(sb, r.src); d.append(sb);
   return d;
 }

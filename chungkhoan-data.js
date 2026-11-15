@@ -79,7 +79,7 @@ l:"Giảm 70% chưa có nghĩa là rẻ. Doanh nghiệp lỗ, nhu cầu thật �
 "CEO bận rộn với việc mua lại một mạng xã hội lớn, bán bớt cổ phiếu công ty.",
 "Số xe giao năm vừa rồi vẫn tăng khoảng 40%, công ty vẫn có lãi.",
 "Lãi suất vay mua xe đang tăng cao."],
-l:"Nỗi lo về CEO và giảm giá xe đã bị đẩy quá đà; lợi nhuận vẫn còn và thị trường quay lại hứng thú với công nghệ. Cổ phiếu tăng gấp đôi trong năm."},
+l:"Nỗi lo về CEO và giảm giá xe đã bị đẩy quá đà; lợi nhuận vẫn còn và thị trường quay lại hứng thú với công nghệ. Cổ phiếu tăng gần 80% trong năm."},
 
 {n:"Amazon",t:"AMZN",s:"Thương mại điện tử · Đám mây",w:"Tháng 1/2023",c:80,f:[
 "Cổ phiếu giảm khoảng 50% trong năm vừa rồi.",
@@ -223,7 +223,7 @@ l:"Lãi suất tăng + giá xe cũ giảm + nợ lớn khiến cổ phiếu mấ
 "Công ty đang đàm phán tái cấu trúc khoản nợ khổng lồ.",
 "Công ty đang cắt giảm nhân sự và chi phí mạnh.",
 "Số cổ phiếu bị bán khống rất cao."],
-l:"Công ty tái cấu trúc nợ thành công và bắt đầu có lãi; cổ phiếu tăng khoảng 10 lần. Cùng một công ty, mua sai thời điểm thì mất trắng, mua lúc tuyệt vọng nhất lại lời khủng (nhưng rất rủi ro)."},
+l:"Công ty tái cấu trúc nợ thành công và bắt đầu có lãi; cổ phiếu tăng gần 10 lần. Cùng một công ty, mua sai thời điểm thì mất trắng, mua lúc tuyệt vọng nhất lại lời khủng (nhưng rất rủi ro)."},
 
 {n:"Bed Bath & Beyond",t:"BBBY",s:"Bán lẻ đồ gia dụng",w:"Tháng 8/2022",c:-99,f:[
 "Cổ phiếu vừa tăng vọt gấp mấy lần trong vài tuần nhờ nhà đầu tư nhỏ lẻ trên mạng.",
@@ -247,7 +247,7 @@ l:"Phát hành thêm cổ phiếu làm loãng giá trị; khi cơn sốt qua, gi
 "Cổ phiếu giảm khoảng 85% từ đầu năm.",
 "Công ty sa thải gần 20% nhân sự và đang lỗ.",
 "Công ty là sàn lớn, niêm yết công khai tại Mỹ, tuân thủ quy định."],
-l:"Thị trường tiền mã hóa hồi phục mạnh, người dùng chuyển sang sàn được coi là an toàn hơn; cổ phiếu tăng gần 5 lần. Đối thủ sụp đổ đôi khi là cơ hội cho người sống sót."},
+l:"Thị trường tiền mã hóa hồi phục mạnh, người dùng chuyển sang sàn được coi là an toàn hơn; cổ phiếu tăng gần 6 lần. Đối thủ sụp đổ đôi khi là cơ hội cho người sống sót."},
 
 {n:"Robinhood",t:"HOOD",s:"Ứng dụng đầu tư",w:"Tháng 8/2021",c:-85,f:[
 "Cổ phiếu vừa tăng vọt ngay sau khi lên sàn, được dân mạng săn đón.",
@@ -271,7 +271,7 @@ l:"Tăng trưởng chậm lại và lãi suất tăng làm định giá co lại
 "Khách hàng lớn là chính phủ, hợp đồng dài hạn.",
 "Công ty chi rất nhiều tiền thưởng cổ phiếu cho nhân viên.",
 "AI đang bắt đầu được chú ý trở lại."],
-l:"Công ty có lãi liên tục và làn sóng AI kéo cổ phiếu tăng khoảng 2,5 lần. Bước ngoặt từ lỗ sang lãi thường là chất xúc tác mạnh."},
+l:"Công ty có lãi liên tục và làn sóng AI kéo cổ phiếu tăng gần 3 lần. Bước ngoặt từ lỗ sang lãi thường là chất xúc tác mạnh."},
 
 {n:"AMD",t:"AMD",s:"Chip bán dẫn",w:"Tháng 10/2022",c:80,f:[
 "Công ty cảnh báo doanh thu quý thấp hơn dự kiến vì thị trường máy tính cá nhân lao dốc.",
@@ -287,7 +287,7 @@ l:"Máy tính cá nhân chạm đáy, mảng data center và AI giúp cổ phi�
 "Cổ phiếu giảm khoảng 50% từ đầu năm; cổ tức tương đương khoảng 10%/năm.",
 "Công ty đang lỗ và cắt giảm đầu tư.",
 "Nhiều quỹ bán cổ phiếu dầu khí vì lo ngại môi trường."],
-l:"Khi kinh tế mở cửa lại, giá dầu tăng mạnh và cổ phiếu tăng khoảng 85%. Khi ai cũng ghét một ngành, giá có thể đã quá rẻ."},
+l:"Khi kinh tế mở cửa lại, giá dầu tăng mạnh và cổ phiếu tăng gần gấp đôi. Khi ai cũng ghét một ngành, giá có thể đã quá rẻ."},
 
 {n:"Vàng (quỹ GLD)",t:"GLD",s:"Kim loại quý",w:"Tháng 8/2011",c:-15,f:[
 "Giá vàng vừa lập đỉnh mọi thời đại, khoảng 1.900 USD/ounce.",
@@ -303,7 +303,7 @@ l:"Nỗi sợ qua đi, vàng giảm khoảng 15% sau 1 năm và còn giảm sâu
 "Thị trường kỳ vọng lãi suất ở Mỹ sắp giảm.",
 "Căng thẳng địa chính trị ở nhiều nơi trên thế giới.",
 "Nợ công của Mỹ tiếp tục tăng mạnh."],
-l:"Lãi suất giảm và ngân hàng trung ương tiếp tục mua, vàng tăng khoảng 35%. Gần đỉnh không có nghĩa là hết dư địa nếu lực mua thật vẫn còn."},
+l:"Lãi suất giảm và ngân hàng trung ương tiếp tục mua, vàng tăng khoảng 27%. Gần đỉnh không có nghĩa là hết dư địa nếu lực mua thật vẫn còn."},
 
 {n:"Novo Nordisk",t:"NVO",s:"Dược phẩm · Thuốc giảm cân",w:"Tháng 6/2024",c:-50,f:[
 "Thuốc giảm cân và tiểu đường của công ty đang cháy hàng toàn cầu.",
@@ -319,7 +319,7 @@ l:"Cạnh tranh mạnh hơn dự kiến và tăng trưởng chậm lại, cổ p
 "P/E khoảng 50 lần, đắt so với ngành dược.",
 "Béo phì ảnh hưởng hàng trăm triệu người trên thế giới.",
 "Công ty còn nhiều thuốc tiềm năng khác đang thử nghiệm (ví dụ Alzheimer)."],
-l:"Thuốc được duyệt cho béo phì và doanh thu bùng nổ, cổ phiếu tăng khoảng 80%. Đắt vẫn có thể đúng nếu thị trường của sản phẩm đủ lớn."},
+l:"Thuốc được duyệt cho béo phì và doanh thu bùng nổ, cổ phiếu tăng khoảng 70%. Đắt vẫn có thể đúng nếu thị trường của sản phẩm đủ lớn."},
 
 {n:"Silicon Valley Bank",t:"SIVB",s:"Ngân hàng",w:"Tháng 2/2023",c:-100,f:[
 "Khách hàng chủ yếu là các startup công nghệ và quỹ đầu tư mạo hiểm.",
@@ -335,7 +335,7 @@ l:"Chỉ vài tuần sau, khách hàng rút tiền ồ ạt và ngân hàng sụ
 "Số chuyến đi đã vượt mức trước dịch bệnh.",
 "Mảng giao đồ ăn tăng trưởng mạnh trong thời kỳ dịch.",
 "Công ty bắt đầu tạo ra dòng tiền tự do dương."],
-l:"Lợi nhuận và dòng tiền đến như kỳ vọng, cổ phiếu tăng khoảng 2,5 lần. Thời điểm doanh nghiệp chuyển từ \"đốt tiền\" sang \"kiếm tiền\" là lúc thị trường định giá lại."},
+l:"Lợi nhuận và dòng tiền đến như kỳ vọng, cổ phiếu tăng khoảng gấp đôi. Thời điểm doanh nghiệp chuyển từ \"đốt tiền\" sang \"kiếm tiền\" là lúc thị trường định giá lại."},
 
 {n:"Spotify",t:"SPOT",s:"Nghe nhạc trực tuyến",w:"Tháng 12/2022",c:140,f:[
 "Cổ phiếu giảm khoảng 65% trong năm.",
@@ -410,7 +410,7 @@ SCENARIOS.push(
 "Cổ phiếu tăng 24% trong một ngày, thêm khoảng 184 tỷ USD vốn hóa, đưa công ty tới sát mốc 1.000 tỷ USD.",
 "Một công ty chứng khoán ví đây là \"cơn sốt vàng mới\" và công ty này đang bán \"cuốc xẻng\" cho cả ngành AI.",
 "Dù vậy, công ty vẫn là cổ phiếu đắt nhất trong chỉ số bán dẫn, nơi các hãng chip giao dịch trung bình khoảng 26 lần lợi nhuận dự phóng."],
-l:"Nhu cầu chip AI tiếp tục bùng nổ, công ty vượt dự báo quý này qua quý khác và cổ phiếu tăng khoảng 2,7 lần. Đắt chưa chắc là bong bóng: khi lợi nhuận tăng nhanh hơn giá, cổ phiếu thực ra đang rẻ đi.",
+l:"Nhu cầu chip AI tiếp tục bùng nổ, công ty vượt dự báo quý này qua quý khác và cổ phiếu tăng khoảng 2,8 lần. Đắt chưa chắc là bong bóng: khi lợi nhuận tăng nhanh hơn giá, cổ phiếu thực ra đang rẻ đi.",
 src:[{t:"AP: Nvidia stuns markets (TechXplore)",u:"https://techxplore.com/news/2023-05-nvidia-stuns-artificial-intelligence-reshape.html"},{t:"Bloomberg: Nvidia's $184 Billion Jump in Five Charts",u:"https://www.bnnbloomberg.ca/nvidia-s-184-billion-jump-in-five-charts-1.1925275"}]},
 
 {n:"Meta Platforms",t:"META",s:"Mạng xã hội · Quảng cáo",w:"Tháng 2/2022",c:-20,f:[
@@ -464,7 +464,7 @@ l:"Vài tháng sau công ty đổi CEO, nhưng xoay chuyển một thương hi�
 "Công ty lỗ gần 1 tỷ USD chỉ trong nửa đầu năm.",
 "Công ty có khoảng 55.400 đơn đặt trước và hợp đồng 100.000 xe tải giao hàng điện với một tập đoàn thương mại điện tử lớn (cũng là cổ đông).",
 "Ford, GM và Tesla đều sắp ra xe bán tải điện cạnh tranh trực tiếp."],
-l:"Sản xuất chậm, chuỗi cung ứng khó khăn, lãi suất tăng; cổ phiếu mất khoảng 80%. Định giá như một gã khổng lồ khi chưa chứng minh được khả năng sản xuất hàng loạt là đặt cược rất rủi ro."
+l:"Sản xuất chậm, chuỗi cung ứng khó khăn, lãi suất tăng; cổ phiếu mất khoảng 3/4. Định giá như một gã khổng lồ khi chưa chứng minh được khả năng sản xuất hàng loạt là đặt cược rất rủi ro."
 ,src:[{t:"Al Jazeera / Bloomberg: Rivian is now biggest US company by market value with no revenue",u:"https://www.aljazeera.com/economy/2021/11/12/rivian-is-now-biggest-us-company-by-market-value-with-no-revenue"},{t:"Fortune: Rivian shares surge 29% after IPO",u:"https://fortune.com/2021/11/10/rivian-shares-surge-ipo-first-day-trading-electric-car-gm-ford/"}]},
 
 {n:"Tesla",t:"TSLA",s:"Xe điện",w:"Tháng 11/2021",c:-50,f:[
@@ -517,3 +517,106 @@ const SRC_EXTRA = {
 "ENE|Tháng 8/2001":[{t:"Wikipedia: Enron scandal",u:"https://en.wikipedia.org/wiki/Enron_scandal"}]
 };
 SCENARIOS.forEach(x => { if (!x.src) x.src = SRC_EXTRA[`${x.t}|${x.w}`] || null; });
+
+/* ---- Situations with a financial-numbers panel (fin) and price snapshots ---- */
+SCENARIOS.push(
+{n:"Microsoft",t:"MSFT",s:"Phần mềm · Đám mây",w:"Tháng 1/2023",f:[
+"Công ty vừa công bố cắt giảm 10.000 nhân sự và ghi nhận khoản chi phí liên quan.",
+"Công ty đang chuẩn bị rót khoảng 10 tỷ USD vào một công ty khởi nghiệp AI đang gây sốt với chatbot của họ.",
+"Mảng máy tính cá nhân yếu: doanh thu Windows bán kèm máy mới giảm mạnh, thiết bị phần cứng cũng giảm.",
+"Đám mây vẫn tăng trưởng hai chữ số; CEO nói một \"làn sóng điện toán mới\" đang hình thành nhờ AI.",
+"Doanh thu quý hơi thấp hơn kỳ vọng của giới phân tích."],
+fin:[["Doanh thu quý","$52,7 tỷ (+2%)"],["Lợi nhuận hoạt động","$20,4 tỷ (−8%)"],["Lợi nhuận ròng","$16,4 tỷ (−12%)"],["EPS","$2,20 (−11%)"],["Doanh thu đám mây","$27,1 tỷ (+22%)"],["Azure & đám mây khác","+31%"],["Windows bán kèm máy mới","−39%"],["Trả cho cổ đông trong quý","$9,7 tỷ"]],
+l:"Khoản đầu tư AI biến công ty thành người dẫn đầu cuộc đua AI; doanh thu đám mây tăng tốc và cổ phiếu tăng gần 70% trong năm. Khi mảng cũ (Windows) yếu nhưng mảng mới (đám mây + AI) mạnh, hãy nhìn vào nơi tương lai đang đến.",
+src:[{t:"Microsoft FY23 Q2 earnings release",u:"https://www.microsoft.com/en-us/investor/earnings/FY-2023-Q2/press-release-webcast"},{t:"Futurum: Microsoft revenue hits $52.7B",u:"https://futurumgroup.com/insights/microsoft-revenue-hits-52-7b-for-q2-fy23-up-2-yoy"}]},
+
+{n:"Intel",t:"INTC",s:"Chip bán dẫn",w:"Tháng 8/2024",f:[
+"Công ty cắt khoảng 15% nhân sự (khoảng 15.000 người) trong kế hoạch tiết kiệm hơn 10 tỷ USD.",
+"Công ty ngừng trả cổ tức từ quý cuối năm.",
+"CEO viết trong thư gửi nhân viên: doanh thu không tăng như kỳ vọng, chi phí quá cao, biên lợi nhuận quá thấp.",
+"Mảng sản xuất chip thuê (foundry) lỗ nặng; công ty bị tụt lại trong làn sóng chip AI.",
+"Cổ phiếu giảm khoảng 20% sau giờ giao dịch khi công bố kết quả."],
+fin:[["Doanh thu quý","$12,8 tỷ (−1%)"],["Lợi nhuận ròng","−$1,6 tỷ (cùng kỳ lãi $1,5 tỷ)"],["EPS","−$0,38 (dự báo +$0,10)"],["Biên lợi nhuận gộp","35,4%"],["Dòng tiền hoạt động","$2,3 tỷ"],["Mảng foundry","lỗ $2,8 tỷ"],["Tiền mặt","$11,3 tỷ"],["Dự báo quý tới","$12,5–13,5 tỷ"]],
+l:"Giá còn rơi thêm nhiều tháng, CEO rời ghế cuối năm; về sau có tin chính phủ và đối tác lớn rót vốn nên giá hồi phần nào, nhưng sau 1 năm vẫn thấp hơn khoảng 10%. Cắt cổ tức + lỗ ở mảng đặt cược lớn thường là dấu hiệu cuộc xoay chuyển còn dài.",
+src:[{t:"CNN: Intel lays off 15% of its staff",u:"https://abc17news.com/money/cnn-business-consumer/2024/08/01/intel-lays-off-15-of-its-staff-and-its-stock-tumbles-as-it-struggles-to-turn-around-its-ailing-business/"},{t:"Quartr: Intel Q2 2024 earnings summary",u:"https://quartr.com/events/intel-corporation-intc-q2-2024_3sbEYaXB"}]},
+
+{n:"Netflix",t:"NFLX",s:"Phim trực tuyến",w:"Tháng 1/2022",f:[
+"Cổ phiếu giảm khoảng 20% chỉ sau một đêm vì dự báo thuê bao quý tới quá thấp.",
+"Thuê bao mới cả năm chỉ bằng khoảng một nửa năm trước đó, khi mọi người ở nhà vì dịch.",
+"Công ty thừa nhận các dịch vụ đối thủ đang ảnh hưởng đến tăng trưởng.",
+"Quý tới công ty có ít phim/series lớn ra mắt.",
+"Công ty vừa tăng giá gói ở Mỹ và Canada."],
+fin:[["Doanh thu quý","$7,71 tỷ (+16%)"],["EPS","$1,33 (dự báo $0,82)"],["Thuê bao mới trong quý","8,28 triệu (tổng 221,8 triệu)"],["Dự báo thuê bao mới quý tới","2,5 triệu (thị trường kỳ vọng ~6,9 triệu)"],["Thuê bao mới cả năm","18,2 triệu (năm trước ~37 triệu)"],["Doanh thu mỗi thuê bao","$11,58/tháng"]],
+l:"Đây mới là cú rơi đầu: 3 tháng sau công ty báo mất thuê bao và giá rơi tiếp gần một nửa. Gói quảng cáo và chặn chia sẻ mật khẩu giúp hồi phục, nhưng sau 1 năm vẫn thấp hơn khoảng 14%. Dự báo yếu từ chính công ty là tín hiệu cần nghe kỹ.",
+src:[{t:"XTB: Netflix plunged 20% after Q4 earnings",u:"https://www.xtb.com/int/market-analysis/news-and-research/netflix-plunged-20-after-q4-earnings"},{t:"Light Reading: Netflix stock tumbles on subscriber miss",u:"https://www.lightreading.com/video-media/netflix-stock-price-tumbles-on-subscriber-miss-/d/d-id/774730"}]},
+
+{n:"Target",t:"TGT",s:"Bán lẻ",w:"Tháng 5/2022",f:[
+"Cổ phiếu giảm khoảng 25% trong một ngày, tệ nhất kể từ năm 1987.",
+"Chi phí vận chuyển, nhiên liệu và lương nhân viên tăng mạnh vì chuỗi cung ứng tắc nghẽn.",
+"Khách vẫn mua đồ thiết yếu nhưng bớt mua TV, đồ gia dụng; hàng tồn kho phải giảm giá.",
+"Một đối thủ bán lẻ lớn hơn cũng vừa có ngày giảm mạnh nhất 35 năm vì lý do tương tự.",
+"CEO: đã lường trước việc chi tiêu chậm lại sau khi hết tiền hỗ trợ, nhưng không ngờ mức độ lớn như vậy."],
+fin:[["Doanh thu quý","$24,8 tỷ (+4%)"],["Lợi nhuận ròng","$1,01 tỷ (−52%)"],["EPS điều chỉnh","$2,19 (dự báo ~$3,07)"],["Doanh số cửa hàng cũ","+3,4% (năm trước +18%)"],["Doanh số online","+3,2% (năm trước +50%)"]],
+l:"Công ty xử lý hàng tồn kho trong vài quý, lợi nhuận hồi dần; sau 1 năm giá gần như đi ngang (khoảng −5%). Giảm 25% vì vấn đề tạm thời không đảm bảo bật lại nhanh khi cả ngành bán lẻ đang khó."
+,src:[{t:"CNN: Target posts a stunning drop in profit",u:"https://ktvz.com/money/cnn-business-consumer/2022/05/18/target-posts-a-stunning-drop-in-profit-stock-plunges/"},{t:"Seeking Alpha: Target down after Walmart",u:"https://seekingalpha.com/article/4512952-target-down-after-walmart"}]},
+
+{n:"PayPal",t:"PYPL",s:"Thanh toán điện tử",w:"Tháng 2/2022",f:[
+"Cổ phiếu giảm khoảng 25% trong một ngày sau báo cáo quý.",
+"Công ty hạ dự báo tăng trưởng và số tài khoản mới năm tới thấp hơn nhiều so với kỳ vọng.",
+"Công ty loại bỏ 4,5 triệu tài khoản \"bất hợp pháp\" khỏi số liệu và bỏ mục tiêu 750 triệu tài khoản.",
+"Một sàn thương mại điện tử lớn đang chuyển dần sang đơn vị thanh toán khác.",
+"Lạm phát làm người tiêu dùng chi tiêu chậm lại."],
+fin:[["Doanh thu quý","$6,92 tỷ (+13%)"],["Lợi nhuận ròng quý","$801 triệu (năm trước $1,5 tỷ)"],["EPS điều chỉnh","$1,11 (dự báo $1,12)"],["Dòng tiền tự do cả năm","$5,4 tỷ (21% doanh thu)"],["Lợi nhuận ròng cả năm","~$4,2 tỷ"],["Dự báo tăng trưởng năm tới","15–17%"],["Dự báo EPS năm tới","$4,60–4,75 (kỳ vọng $5,23)"],["Tài khoản mới dự kiến","15–20 triệu"]],
+l:"Cạnh tranh từ ví điện tử khác và tăng trưởng chậm lại khiến cổ phiếu mất thêm khoảng 1/3 sau 1 năm. Dòng tiền mạnh giúp công ty sống tốt, nhưng thị trường định giá lại khi \"cổ phiếu tăng trưởng\" thành \"cổ phiếu chậm\"."
+,src:[{t:"Motley Fool: PayPal shares plunge 25%",u:"https://www.fool.com/investing/2022/02/02/paypal-shares-plunge-25-heres-why-its-down-so-shar/"},{t:"Motley Fool: 426 million reasons to love PayPal",u:"https://www.fool.com/investing/2022/02/08/426-million-reasons-to-love-paypal-stock-right-now"}]},
+
+{n:"Starbucks",t:"SBUX",s:"Chuỗi cà phê",w:"Tháng 8/2024",f:[
+"Công ty bất ngờ thay CEO sau khoảng 17 tháng, mời CEO của một chuỗi đồ ăn nhanh nổi tiếng về.",
+"Cổ phiếu tăng khoảng 24,5% trong một ngày, mức tăng trong ngày lớn nhất lịch sử, xóa hết mức giảm từ đầu năm.",
+"Dưới thời CEO mới, chuỗi cũ của ông gần gấp đôi doanh thu và cổ phiếu tăng gần 800%.",
+"Doanh số giảm ở Mỹ; ở Trung Quốc khách chuyển sang thương hiệu rẻ hơn; một số nơi bị tẩy chay.",
+"Một quỹ đầu tư chủ động nắm cổ phần lớn đang gây áp lực đòi thay đổi."],
+fin:[["Doanh số cửa hàng cũ (Mỹ)","−2%"],["Doanh số cửa hàng cũ (toàn cầu)","−3%"],["Doanh thu quý trước","−2%, lần giảm đầu tiên từ cuối 2020"],["Số cửa hàng","~38.000 (Trung Quốc ~6.500)"],["Doanh số cửa hàng cũ của chuỗi CEO mới rời đi","+11%"]],
+l:"Kỳ vọng vào CEO mới được đẩy lên giá ngay trong một ngày; việc sửa chữa mất nhiều quý và doanh số vẫn yếu, nên sau 1 năm giá gần như đi ngang. Tin tốt đã vào giá thì mua đuổi thường không còn lời."
+,src:[{t:"AP: Starbucks names Chipotle chief Brian Niccol CEO",u:"https://www.clickondetroit.com/business/2024/08/13/starbucks-replaces-its-ceo-names-chipotle-chief-to-head-the-company/"},{t:"Asia Economy: Starbucks stock surges over 24%",u:"https://www.asiae.co.kr/en/article/2024081407431639508"}]},
+
+{n:"NVIDIA",t:"NVDA",s:"Chip bán dẫn",w:"Tháng 1/2025",f:[
+"Một công ty AI Trung Quốc ra mắt mô hình mạnh ngang các mô hình hàng đầu của Mỹ, với chi phí huấn luyện được cho là dưới 6 triệu USD.",
+"Cổ phiếu giảm khoảng 17% trong một ngày, xóa khoảng 589 tỷ USD, mức mất giá một ngày lớn nhất lịch sử chứng khoán Mỹ.",
+"Nhà đầu tư lo các công ty sẽ cần ít chip đắt tiền hơn để làm AI.",
+"Trước cú giảm, cổ phiếu giao dịch khoảng 60 lần lợi nhuận, so với khoảng 22 lần của S&P 500.",
+"Vài ngày trước, một tập đoàn mạng xã hội lớn vừa tuyên bố tăng chi đầu tư AI lên tới 65 tỷ USD trong năm."],
+fin:[["Giảm trong ngày","~17% ($142 → $118,5)"],["Vốn hóa mất","~$589 tỷ"],["P/E trước cú giảm","~60 lần (S&P 500: ~22)"],["Lợi nhuận ròng","từ $4,8 tỷ (2022) lên ước ~$66,7 tỷ (2024)"]],
+l:"Các tập đoàn lớn vẫn tiếp tục tăng chi đầu tư AI; chi phí rẻ hơn lại làm AI được dùng rộng hơn. Cổ phiếu hồi lại và tăng khoảng 59% sau 1 năm. Hoảng loạn vì một tin công nghệ mới thường bị phóng đại nếu nhu cầu thật vẫn còn."
+,src:[{t:"Tom's Hardware: Nvidia loses $589 billion in market cap",u:"https://www.tomshardware.com/tech-industry/artificial-intelligence/nvidia-loses-usd589-billion-in-market-cap-broad-stock-plunge-triggered-by-deepseek-ai-release"},{t:"Reuters: DeepSeek's AI model jolts global tech firms (Gulf Today)",u:"https://gulftoday.ae/news/2025/01/28/deepseeks-ai-model-jolts-global-tech-firms-as-nvidia-loses-nearly-600b-in-market-cap"}]},
+
+{n:"Airbnb",t:"ABNB",s:"Du lịch · Cho thuê nhà",w:"Tháng 12/2020",f:[
+"Hôm nay là ngày đầu lên sàn: giá IPO 68 USD nhưng đóng cửa 144,71 USD, tăng hơn gấp đôi.",
+"Định giá khoảng 100 tỷ USD, lớn hơn cả 4 chuỗi khách sạn lớn nhất cộng lại.",
+"Dịch bệnh làm du lịch gần như đóng băng; tháng 4 lượng đặt phòng giảm 72%.",
+"Khách chuyển sang đi gần nhà và ở dài ngày hơn; quý gần nhất là quý có lãi nhiều nhất từ trước tới nay.",
+"Vaccine sắp được phân phối rộng rãi."],
+fin:[["Doanh thu 9 tháng","$2,5 tỷ (−32%)"],["Lỗ ròng 9 tháng","$697 triệu"],["Doanh thu quý 3","−18% (Expedia, Marriott ~−60%)"],["Định giá/doanh thu","~19–20 lần doanh thu năm tới"],["Giá IPO → đóng cửa ngày đầu","$68 → $144,71 (+113%)"]],
+l:"Du lịch hồi phục mạnh và công ty bắt đầu có lãi, nhưng giá ngày đầu đã rất cao; sau 1 năm cổ phiếu tăng khoảng 25%. Mua cổ phiếu ngày IPO \"nóng\" thì phần lớn lợi nhuận đã thuộc về người mua ở giá IPO."
+,src:[{t:"Silicon Republic: Airbnb shares more than double in debut",u:"https://siliconrepublic.com/?p=907324"},{t:"BusinessTech / Bloomberg: Airbnb valuation reaches $100 billion",u:"https://businesstech.co.za/news/mobile/456332/airbnb-valuation-reaches-100-billion-in-trading-debut/"}]},
+
+{n:"Disney",t:"DIS",s:"Giải trí · Truyền thông",w:"Tháng 3/2021",f:[
+"Dịch vụ phim trực tuyến của công ty vượt 100 triệu thuê bao chỉ sau 16 tháng, vượt xa mục tiêu ban đầu (60–90 triệu vào năm 2024).",
+"Công ty nâng mục tiêu lên 230–260 triệu thuê bao vào năm 2024 và cam kết hơn 100 tựa phim mới mỗi năm.",
+"Cổ phiếu vừa lập kỷ lục khoảng 202 USD, so với đáy khoảng 79 USD lúc dịch bệnh mới bùng phát.",
+"Công viên giải trí và rạp chiếu phim vẫn bị ảnh hưởng nặng bởi dịch.",
+"Đối thủ lớn nhất đang có khoảng 204 triệu thuê bao."],
+fin:[["Thuê bao Disney+","100 triệu (tháng trước 94,9 triệu)"],["Mục tiêu 2024","230–260 triệu"],["Giá cổ phiếu","kỷ lục ~$202 (đáy dịch ~$79)"],["Tựa phim mới mỗi năm","100+"]],
+l:"Chi phí làm phim cho dịch vụ trực tuyến rất lớn và mảng này lỗ nặng; tăng trưởng thuê bao chậm dần. Cổ phiếu mất khoảng 31% sau 1 năm. Tăng trưởng người dùng đẹp chưa đủ nếu chưa biết khi nào có lãi."
+,src:[{t:"CNN: Disney+ surpasses 100 million global subscribers",u:"https://abc7ny.com/entertainment/disney+-surpasses-100-million-global-subscribers/10401119/"},{t:"Movieguide / Variety: Disney+ breaks 100 million",u:"https://www.movieguide.org/?p=550229"}]},
+
+{n:"Apple",t:"AAPL",s:"Điện thoại · Công nghệ",w:"Tháng 3/2020",f:[
+"Dịch bệnh lan khắp thế giới, thị trường chứng khoán vừa trải qua đợt giảm nhanh nhất lịch sử.",
+"Công ty thông báo sẽ không đạt dự báo doanh thu quý (63–67 tỷ USD) vì nhà máy ở Trung Quốc chậm hoạt động lại.",
+"Toàn bộ cửa hàng ở Trung Quốc từng phải đóng cửa; Trung Quốc chiếm khoảng 17% doanh thu.",
+"Quý trước đó công ty vừa lập kỷ lục doanh thu, cả iPhone, thiết bị đeo và dịch vụ.",
+"Công ty có lượng tiền mặt rất lớn."],
+fin:[["Doanh thu iPhone quý trước","$56 tỷ (+8%)"],["Thiết bị đeo & phụ kiện","$10 tỷ (+37%, kỷ lục)"],["Dự báo quý (đã rút lại)","$63–67 tỷ"],["Tỷ trọng doanh thu Trung Quốc","~17%"]],
+l:"Mọi người làm việc, học tập ở nhà nên mua thêm thiết bị; doanh thu lập kỷ lục mới và cổ phiếu tăng hơn gấp đôi trong 1 năm. Lúc cả thị trường hoảng loạn, doanh nghiệp mạnh thường bị bán oan."
+,src:[{t:"Apple: Investor update on quarterly guidance",u:"https://www.apple.com/newsroom/2020/02/investor-update-on-quarterly-guidance/"},{t:"Computer Weekly: Tech stocks tumble as Apple admits coronavirus impact",u:"https://www.computerweekly.com/news/252478754/Tech-stocks-tumble-as-Apple-admits-Coronavirus-will-affect-iPhone-production-volumes"}]}
+);
