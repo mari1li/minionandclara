@@ -501,7 +501,7 @@ function renderCount(){
 /* ---------- routing ---------- */
 const ALL_PAGES = ["home","thu","lydo","phieu","album","game"];
 // temporarily hidden pages: remove a name from this list to bring the page back
-const HIDDEN = ["home","thu","lydo","phieu"];
+const HIDDEN = [];
 const PAGES = ALL_PAGES.filter(x => !HIDDEN.includes(x));
 HIDDEN.forEach(x => { const a = document.querySelector(`nav a[href="#${x}"]`); if (a) a.style.display = "none"; });
 function route(){
